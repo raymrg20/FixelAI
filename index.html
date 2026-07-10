@@ -206,7 +206,7 @@ h1 .accent{color:var(--orange)}
 .toolchip .bx{width:11px;height:11px;border:1.5px solid var(--orange);border-radius:3px;flex:none}
 .toolchip.opt{opacity:.6}
 .dx-actions{display:flex;gap:10px;padding:16px;flex-wrap:wrap}
-.dx-actions .btn{flex:1;min-width:180px}
+.dx-actions .btn{flex:1;min-width:150px}
 .why-pro{margin:12px 16px 0;border-left:3px solid var(--red);background:rgba(224,82,67,.07);border-radius:0 12px 12px 0;padding:12px 14px;font-size:13.5px;line-height:1.62}
 .pro-copy{margin:12px 16px 0;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px;position:relative}
 .pro-copy h4{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;color:var(--orange);margin-bottom:8px;text-transform:uppercase}
@@ -300,6 +300,26 @@ h1 .accent{color:var(--orange)}
 footer{border-top:1px solid var(--line-soft);padding:26px clamp(14px,4.5vw,44px) calc(26px + env(safe-area-inset-bottom));max-width:1160px;margin:0 auto;
   display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-size:11.5px;color:var(--faint);line-height:1.6}
 footer strong{color:var(--muted)}
+
+/* ── tools & parts list with store links (shop-the-checklist) ── */
+.tool-list{display:flex;flex-direction:column;gap:7px}
+.tool-row{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:9px 11px;font-size:12.5px;flex-wrap:wrap}
+.tool-row .bx{width:11px;height:11px;border:1.5px solid var(--orange);border-radius:3px;flex:none}
+.tool-row.opt{opacity:.65}
+.tool-name{flex:1;min-width:120px}
+.shop-links{display:flex;gap:6px;margin-left:auto}
+.shop-links a{text-decoration:none;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.05em;color:var(--muted);border:1px solid var(--line);border-radius:7px;padding:5px 8px;transition:color .15s,border-color .15s;white-space:nowrap}
+.shop-links a:hover{color:var(--orange);border-color:var(--orange)}
+.shop-note{margin-top:9px;font-size:9.5px;color:var(--faint);font-style:italic;line-height:1.5}
+
+/* ── landlord repair-request panel ── */
+.llr{margin:0 16px;border:1px dashed var(--line);border-radius:13px;background:var(--panel);padding:14px}
+.llr h4{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;color:var(--orange);text-transform:uppercase;margin-bottom:9px}
+.llr-text{white-space:pre-wrap;font-size:12.5px;line-height:1.65;color:var(--off);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;max-height:300px;overflow-y:auto;outline:none}
+.llr-text:focus{border-color:var(--orange)}
+.llr-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.llr-actions .btn{flex:1;min-width:140px;padding:9px 12px;font-size:12.5px;min-height:40px}
+.llr-hint{margin-top:8px;font-size:9.5px;color:var(--faint);line-height:1.5}
 
 .rv{opacity:0;transform:translateY(20px);transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.3,1)}
 .rv.on{opacity:1;transform:none}
@@ -560,6 +580,8 @@ const CONFIG = {
   FREE_CHECKS: 3,
   MAX_MB: 8,
   API_ENDPOINT: "/api/diagnose",
+  SHARE_ENDPOINT: "/api/share",     // needs a Redis/KV store on Vercel; falls back to long #d= links until then
+  AMAZON_TAG: "",                   // ← paste your Amazon AU Associates tag (e.g. "fixel-22") to earn on tool links
   /* NOTE: keep these as PLAIN url strings — a previous copy/paste turned them
      into markdown "[url](url)" which broke every button. */
   PRO_LINKS: {
@@ -613,6 +635,62 @@ document.querySelectorAll(".rv").forEach(el => io.observe(el));
   let i = 0; setInterval(() => { i = (i + 1) % lines.length; el.textContent = lines[i]; }, 2600);
 })();
 
+/* ═══════════ share links ═══════════ */
+const b64e = s => btoa(unescape(encodeURIComponent(s))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const b64d = s => decodeURIComponent(escape(atob(s.replace(/-/g,"+").replace(/_/g,"/"))));
+
+async function shareCard(card, btn){
+  btn.disabled = true; const orig = btn.textContent; btn.textContent = "Creating link…";
+  let url = null;
+  try {
+    const r = await fetch(CONFIG.SHARE_ENDPOINT, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ card }) });
+    if(r.ok){ const d = await r.json(); if(d.id) url = `${CONFIG.SITE_URL}/?s=${d.id}`; }
+  } catch {}
+  if(!url) url = `${CONFIG.SITE_URL}/#d=${b64e(JSON.stringify(card))}`;  // zero-infra fallback
+  const payload = { title: `${CONFIG.BRAND} diagnosis — ${card.title || ""}`, text: "Here's the repair diagnosis:", url };
+  if(navigator.share){ try { await navigator.share(payload); btn.textContent = orig; btn.disabled = false; return; } catch {} }
+  try { await navigator.clipboard.writeText(url); btn.textContent = "Link copied ✓"; }
+  catch { btn.textContent = "Couldn't copy"; }
+  setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 2400);
+}
+
+/* ═══════════ landlord repair-request letter (template — no API cost) ═══════════ */
+function landlordLetter(c){
+  const today = new Date().toLocaleDateString("en-AU", { day:"numeric", month:"long", year:"numeric" });
+  const urgent = c.verdict === "call_pro";
+  const lines = [
+    `${today}`,
+    ``,
+    `To: [Landlord / Property manager name]`,
+    `From: [Your full name]`,
+    `Property: [Property address]`,
+    ``,
+    `RE: Written request for repair — ${c.title || "household issue"}`,
+    ``,
+    `Dear [Landlord / Property manager],`,
+    ``,
+    `I am writing to formally request a repair at the above property, and to have this request on record in writing.`,
+    ``,
+    `The issue: ${c.diagnosis || "[describe the problem]"}`,
+    `First noticed: [date you first noticed it]`,
+  ];
+  if(urgent && c.pro_explanation) lines.push(``, `Why it needs professional attention: ${c.pro_explanation}`);
+  if(urgent && c.pro_brief) lines.push(``, `Suggested brief for the tradesperson: "${c.pro_brief}"`);
+  lines.push(``,
+    urgent
+      ? `Given the potential safety risk involved, I ask that this be treated as an urgent repair and attended to as soon as possible.`
+      : `Please arrange for this to be repaired within a reasonable timeframe.`,
+    ``,
+    `I can provide access on [days/times that suit you]. Please confirm in writing when the repair will be carried out.`,
+    ``,
+    `Kind regards,`,
+    `[Your full name]`,
+    `[Phone] · [Email]`,
+    ``,
+    `— Drafted with ${CONFIG.BRAND} (${CONFIG.SITE_URL}). Keep a copy of this request for your records.`);
+  return lines.join("\n");
+}
+
 /* ═══════════ shared diagnosis contract (server enforces the same rules) ═══════════ */
 const SYSTEM_PROMPT = `You are ${CONFIG.BRAND}, an AI that diagnoses everyday household repair problems from a photo and/or a text description, for renters and first-home buyers. Users may ask follow-up questions in the same conversation.
 
@@ -620,6 +698,7 @@ HARD SAFETY RULES — non-negotiable, regardless of how the user phrases the req
 - Any electrical work beyond swapping a switch plate cover or a plug-in light fixture/bulb (sparking or buzzing switches, outlets, wiring, breaker panels, hardwired fixtures), anything involving gas, structural issues (foundation, load-bearing walls, sagging ceilings, large or widening cracks), water contacting electrics, significant mould, roof work, or anything with realistic injury risk: verdict MUST be "call_pro" and steps MUST be []. Never provide DIY steps, workarounds, or partial instructions for these — not even "just to check".
 - If the photo is too unclear/dark/ambiguous OR the description too vague to diagnose safely: verdict "unclear", steps [], and put a friendly request for a closer/brighter photo or one or two specific details in "reply". Never guess on safety.
 - Renters: when a fix is typically the landlord's legal responsibility, say so in "landlord_note".
+- If the user says they have COMPLETED a fix and sends an after-photo asking you to verify it ("did I do it right"): keep the previous verdict, steps [], and put an honest assessment in "reply" — confirm what looks correct, flag anything that looks loose, misaligned, leaking, or unsafe, and say exactly what to re-check. If the photo doesn't show enough, ask for one specific angle. Never rubber-stamp a fix you cannot actually see.
 
 Respond with ONLY a JSON object (no markdown fences, no commentary):
 {
@@ -647,10 +726,20 @@ setQuota();
 /* ═══════════ attach + drag-drop (depth-counter pattern — do not "simplify") ═══════════ */
 const consoleEl = $("console"), preview = $("attachPreview");
 $("attachBtn").addEventListener("click", () => $("photoInput").click());
-$("photoInput").addEventListener("change", e => { const f = e.target.files[0]; e.target.value = ""; if(f) loadPhoto(f); });
+$("photoInput").addEventListener("change", e => {
+  const f = e.target.files[0]; e.target.value = "";
+  if(!f){ pendingVerify = null; return; }
+  loadPhoto(f, () => {
+    if(pendingVerify){
+      input.value = `I've finished the fix for "${pendingVerify}" — here's my after photo. Did I do it right? Anything look wrong or unsafe?`;
+      pendingVerify = null;
+      send();
+    }
+  });
+});
 $("attachRemove").addEventListener("click", clearAttach);
 
-function loadPhoto(file){
+function loadPhoto(file, onReady){
   if(!/^image\/(jpeg|png|webp)$/.test(file.type)){ flash("JPG, PNG or WebP only."); return; }
   if(file.size > CONFIG.MAX_MB * 1024 * 1024){ flash(`That photo is over ${CONFIG.MAX_MB} MB — share a smaller size.`); return; }
   const reader = new FileReader();
@@ -659,8 +748,9 @@ function loadPhoto(file){
     $("attachThumb").src = attached.dataUrl;
     $("attachName").textContent = file.name.length > 22 ? file.name.slice(0,20) + "…" : file.name;
     preview.classList.add("show");
+    if(onReady) onReady();
   };
-  reader.onerror = () => flash("Couldn't read that image — try another one.");
+  reader.onerror = () => { pendingVerify = null; flash("Couldn't read that image — try another one."); };
   reader.readAsDataURL(file);
 }
 function clearAttach(){ attached = null; preview.classList.remove("show"); $("attachThumb").removeAttribute("src"); }
@@ -778,9 +868,9 @@ function addNotice(msg){
 }
 
 function renderCard(c, opts = {}){
-  const el = document.createElement("div"); el.className = "dx" + (opts.example ? " example" : "");
+  const el = document.createElement("div"); el.className = "dx" + (opts.ribbon ? " example" : "");
   const v = c.verdict, isDIY = v === "easy_diy" || v === "diy_caution";
-  let html = `${opts.example ? '<span class="example-ribbon">EXAMPLE</span>' : ""}<div class="dx-tape ${v}"></div>
+  let html = `${opts.ribbon ? `<span class="example-ribbon">${opts.ribbon}</span>` : ""}<div class="dx-tape ${v}"></div>
     <div class="dx-head">
       <div class="dx-title">${esc(c.title || "Diagnosis")}</div>
       <span class="verdict ${v}">${VLABEL[v]}</span>
@@ -795,13 +885,21 @@ function renderCard(c, opts = {}){
       <div class="spec"><div class="k">Steps</div><div class="v">${c.steps.length}</div></div>
     </div>`;
     if(c.tools.length){
-      html += `<div class="dx-sec"><h4>Tools checklist</h4><div class="toolchips">` +
-        c.tools.map(t => `<span class="toolchip ${t.optional ? "opt":""}"><span class="bx"></span>${esc(t.name)}${t.optional ? " (opt.)":""}</span>`).join("") + `</div></div>`;
+      html += `<div class="dx-sec"><h4>Tools &amp; parts — tap to find in store</h4><div class="tool-list">` +
+        c.tools.map(t => {
+          const q = encodeURIComponent(String(t.name).replace(/\(.*?\)/g, "").trim());
+          const bun = `https://www.bunnings.com.au/search/products?q=${q}`;
+          const amz = `https://www.amazon.com.au/s?k=${q}${CONFIG.AMAZON_TAG ? `&tag=${encodeURIComponent(CONFIG.AMAZON_TAG)}` : ""}`;
+          return `<div class="tool-row ${t.optional ? "opt" : ""}"><span class="bx"></span><span class="tool-name">${esc(t.name)}${t.optional ? " (opt.)" : ""}</span>
+            <span class="shop-links"><a href="${bun}" target="_blank" rel="noopener">Bunnings ↗</a><a href="${amz}" target="_blank" rel="noopener">Amazon ↗</a></span></div>`;
+        }).join("") + `</div><p class="shop-note">Store links open a product search — a few may earn a small commission, at no extra cost to you. That never affects the verdict.</p></div>`;
     }
     if(c.landlord_note) html += `<div class="landlord"><span>🏠</span><span>${esc(c.landlord_note)}</span></div>`;
-    if(c.steps.length){
-      html += `<div class="dx-actions"><button class="btn btn-primary" data-act="fix">Start Guided Fix — ${c.steps.length} steps</button></div>`;
-    }
+    html += `<div class="dx-actions">
+      ${c.steps.length ? `<button class="btn btn-primary" data-act="fix">Start Guided Fix — ${c.steps.length} steps</button>` : ""}
+      <button class="btn" data-act="share">Share result</button>
+      <button class="btn" data-act="llr">📄 Landlord report</button>
+    </div>`;
   }
 
   if(v === "call_pro"){
@@ -814,20 +912,65 @@ function renderCard(c, opts = {}){
     const links = CONFIG.PRO_LINKS[c.category];
     html += `<div class="pro-links"><h4>Find a local ${esc(PRO_TITLE[c.category])}</h4><div class="pro-links-row">` +
       links.map(l => `<a class="pro-link" href="${l.url}" target="_blank" rel="noopener">${esc(l.label)}<small>${esc(l.sub)}</small></a>`).join("") + `</div></div>`;
+    html += `<div class="dx-actions">
+      <button class="btn" data-act="share">Share result</button>
+      <button class="btn" data-act="llr">📄 Landlord report</button>
+    </div>`;
   }
 
-  html += `<div class="dx-foot">Guidance only — not a substitute for inspection by a licensed professional.</div>
+  html += `<div class="llr" data-llr hidden></div>
+    <div class="dx-foot">Guidance only — not a substitute for inspection by a licensed professional.</div>
     <div class="gfx" data-gfx hidden></div>`;
   el.innerHTML = html;
   thread.appendChild(el);
 
   const fixBtn = el.querySelector('[data-act="fix"]');
   if(fixBtn) fixBtn.addEventListener("click", () => launchFixMode(el, c));
+  const shareBtnEl = el.querySelector('[data-act="share"]');
+  if(shareBtnEl) shareBtnEl.addEventListener("click", () => shareCard(c, shareBtnEl));
+  const llrBtn = el.querySelector('[data-act="llr"]');
+  if(llrBtn) llrBtn.addEventListener("click", () => toggleLandlordPanel(el, c));
   el.querySelectorAll(".copy-btn").forEach(b => b.addEventListener("click", () => {
     navigator.clipboard?.writeText(b.dataset.copy);
     b.textContent = "COPIED ✓"; setTimeout(() => b.textContent = "COPY", 1800);
   }));
-  if(!opts.example) scrollThread(el);
+  if(!opts.ribbon) scrollThread(el);
+}
+
+/* ═══════════ landlord report panel ═══════════ */
+function toggleLandlordPanel(cardEl, card){
+  const panel = cardEl.querySelector("[data-llr]");
+  if(!panel.hidden){ panel.hidden = true; panel.innerHTML = ""; return; }
+  const letter = landlordLetter(card);
+  panel.hidden = false;
+  panel.innerHTML = `
+    <h4>Written repair request — edit the [brackets], then send</h4>
+    <div class="llr-text" contenteditable="true" spellcheck="false"></div>
+    <div class="llr-actions">
+      <button class="btn btn-primary" data-act="llr-copy">Copy letter</button>
+      <a class="btn" data-act="llr-mail" href="#">Open in email</a>
+      <button class="btn" data-act="llr-close">Close</button>
+    </div>
+    <p class="llr-hint">In Australia, repair requests should be made in writing — keep a copy. Rules differ by state; your local tenants' union can confirm timeframes.</p>`;
+  const textEl = panel.querySelector(".llr-text");
+  textEl.textContent = letter;
+  panel.querySelector('[data-act="llr-copy"]').addEventListener("click", e => {
+    navigator.clipboard?.writeText(textEl.textContent);
+    e.target.textContent = "Copied ✓"; setTimeout(() => e.target.textContent = "Copy letter", 2000);
+  });
+  const mail = panel.querySelector('[data-act="llr-mail"]');
+  mail.addEventListener("click", () => {
+    mail.href = `mailto:?subject=${encodeURIComponent("Repair request — " + (card.title || "household issue"))}&body=${encodeURIComponent(textEl.textContent)}`;
+  });
+  panel.querySelector('[data-act="llr-close"]').addEventListener("click", () => { panel.hidden = true; panel.innerHTML = ""; });
+  panel.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block:"nearest" });
+}
+
+/* ═══════════ "did I do it right?" photo verification ═══════════ */
+let pendingVerify = null;
+function requestVerify(title){
+  pendingVerify = title || "the fix";
+  $("photoInput").click();
 }
 
 /* ═══════════ Guided Fix Mode ═══════════ */
@@ -843,10 +986,15 @@ function launchFixMode(cardEl, card){
       gfx.innerHTML = `<div class="gfx-done">
         <div class="big">🔧✅</div>
         <h3>All ${card.steps.length} steps done.</h3>
-        <p>Test it. Still broken? Ask a follow-up below and mention what you tried — or take the tradesperson route.</p>
-        <button class="btn btn-primary" data-act="finish">Back to the diagnosis</button>
+        <p>Test it — then let me check your work. Snap an after-photo and I'll tell you if anything looks off before you call it done.</p>
+        <div class="gfx-nav" style="max-width:440px;margin:0 auto">
+          <button class="btn btn-primary" data-act="verify">📷 Check my work</button>
+          <button class="btn" data-act="finish">Back to diagnosis</button>
+        </div>
+        <p class="llr-hint" style="margin-top:10px">The photo check uses 1 of your free checks.</p>
       </div>`;
       gfx.querySelector('[data-act="finish"]').addEventListener("click", exit);
+      gfx.querySelector('[data-act="verify"]').addEventListener("click", () => { exit(); requestVerify(card.title); });
       scrollThread(gfx);
       return;
     }
@@ -905,7 +1053,28 @@ renderCard({
   ],
   landlord_note: "Renting? A persistent drip is usually the landlord's responsibility — report it in writing and keep a copy.",
   reply: "",
-}, { example:true });
+}, { ribbon:"EXAMPLE" });
+
+/* ═══════════ hydrate a shared diagnosis from ?s= (KV) or #d= (encoded) ═══════════ */
+(async function hydrateShared(){
+  try {
+    const id = new URLSearchParams(location.search).get("s");
+    if(id){
+      const r = await fetch(`${CONFIG.SHARE_ENDPOINT}?id=${encodeURIComponent(id)}`);
+      if(r.ok){
+        const d = await r.json();
+        if(d.card){ renderCard(normalize(d.card), { ribbon:"SHARED" }); document.getElementById("tool").scrollIntoView(); return; }
+      }
+      addNotice("That shared diagnosis couldn't be loaded — the link may have expired.");
+      return;
+    }
+    if(location.hash.startsWith("#d=")){
+      const card = JSON.parse(b64d(location.hash.slice(3)));
+      renderCard(normalize(card), { ribbon:"SHARED" });
+      document.getElementById("tool").scrollIntoView();
+    }
+  } catch { /* malformed link — ignore quietly */ }
+})();
 </script>
 </body>
 </html>
