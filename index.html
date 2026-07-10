@@ -93,10 +93,13 @@ h1 .accent{color:var(--orange)}
   background:radial-gradient(520px 340px at 50% 30%, rgba(245,99,30,.06), transparent 65%), var(--bg2);
   min-height:clamp(320px,36vw,430px);display:flex;align-items:center;justify-content:center;overflow:hidden}
 .stage-label{position:absolute;top:13px;left:15px;font-size:9.5px;letter-spacing:.18em;color:var(--faint);z-index:5}
-.stage-readout{position:absolute;left:15px;bottom:13px;z-index:5;font-size:10px;letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;gap:8px}
+.stage-readout{position:absolute;left:15px;right:15px;bottom:13px;z-index:5;font-size:10px;letter-spacing:.1em;color:var(--muted);
+  display:flex;align-items:center;gap:8px;background:rgba(18,17,16,.78);border:1px solid var(--line-soft);border-radius:99px;padding:6px 12px;width:fit-content;max-width:calc(100% - 30px)}
+.stage-readout span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rd-dot{width:7px;height:7px;border-radius:50%;background:var(--orange);display:inline-block;animation:pulse 1.6s ease infinite;flex:none}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-.legend3d{position:absolute;right:15px;bottom:13px;z-index:5;font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--faint);display:flex;gap:10px}
+.legend3d{position:absolute;right:15px;top:13px;z-index:5;font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--faint);display:flex;gap:10px}
+@media(max-width:980px){.legend3d{display:none}}
 .legend3d b{color:var(--orange)}
 .scene3d{perspective:1500px;perspective-origin:50% 30%}
 .iso{transform-style:preserve-3d;transform:rotateX(60deg) scale(var(--z3,1))}
@@ -119,14 +122,17 @@ h1 .accent{color:var(--orange)}
 .f-s::after,.f-n::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.16),rgba(0,0,0,.32));border-radius:inherit}
 .f-e::after,.f-w::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.32),rgba(0,0,0,.46));border-radius:inherit}
 .rd .face{border-radius:7px}
-@keyframes riseTray{0%,14%{transform:translateZ(26px)}42%,66%{transform:translateZ(122px)}94%,100%{transform:translateZ(26px)}}
-@keyframes riseLid{0%,14%{transform:translateZ(56px)}42%,66%{transform:translateZ(198px)}94%,100%{transform:translateZ(56px)}}
-@keyframes riseHandle{0%,14%{transform:translateZ(74px)}42%,66%{transform:translateZ(262px)}94%,100%{transform:translateZ(74px)}}
-@keyframes dropScrews{0%,14%{transform:translateZ(2px)}42%,66%{transform:translateZ(-26px)}94%,100%{transform:translateZ(2px)}}
-.p-tray{animation:riseTray 9s cubic-bezier(.45,0,.2,1) infinite}
-.p-lid{animation:riseLid 9s cubic-bezier(.45,0,.2,1) infinite}
+/* exploded mixer tap: washer, cartridge and handle breathe apart, then reseat */
+@keyframes riseWasher{0%,14%{transform:translateZ(64px)}42%,66%{transform:translateZ(102px)}94%,100%{transform:translateZ(64px)}}
+@keyframes riseCart{0%,14%{transform:translateZ(76px)}42%,66%{transform:translateZ(154px)}94%,100%{transform:translateZ(76px)}}
+@keyframes riseHandle{0%,14%{transform:translateZ(94px)}42%,66%{transform:translateZ(216px)}94%,100%{transform:translateZ(94px)}}
+.p-washer{animation:riseWasher 9s cubic-bezier(.45,0,.2,1) infinite}
+.p-cart{animation:riseCart 9s cubic-bezier(.45,0,.2,1) infinite}
 .p-handle{animation:riseHandle 9s cubic-bezier(.45,0,.2,1) infinite}
-.p-screw{animation:dropScrews 9s cubic-bezier(.45,0,.2,1) infinite}
+/* the drip that started it all — a leaf node, so its opacity animation is 3D-safe */
+.drip{position:absolute;left:0;top:0;width:9px;height:9px;border-radius:3px;background:#6FA8CC;
+  box-shadow:0 0 8px rgba(111,168,204,.7);animation:dripFall 2.6s cubic-bezier(.5,0,.8,.4) infinite}
+@keyframes dripFall{0%{transform:translateZ(46px);opacity:0}12%{opacity:1}70%{transform:translateZ(4px);opacity:1}92%,100%{transform:translateZ(0);opacity:0}}
 .scan{position:absolute;left:-26px;top:-42px;width:272px;height:224px;border-radius:16px;pointer-events:none;
   background:linear-gradient(180deg,rgba(245,99,30,.16),rgba(245,99,30,.05));
   border:1px solid rgba(245,99,30,.55);box-shadow:0 0 26px rgba(245,99,30,.25);
@@ -153,7 +159,9 @@ h1 .accent{color:var(--orange)}
 .chip{border:1px solid var(--line);background:var(--bg);border-radius:99px;font-size:12.5px;font-weight:500;
   color:var(--off);padding:9px 14px;transition:border-color .18s, color .18s;white-space:nowrap;flex:none;min-height:38px}
 .chip:hover{border-color:var(--orange);color:var(--orange)}
-.thread{display:flex;flex-direction:column;gap:14px;padding:12px 16px;max-height:min(64vh,620px);overflow-y:auto;scroll-behavior:smooth}
+.thread{display:flex;flex-direction:column;gap:14px;padding:12px 16px;max-height:min(64vh,620px);overflow-y:auto;scroll-behavior:smooth;overscroll-behavior:contain}
+.thread > *{flex-shrink:0} /* CRITICAL: without this, flexbox compresses the cards to fit
+   the max-height instead of scrolling — clipping specs, tools, and the quote links */
 .umsg{align-self:flex-end;max-width:88%;display:flex;flex-direction:column;align-items:flex-end;gap:7px;animation:msgin .3s ease}
 .umsg .bubble{background:var(--panel2);border:1px solid var(--line);padding:11px 15px;border-radius:15px 15px 5px 15px;font-size:14px;line-height:1.55;overflow-wrap:anywhere}
 .umsg img{max-width:min(200px,60vw);border-radius:12px;border:1px solid var(--line)}
@@ -339,55 +347,90 @@ footer strong{color:var(--muted)}
 
   <div class="hero-stage" aria-hidden="true">
     <div class="stage-frame">
-      <div class="stage-label mono">FIG.01 — LIVE TEARDOWN · AUTO-ROTATE</div>
+      <div class="stage-label mono">FIG.01 — MIXER TAP · EXPLODED VIEW</div>
       <div class="scene3d">
         <div class="iso">
           <div class="spin360">
             <div class="bplate"></div>
             <div class="bring"></div>
-            <div class="part p-screw" style="left:34px;top:18px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
-            <div class="part p-screw" style="left:174px;top:18px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
-            <div class="part p-screw" style="left:34px;top:110px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
-            <div class="part p-screw" style="left:174px;top:110px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
-            <div class="part" style="left:10px;top:15px">
-              <div class="box rd" style="--w:200px;--d:110px;--h:56px;--c:#D8481F">
-                <div class="face f-top" style="background:linear-gradient(135deg,#F0602E,#D8481F)"></div>
+
+            <!-- base plate (escutcheon) -->
+            <div class="part" style="left:72px;top:36px">
+              <div class="box rd" style="--w:72px;--d:72px;--h:10px;--c:#9AA3AA">
+                <div class="face f-top" style="background:linear-gradient(135deg,#C6CDD3,#9AA3AA)"></div>
                 <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
               </div>
             </div>
-            <div class="part p-tray" style="left:28px;top:31px">
-              <div class="box rd" style="--w:164px;--d:78px;--h:16px;--c:#7C8790">
-                <div class="face f-top" style="background:linear-gradient(135deg,#98A3AC,#7C8790)"></div>
+            <!-- tap body -->
+            <div class="part" style="left:86px;top:50px">
+              <div class="lift" style="left:0;top:0;transform:translateZ(10px)">
+                <div class="box rd" style="--w:44px;--d:44px;--h:58px;--c:#8F98A0">
+                  <div class="face f-top" style="background:linear-gradient(135deg,#BFC7CD,#8F98A0)"></div>
+                  <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+                </div>
+              </div>
+            </div>
+            <!-- spout arm + tip + drip -->
+            <div class="part" style="left:124px;top:59px">
+              <div class="lift" style="left:0;top:0;transform:translateZ(52px)">
+                <div class="box rd" style="--w:78px;--d:26px;--h:16px;--c:#8F98A0">
+                  <div class="face f-top" style="background:linear-gradient(135deg,#BFC7CD,#8F98A0)"></div>
+                  <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+                </div>
+              </div>
+              <div class="lift" style="left:62px;top:1px;transform:translateZ(30px)">
+                <div class="box rd" style="--w:16px;--d:24px;--h:22px;--c:#7F8890">
+                  <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+                </div>
+              </div>
+              <div class="drip" style="left:66px;top:9px"></div>
+            </div>
+            <!-- WASHER — the $5 culprit -->
+            <div class="part p-washer" style="left:93px;top:57px">
+              <div class="box rd" style="--w:30px;--d:30px;--h:8px;--c:#8E3B34">
+                <div class="face f-top" style="background:linear-gradient(135deg,#A8483F,#8E3B34)"></div>
                 <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
               </div>
             </div>
-            <div class="part p-lid" style="left:10px;top:15px">
-              <div class="box rd" style="--w:200px;--d:110px;--h:18px;--c:#B93A16">
-                <div class="face f-top" style="background:linear-gradient(135deg,#E4551A,#B93A16)"></div>
+            <!-- cartridge — brass -->
+            <div class="part p-cart" style="left:96px;top:60px">
+              <div class="box rd" style="--w:24px;--d:24px;--h:32px;--c:#B08D2A">
+                <div class="face f-top" style="background:linear-gradient(135deg,#D9B23F,#B08D2A)"></div>
                 <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
               </div>
             </div>
-            <div class="part p-handle" style="left:76px;top:52px">
-              <div class="box rd" style="--w:68px;--d:16px;--h:14px;--c:#242019">
-                <div class="face f-top" style="background:#2F2A22"></div>
+            <!-- handle: disc + lever -->
+            <div class="part p-handle" style="left:91px;top:55px">
+              <div class="box rd" style="--w:34px;--d:34px;--h:10px;--c:#2A2620">
+                <div class="face f-top" style="background:#39332B"></div>
                 <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
               </div>
+              <div class="lift" style="left:-40px;top:8px;transform:translateZ(10px)">
+                <div class="box rd" style="--w:52px;--d:18px;--h:9px;--c:#2A2620">
+                  <div class="face f-top" style="background:#39332B"></div>
+                  <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+                </div>
+              </div>
             </div>
+
             <div class="scan"></div>
           </div>
         </div>
       </div>
       <svg class="stage-fallback" viewBox="0 0 220 260" aria-hidden="true">
         <g fill="none" stroke="#E7E2D6" stroke-width="2" opacity=".9" stroke-linejoin="round">
-          <rect x="72" y="18" width="76" height="18" rx="6"/><rect x="46" y="66" width="128" height="24" rx="6"/>
-          <rect x="58" y="122" width="104" height="18" rx="5"/><rect x="42" y="172" width="136" height="52" rx="8"/>
+          <rect x="76" y="10" width="68" height="16" rx="7"/>
+          <rect x="94" y="52" width="32" height="30" rx="5"/>
+          <ellipse cx="110" cy="112" rx="24" ry="9"/>
+          <path d="M88 150v60h44v-60"/><path d="M132 158h34v22h-12"/>
+          <rect x="66" y="210" width="88" height="14" rx="6"/>
         </g>
         <g stroke="#F5631E" stroke-width="2" stroke-dasharray="3 5" opacity=".8">
           <line x1="110" y1="36" x2="110" y2="66"/><line x1="110" y1="90" x2="110" y2="122"/><line x1="110" y1="140" x2="110" y2="172"/>
         </g>
       </svg>
       <div class="stage-readout mono"><span class="rd-dot"></span><span id="readoutText">analysing components…</span></div>
-      <div class="legend3d"><span><b>01</b> HANDLE</span><span><b>02</b> LID</span><span><b>03</b> TRAY</span><span><b>04</b> CHASSIS</span></div>
+      <div class="legend3d"><span><b>01</b> HANDLE</span><span><b>02</b> CARTRIDGE</span><span><b>03</b> WASHER</span><span><b>04</b> BODY</span></div>
     </div>
   </div>
 </section>
@@ -566,7 +609,7 @@ document.querySelectorAll(".rv").forEach(el => io.observe(el));
 /* hero readout ticker */
 (() => {
   const el = $("readoutText"); if(!el || reduced) return;
-  const lines = ["analysing components…","isolating fault: lid hinge — play detected","checking fastener torque ×4 … OK","verdict: EASY DIY · 3 steps · ~10 min","reassembling…"];
+  const lines = ["analysing components…","drip detected at spout — tracing…","isolating fault: worn washer, seat OK","verdict: EASY DIY · 5 steps · ~25 min","reseating cartridge…"];
   let i = 0; setInterval(() => { i = (i + 1) % lines.length; el.textContent = lines[i]; }, 2600);
 })();
 
