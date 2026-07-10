@@ -152,6 +152,9 @@ h1 .accent{color:var(--orange)}
 .console-sub{font-size:12px;color:var(--muted)}
 @media(max-width:560px){.console-sub{display:none}}
 .quota{margin-left:auto;font-size:10.5px;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:5px 11px;background:var(--bg);white-space:nowrap}
+.region-sel{font-size:10.5px;letter-spacing:.06em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:5px 9px;background:var(--bg);cursor:pointer;-webkit-appearance:none;appearance:none}
+.region-sel:hover,.region-sel:focus{border-color:var(--orange);color:var(--off);outline:none}
+@media(max-width:560px){.quota{margin-left:0}.region-sel{margin-left:auto}}
 /* chips: horizontal scroll on mobile, wrap on desktop */
 .chips{display:flex;gap:8px;padding:14px 16px 6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .chips::-webkit-scrollbar{display:none}
@@ -491,6 +494,13 @@ footer strong{color:var(--muted)}
       <b>Repair Assistant</b>
       <span class="console-sub">Describe it, photograph it, or both — follow-ups welcome.</span>
       <span class="quota mono" id="quota" aria-live="polite"></span>
+      <select class="region-sel mono" id="regionSel" aria-label="Your region — sets store and tradesperson links">
+        <option value="AU">🇦🇺 AU</option>
+        <option value="US">🇺🇸 US</option>
+        <option value="UK">🇬🇧 UK</option>
+        <option value="ID">🇮🇩 ID</option>
+        <option value="INTL">🌍 Other</option>
+      </select>
     </div>
 
     <div class="chips" id="chips" aria-label="Example problems">
@@ -601,32 +611,105 @@ const CONFIG = {
   FREE_CHECKS: 3,
   MAX_MB: 8,
   API_ENDPOINT: "/api/diagnose",
-  SHARE_ENDPOINT: "/api/share",     // needs a Redis/KV store on Vercel; falls back to long #d= links until then
-  AMAZON_TAG: "",                   // ← paste your Amazon AU Associates tag (e.g. "fixel-22") to earn on tool links
-  /* NOTE: keep these as PLAIN url strings — a previous copy/paste turned them
-     into markdown "[url](url)" which broke every button. */
-  PRO_LINKS: {
-    electrician: [
-      { label:"hipages",   sub:"AU · GET 3 QUOTES", url:"https://hipages.com.au/find/electricians" },
-      { label:"Airtasker", sub:"AU · POST THE JOB", url:"https://www.airtasker.com/au/services/electrician/" },
-      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"https://www.thumbtack.com/" },
+  SHARE_ENDPOINT: "/api/share",
+  // Amazon Associates tags are per-marketplace — fill in the ones you join
+  AMAZON_TAGS: { AU:"", US:"", UK:"" },
+};
+
+/* ═══════════ REGIONS — stores, pro platforms, tenancy hints per market ═══════════
+   NOTE: keep every url a PLAIN string — a previous copy/paste once turned them
+   into markdown "[url](url)" and broke every button.
+   {q} is replaced with the search term; {trade} with electrician/plumber/etc. */
+const MAPS = { label:"Google Maps", sub:"SEARCH NEAR ME", url:"https://www.google.com/maps/search/{trade}+near+me" };
+const REGIONS = {
+  AU: {
+    label:"Australia", locale:"en-AU",
+    stores:[
+      { name:"Bunnings", url:"https://www.bunnings.com.au/search/products?q={q}" },
+      { name:"Amazon",   url:"https://www.amazon.com.au/s?k={q}", tag:"AU" },
     ],
-    plumber: [
-      { label:"hipages",   sub:"AU · GET 3 QUOTES", url:"https://hipages.com.au/find/plumbers" },
-      { label:"Airtasker", sub:"AU · POST THE JOB", url:"https://www.airtasker.com/au/services/plumber/" },
-      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"https://www.thumbtack.com/" },
+    pros:{
+      electrician:[ {label:"hipages",sub:"GET 3 QUOTES",url:"https://hipages.com.au/find/electricians"}, {label:"Airtasker",sub:"POST THE JOB",url:"https://www.airtasker.com/au/services/electrician/"}, MAPS ],
+      plumber:[ {label:"hipages",sub:"GET 3 QUOTES",url:"https://hipages.com.au/find/plumbers"}, {label:"Airtasker",sub:"POST THE JOB",url:"https://www.airtasker.com/au/services/plumber/"}, MAPS ],
+      hvac:[ {label:"hipages",sub:"GET 3 QUOTES",url:"https://hipages.com.au/"}, MAPS ],
+      general:[ {label:"Airtasker",sub:"POST THE JOB",url:"https://www.airtasker.com/au/"}, {label:"hipages",sub:"GET 3 QUOTES",url:"https://hipages.com.au/"}, MAPS ],
+    },
+    tenancyHint:"In Australia, repair requests should be made in writing — keep a copy. Rules differ by state; your local tenants' union can confirm timeframes.",
+  },
+  US: {
+    label:"United States", locale:"en-US",
+    stores:[
+      { name:"Home Depot", url:"https://www.homedepot.com/s/{q}" },
+      { name:"Amazon",     url:"https://www.amazon.com/s?k={q}", tag:"US" },
     ],
-    hvac: [
-      { label:"hipages",   sub:"AU · GET 3 QUOTES", url:"https://hipages.com.au/" },
-      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"https://www.thumbtack.com/" },
+    pros:{
+      electrician:[ {label:"Thumbtack",sub:"GET QUOTES",url:"https://www.thumbtack.com/"}, {label:"Angi",sub:"VETTED PROS",url:"https://www.angi.com/"}, MAPS ],
+      plumber:[ {label:"Thumbtack",sub:"GET QUOTES",url:"https://www.thumbtack.com/"}, {label:"Angi",sub:"VETTED PROS",url:"https://www.angi.com/"}, MAPS ],
+      hvac:[ {label:"Angi",sub:"VETTED PROS",url:"https://www.angi.com/"}, {label:"Thumbtack",sub:"GET QUOTES",url:"https://www.thumbtack.com/"}, MAPS ],
+      general:[ {label:"TaskRabbit",sub:"POST THE JOB",url:"https://www.taskrabbit.com/"}, {label:"Thumbtack",sub:"GET QUOTES",url:"https://www.thumbtack.com/"}, MAPS ],
+    },
+    tenancyHint:"Put repair requests in writing and keep a copy — tenant repair rights vary by state; your local housing authority or tenants' union can confirm timeframes.",
+  },
+  UK: {
+    label:"United Kingdom", locale:"en-GB",
+    stores:[
+      { name:"Screwfix", url:"https://www.screwfix.com/search?search={q}" },
+      { name:"Amazon",   url:"https://www.amazon.co.uk/s?k={q}", tag:"UK" },
     ],
-    general: [
-      { label:"Airtasker", sub:"AU · POST THE JOB", url:"https://www.airtasker.com/au/" },
-      { label:"hipages",   sub:"AU · GET 3 QUOTES", url:"https://hipages.com.au/" },
+    pros:{
+      electrician:[ {label:"Checkatrade",sub:"VETTED TRADES",url:"https://www.checkatrade.com/"}, {label:"MyBuilder",sub:"GET QUOTES",url:"https://www.mybuilder.com/"}, MAPS ],
+      plumber:[ {label:"Checkatrade",sub:"VETTED TRADES",url:"https://www.checkatrade.com/"}, {label:"MyBuilder",sub:"GET QUOTES",url:"https://www.mybuilder.com/"}, MAPS ],
+      hvac:[ {label:"Checkatrade",sub:"VETTED TRADES",url:"https://www.checkatrade.com/"}, MAPS ],
+      general:[ {label:"Rated People",sub:"GET QUOTES",url:"https://www.ratedpeople.com/"}, {label:"Checkatrade",sub:"VETTED TRADES",url:"https://www.checkatrade.com/"}, MAPS ],
+    },
+    tenancyHint:"Keep repair requests in writing and keep a copy — Citizens Advice can confirm your landlord's repair obligations and reasonable timeframes.",
+  },
+  ID: {
+    label:"Indonesia", locale:"id-ID",
+    stores:[
+      { name:"Tokopedia", url:"https://www.tokopedia.com/search?q={q}" },
+      { name:"Shopee",    url:"https://shopee.co.id/search?keyword={q}" },
     ],
+    pros:{
+      electrician:[ {label:"Sejasa",sub:"HOME SERVICES",url:"https://www.sejasa.com/"}, {label:"Kanggo",sub:"PANGGIL TUKANG",url:"https://www.kanggo.id/"}, MAPS ],
+      plumber:[ {label:"Sejasa",sub:"HOME SERVICES",url:"https://www.sejasa.com/"}, {label:"Kanggo",sub:"PANGGIL TUKANG",url:"https://www.kanggo.id/"}, MAPS ],
+      hvac:[ {label:"Sejasa",sub:"HOME SERVICES",url:"https://www.sejasa.com/"}, MAPS ],
+      general:[ {label:"Kanggo",sub:"PANGGIL TUKANG",url:"https://www.kanggo.id/"}, {label:"Sejasa",sub:"HOME SERVICES",url:"https://www.sejasa.com/"}, MAPS ],
+    },
+    tenancyHint:"Keep repair requests in writing — WhatsApp or email to the owner works, so you have a record if it isn't fixed.",
+  },
+  INTL: {
+    label:"Other / International", locale:"en-GB",
+    stores:[
+      { name:"Amazon",          url:"https://www.amazon.com/s?k={q}", tag:"US" },
+      { name:"Google Shopping", url:"https://www.google.com/search?tbm=shop&q={q}" },
+    ],
+    pros:{
+      electrician:[ MAPS ], plumber:[ MAPS ], hvac:[ MAPS ], general:[ MAPS ],
+    },
+    tenancyHint:"Keep repair requests in writing and keep a copy — a local tenant-rights organisation can confirm your landlord's obligations.",
   },
 };
+const CATEGORIES = ["electrician","plumber","hvac","general"];
 const PRO_TITLE = { electrician:"electrician", plumber:"plumber", hvac:"HVAC technician", general:"tradesperson" };
+
+/* region detection: timezone first, language second, override via the selector */
+function detectRegion(){
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    if(tz.startsWith("Australia/")) return "AU";
+    if(["Asia/Jakarta","Asia/Makassar","Asia/Jayapura","Asia/Pontianak"].includes(tz)) return "ID";
+    if(tz === "Europe/London") return "UK";
+    if(tz.startsWith("America/")) return "US";
+  } catch {}
+  const lang = (navigator.language || "").toLowerCase();
+  if(lang.endsWith("-au")) return "AU";
+  if(lang === "id" || lang.endsWith("-id")) return "ID";
+  if(lang.endsWith("-gb")) return "UK";
+  if(lang.endsWith("-us")) return "US";
+  return "INTL";
+}
+let region = detectRegion();
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -677,7 +760,7 @@ async function shareCard(card, btn){
 
 /* ═══════════ landlord repair-request letter (template — no API cost) ═══════════ */
 function landlordLetter(c){
-  const today = new Date().toLocaleDateString("en-AU", { day:"numeric", month:"long", year:"numeric" });
+  const today = new Date().toLocaleDateString(REGIONS[region].locale, { day:"numeric", month:"long", year:"numeric" });
   const urgent = c.verdict === "call_pro";
   const lines = [
     `${today}`,
@@ -743,6 +826,15 @@ let quota = CONFIG.FREE_CHECKS, busy = false, attached = null, history = [];
 const thread = $("thread"), input = $("input"), sendBtn = $("sendBtn");
 const setQuota = () => { $("quota").textContent = quota > 0 ? `${quota} free check${quota===1?"":"s"} left` : "limit reached"; };
 setQuota();
+
+/* region selector */
+const regionSel = $("regionSel");
+regionSel.value = region;
+regionSel.addEventListener("change", () => {
+  region = regionSel.value;
+  renderExample();          // refresh the example card links for the new region
+  flash(`Region set to ${REGIONS[region].label} — store & pro links now match.`);
+});
 
 /* ═══════════ attach + drag-drop (depth-counter pattern — do not "simplify") ═══════════ */
 const consoleEl = $("console"), preview = $("attachPreview");
@@ -828,7 +920,7 @@ async function callDiagnose(){
   try {
     const r = await fetch(CONFIG.API_ENDPOINT, {
       method:"POST", headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({ history })
+      body: JSON.stringify({ history, region })
     });
     if(r.ok){ const d = await r.json(); return normalize(d.card ?? d); }
     if(r.status === 429) throw Object.assign(new Error("rate"), { friendly:"You're going a bit fast — the demo is rate-limited. Try again in a minute." });
@@ -845,7 +937,7 @@ async function callDiagnose(){
   });
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method:"POST", headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:1100, system: SYSTEM_PROMPT, messages })
+    body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:1100, system: SYSTEM_PROMPT + `\nUSER REGION: ${REGIONS[region].label}. Use the currency of this region for all cost estimates, its typical local service call-out prices, and product/part names as sold there.`, messages })
   });
   const data = await r.json();
   if(data.error) throw new Error(data.error.message || "API error");
@@ -863,7 +955,7 @@ function normalize(raw){
   c.tools = Array.isArray(c.tools) ? c.tools.filter(t => t && t.name) : [];
   c.steps = Array.isArray(c.steps) ? c.steps.filter(s => s && s.instruction) : [];
   if(c.verdict === "call_pro" || c.verdict === "unclear") c.steps = [];
-  c.category = CONFIG.PRO_LINKS[c.category] ? c.category : "general";
+  c.category = CATEGORIES.includes(c.category) ? c.category : "general";
   return c;
 }
 
@@ -909,10 +1001,14 @@ function renderCard(c, opts = {}){
       html += `<div class="dx-sec"><h4>Tools &amp; parts — tap to find in store</h4><div class="tool-list">` +
         c.tools.map(t => {
           const q = encodeURIComponent(String(t.name).replace(/\(.*?\)/g, "").trim());
-          const bun = `https://www.bunnings.com.au/search/products?q=${q}`;
-          const amz = `https://www.amazon.com.au/s?k=${q}${CONFIG.AMAZON_TAG ? `&tag=${encodeURIComponent(CONFIG.AMAZON_TAG)}` : ""}`;
+          const links = REGIONS[region].stores.map(s => {
+            let url = s.url.replace("{q}", q);
+            const tag = s.tag && CONFIG.AMAZON_TAGS[s.tag];
+            if(tag) url += `&tag=${encodeURIComponent(tag)}`;
+            return `<a href="${url}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`;
+          }).join("");
           return `<div class="tool-row ${t.optional ? "opt" : ""}"><span class="bx"></span><span class="tool-name">${esc(t.name)}${t.optional ? " (opt.)" : ""}</span>
-            <span class="shop-links"><a href="${bun}" target="_blank" rel="noopener">Bunnings ↗</a><a href="${amz}" target="_blank" rel="noopener">Amazon ↗</a></span></div>`;
+            <span class="shop-links">${links}</span></div>`;
         }).join("") + `</div><p class="shop-note">Store links open a product search — a few may earn a small commission, at no extra cost to you. That never affects the verdict.</p></div>`;
     }
     if(c.landlord_note) html += `<div class="landlord"><span>🏠</span><span>${esc(c.landlord_note)}</span></div>`;
@@ -930,9 +1026,9 @@ function renderCard(c, opts = {}){
         <button class="copy-btn" data-copy="${esc(c.pro_brief)}">COPY</button></div>`;
     }
     if(c.landlord_note) html += `<div class="landlord"><span>🏠</span><span>${esc(c.landlord_note)}</span></div>`;
-    const links = CONFIG.PRO_LINKS[c.category];
+    const links = REGIONS[region].pros[c.category] || REGIONS[region].pros.general;
     html += `<div class="pro-links"><h4>Find a local ${esc(PRO_TITLE[c.category])}</h4><div class="pro-links-row">` +
-      links.map(l => `<a class="pro-link" href="${l.url}" target="_blank" rel="noopener">${esc(l.label)}<small>${esc(l.sub)}</small></a>`).join("") + `</div></div>`;
+      links.map(l => `<a class="pro-link" href="${l.url.replace("{trade}", encodeURIComponent(PRO_TITLE[c.category]))}" target="_blank" rel="noopener">${esc(l.label)}<small>${esc(l.sub)}</small></a>`).join("") + `</div></div>`;
     html += `<div class="dx-actions">
       <button class="btn" data-act="share">Share result</button>
       <button class="btn" data-act="llr">📄 Landlord report</button>
@@ -972,7 +1068,7 @@ function toggleLandlordPanel(cardEl, card){
       <a class="btn" data-act="llr-mail" href="#">Open in email</a>
       <button class="btn" data-act="llr-close">Close</button>
     </div>
-    <p class="llr-hint">In Australia, repair requests should be made in writing — keep a copy. Rules differ by state; your local tenants' union can confirm timeframes.</p>`;
+    <p class="llr-hint">${esc(REGIONS[region].tenancyHint)}</p>`;
   const textEl = panel.querySelector(".llr-text");
   textEl.textContent = letter;
   panel.querySelector('[data-act="llr-copy"]').addEventListener("click", e => {
@@ -1052,7 +1148,7 @@ function launchFixMode(cardEl, card){
 }
 
 /* ═══════════ seeded showcase example (no API call, doesn't use a check) ═══════════ */
-renderCard({
+const EXAMPLE_CARD = {
   verdict: "easy_diy",
   category: "plumber",
   title: "Dripping tap — worn washer",
@@ -1074,7 +1170,13 @@ renderCard({
   ],
   landlord_note: "Renting? A persistent drip is usually the landlord's responsibility — report it in writing and keep a copy.",
   reply: "",
-}, { ribbon:"EXAMPLE", target: document.getElementById("exampleDock") });
+};
+function renderExample(){
+  const dock = document.getElementById("exampleDock");
+  dock.innerHTML = "";
+  renderCard(EXAMPLE_CARD, { ribbon:"EXAMPLE", target: dock });
+}
+renderExample();
 
 /* ═══════════ hydrate a shared diagnosis from ?s= (KV) or #d= (encoded) ═══════════ */
 (async function hydrateShared(){

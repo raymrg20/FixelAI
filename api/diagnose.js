@@ -53,14 +53,16 @@ export default async function handler(req, res) {
   const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "unknown";
   if (rateLimited(ip)) { res.status(429).json({ error: "rate limited" }); return; }
 
-  const { history } = req.body || {};
+  const { history, region } = req.body || {};
+  const REGION_LABELS = { AU: "Australia", US: "United States", UK: "United Kingdom", ID: "Indonesia", INTL: "Other / International" };
+  const regionLabel = REGION_LABELS[region] || "Other / International";
   if (!Array.isArray(history) || history.length === 0 || history.length > 20) {
     res.status(400).json({ error: "invalid history" }); return;
   }
   if (JSON.stringify(history).length > 12_000_000) { res.status(413).json({ error: "payload too large" }); return; }
 
   // history items: { role:"user"|"assistant", text, image?:{media,b64} }
-  const messages = [{ role: "system", content: SYSTEM_PROMPT }];
+  const messages = [{ role: "system", content: SYSTEM_PROMPT + `\nUSER REGION: ${regionLabel}. Use the currency of this region for all cost estimates, its typical local service call-out prices, and product/part names as sold there. If the user writes in another language, reply in that language.` }];
   for (const m of history) {
     if (m.role === "assistant") { messages.push({ role: "assistant", content: String(m.text || "") }); continue; }
     const parts = [];
