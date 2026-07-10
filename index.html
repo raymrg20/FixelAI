@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#121110">
 <title>Fixel — Snap it. Fix it. Skip the 40-minute tutorial.</title>
-<meta name="description" content="Fixel diagnoses everyday household repairs from a photo or a description, then walks you through the fix one step at a time — or hands you the exact words to tell a pro. No download, no signup.">
+<meta name="description" content="Fixel diagnoses everyday household repairs from a photo or a description, then walks you through the fix one step at a time. No download, no signup.">
 <meta property="og:title" content="Fixel — Snap it. Fix it.">
 <meta property="og:description" content="AI household-repair diagnosis and a guided, one-step-at-a-time fix. Free, in your browser.">
 <meta property="og:type" content="website">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+<link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+<link href="[https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap](https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap)" rel="stylesheet">
 <style>
-/* ═════════ FIXEL DESIGN SYSTEM — modern workshop, self-contained ═════════ */
+/* ═════════ FIXEL DESIGN SYSTEM ═════════ */
 :root{
   --bg:#121110; --bg2:#171512; --panel:#1C1A16; --panel2:#232019;
   --line:#2E2A23; --line-soft:#262219;
@@ -35,13 +35,14 @@ img{max-width:100%}
 ::selection{background:var(--orange);color:#1A0D04}
 .mono{font-family:var(--font-mono)}
 main{position:relative;z-index:1}
-section{padding:clamp(60px,8vw,104px) clamp(18px,5vw,48px);max-width:1220px;margin:0 auto;position:relative}
+section{padding:clamp(60px,8vw,104px) clamp(16px,5vw,48px);max-width:1220px;margin:0 auto;position:relative}
 
 .blueprint{position:absolute;inset:0;pointer-events:none;z-index:0;
   background:
     linear-gradient(var(--bp) 1px, transparent 1px) 0 0/54px 54px,
     linear-gradient(90deg, var(--bp) 1px, transparent 1px) 0 0/54px 54px;
   mask:radial-gradient(90% 90% at 50% 30%, #000 30%, transparent 100%);
+  -webkit-mask:radial-gradient(90% 90% at 50% 30%, #000 30%, transparent 100%);
 }
 .blueprint.faint{opacity:.5}
 
@@ -57,34 +58,45 @@ h2{font-family:var(--font-head);font-weight:700;font-size:clamp(26px,3.6vw,40px)
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-weight:600;font-size:14px;
   border-radius:12px;padding:12px 20px;border:1px solid var(--line);background:var(--panel);color:var(--off);
   text-decoration:none;transition:transform .18s ease, background .2s, border-color .2s}
-.btn:hover{transform:translateY(-1px);border-color:#443E33}
 .btn-primary{background:var(--orange);border-color:var(--orange);color:#1A0D04;
   box-shadow:0 12px 30px -12px var(--orange-glow), inset 0 1px 0 rgba(255,255,255,.25)}
-.btn-primary:hover{background:var(--orange-deep);border-color:var(--orange-deep)}
 .btn-outline{background:transparent}
 .btn-ghost{background:transparent;border-color:transparent;color:var(--muted)}
-.btn-ghost:hover{color:var(--off);border-color:var(--line)}
 .btn-lg{padding:15px 24px;font-size:15px;border-radius:14px}
 .btn-block{width:100%}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
 
+/* hover rules isolated to mouse devices to prevent sticky hover on touch */
+@media (hover: hover) {
+  .btn:hover{transform:translateY(-1px);border-color:#443E33}
+  .btn-primary:hover{background:var(--orange-deep);border-color:var(--orange-deep)}
+  .btn-ghost:hover{color:var(--off);border-color:var(--line)}
+  .nav-links a:hover{color:var(--off)}
+  .chip:hover{border-color:var(--orange);color:var(--orange)}
+  .attach-remove:hover{color:var(--off)}
+  .icon-btn:hover{border-color:var(--orange);color:var(--orange)}
+  .copy-btn:hover{border-color:var(--orange);color:var(--orange)}
+  .pro-link:hover{border-color:var(--red);transform:translateY(-2px)}
+  .gfx-exit:hover{color:var(--off)}
+  .footer-cols a:hover{color:var(--off)}
+}
+
 /* ── nav ── */
 .nav{position:sticky;top:0;z-index:80;border-bottom:1px solid var(--line-soft);
-  background:rgba(18,17,16,.82);backdrop-filter:blur(14px)}
-.nav-inner{max-width:1220px;margin:0 auto;display:flex;align-items:center;gap:24px;height:66px;padding:0 clamp(18px,5vw,48px)}
+  background:rgba(18,17,16,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.nav-inner{max-width:1220px;margin:0 auto;display:flex;align-items:center;gap:24px;height:66px;padding:0 clamp(16px,5vw,48px)}
 .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-head);font-weight:800;font-size:20px;letter-spacing:-.01em;text-decoration:none}
 .brand-mark{width:32px;height:32px;border-radius:9px;background:var(--orange);color:#1A0D04;display:flex;align-items:center;justify-content:center;transform:rotate(-4deg);box-shadow:0 0 22px var(--orange-glow)}
 .brand-mark.small{width:26px;height:26px;box-shadow:none}
 .nav-links{display:none;gap:26px;margin-left:6px}
 .nav-links a{text-decoration:none;font-size:13.5px;color:var(--muted);transition:color .2s}
-.nav-links a:hover{color:var(--off)}
 .nav-cta{margin-left:auto;display:flex;gap:10px;align-items:center}
 .nav-toggle{display:flex;flex-direction:column;gap:5px;background:none;border:none;padding:8px;margin-left:auto}
 .nav-toggle i{width:22px;height:2px;background:var(--off);border-radius:2px;transition:transform .25s, opacity .2s}
 .nav.open .nav-toggle i:nth-child(1){transform:translateY(7px) rotate(45deg)}
 .nav.open .nav-toggle i:nth-child(2){opacity:0}
 .nav.open .nav-toggle i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-.nav-mobile{display:none;flex-direction:column;padding:8px clamp(18px,5vw,48px) 18px;gap:4px;border-top:1px solid var(--line-soft)}
+.nav-mobile{display:none;flex-direction:column;padding:8px clamp(16px,5vw,48px) 18px;gap:4px;border-top:1px solid var(--line-soft)}
 .nav.open .nav-mobile{display:flex}
 .nav-mobile a{text-decoration:none;padding:11px 4px;color:var(--muted);font-size:15px;border-bottom:1px solid var(--line-soft)}
 @media(min-width:900px){
@@ -97,7 +109,7 @@ h2{font-family:var(--font-head);font-weight:700;font-size:clamp(26px,3.6vw,40px)
 .hero{padding-top:clamp(48px,6vw,84px);display:grid;grid-template-columns:1fr;gap:44px;align-items:center}
 @media(min-width:980px){.hero{grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr)}}
 .hero-copy{position:relative;z-index:1}
-h1{font-family:var(--font-head);font-weight:800;letter-spacing:-.03em;font-size:clamp(34px,5.4vw,60px);line-height:1.02;margin:18px 0 16px}
+h1{font-family:var(--font-head);font-weight:800;letter-spacing:-.03em;font-size:clamp(34px,9vw,60px);line-height:1.02;margin:18px 0 16px}
 h1 .accent{color:var(--orange)}
 .lede{color:var(--muted);font-size:16px;line-height:1.7;max-width:52ch}
 .lede strong{color:var(--off)}
@@ -107,10 +119,10 @@ h1 .accent{color:var(--orange)}
 .trust-strip svg{width:14px;height:14px;stroke:var(--ok);stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
 /* ── 3D hero stage ── */
-.hero-stage{position:relative;z-index:1}
+.hero-stage{position:relative;z-index:1;overflow:hidden}
 .stage-frame{position:relative;border:1px dashed var(--line);border-radius:20px;
   background:radial-gradient(560px 360px at 50% 30%, rgba(245,99,30,.06), transparent 65%), var(--bg2);
-  min-height:clamp(360px,42vw,480px);display:flex;align-items:center;justify-content:center;overflow:hidden}
+  min-height:clamp(320px,42vw,480px);display:flex;align-items:center;justify-content:center;overflow:hidden}
 .stage-label{position:absolute;top:14px;left:16px;font-size:10px;letter-spacing:.2em;color:var(--faint);z-index:5}
 .stage-ticks .tick{position:absolute;width:14px;height:14px;border-color:var(--faint);border-style:solid;opacity:.7;z-index:5}
 .tick.tl{top:8px;left:8px;border-width:1.5px 0 0 1.5px}
@@ -124,25 +136,21 @@ h1 .accent{color:var(--orange)}
 @media(min-width:640px){.legend3d{display:flex}}
 .legend3d b{color:var(--orange);font-weight:700}
 
-/* the 3D scene — RULE: transform-only animations inside; opacity/filter
-   animations on any ancestor of 3D children force flattening. Leaves only. */
+/* 3D Scene */
 .scene3d{perspective:1500px;perspective-origin:50% 30%}
 .iso{transform-style:preserve-3d;transform:rotateX(60deg) scale(var(--z3,1))}
 @media(max-width:640px){.iso{--z3:.62}}
-@media(min-width:641px) and (max-width:1100px){.iso{--z3:.8}}
+@media(max-width:400px){.iso{--z3:.52}}
 .spin360{position:relative;width:220px;height:140px;transform-style:preserve-3d;animation:spin360 34s linear infinite}
 @keyframes spin360{from{transform:rotateZ(0)}to{transform:rotateZ(360deg)}}
 .bplate{position:absolute;left:-62px;top:-84px;width:344px;height:308px;border:1.5px dashed rgba(126,162,192,.32);border-radius:22px;transform:translateZ(-40px);
   background:linear-gradient(rgba(126,162,192,.09) 1px, transparent 1px) 0 0/28px 28px,
              linear-gradient(90deg, rgba(126,162,192,.09) 1px, transparent 1px) 0 0/28px 28px}
-.bplate::before{content:"+";position:absolute;left:10px;top:4px;color:rgba(126,162,192,.6);font-family:var(--font-mono)}
-.bplate::after{content:"+";position:absolute;right:10px;bottom:4px;color:rgba(126,162,192,.6);font-family:var(--font-mono)}
 .bring{position:absolute;left:14px;top:-22px;width:192px;height:184px;border:1px dashed rgba(245,99,30,.4);border-radius:50%;transform:translateZ(-38px)}
 .box{position:absolute;transform-style:preserve-3d}
 .part{position:absolute;transform-style:preserve-3d}
 .face{position:absolute}
 .f-top{left:0;top:0;width:var(--w);height:var(--d);transform:translateZ(var(--h));background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
-.f-top::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(0,0,0,.12));border-radius:inherit}
 .f-s{left:0;top:var(--d);width:var(--w);height:var(--h);transform-origin:top;transform:rotateX(90deg);background:var(--c)}
 .f-n{left:0;top:0;width:var(--w);height:var(--h);transform-origin:top;transform:rotateX(90deg);background:var(--c)}
 .f-e{left:var(--w);top:0;width:var(--h);height:var(--d);transform-origin:left;transform:rotateY(-90deg);background:var(--c)}
@@ -150,7 +158,6 @@ h1 .accent{color:var(--orange)}
 .f-s::after,.f-n::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.16),rgba(0,0,0,.32));border-radius:inherit}
 .f-e::after,.f-w::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.32),rgba(0,0,0,.46));border-radius:inherit}
 .rd .face{border-radius:7px}
-/* breathing explode/assemble loop — each part rides its own Z keyframes */
 @keyframes riseTray{0%,14%{transform:translateZ(26px)}42%,66%{transform:translateZ(122px)}94%,100%{transform:translateZ(26px)}}
 @keyframes riseLid{0%,14%{transform:translateZ(56px)}42%,66%{transform:translateZ(198px)}94%,100%{transform:translateZ(56px)}}
 @keyframes riseHandle{0%,14%{transform:translateZ(74px)}42%,66%{transform:translateZ(262px)}94%,100%{transform:translateZ(74px)}}
@@ -159,24 +166,13 @@ h1 .accent{color:var(--orange)}
 .p-lid{animation:riseLid 9s cubic-bezier(.45,0,.2,1) infinite}
 .p-handle{animation:riseHandle 9s cubic-bezier(.45,0,.2,1) infinite}
 .p-screw{animation:dropScrews 9s cubic-bezier(.45,0,.2,1) infinite}
-/* scan plane — a LEAF, so its opacity animation cannot flatten any 3D children */
 .scan{position:absolute;left:-26px;top:-42px;width:272px;height:224px;border-radius:16px;pointer-events:none;
   background:linear-gradient(180deg,rgba(245,99,30,.16),rgba(245,99,30,.05));
   border:1px solid rgba(245,99,30,.55);box-shadow:0 0 26px rgba(245,99,30,.25);
   animation:scanZ 4.6s cubic-bezier(.4,0,.5,1) infinite}
-@keyframes scanZ{
-  0%{transform:translateZ(-30px);opacity:0}
-  8%{opacity:.9}
-  46%{transform:translateZ(288px);opacity:.9}
-  54%{opacity:0}
-  100%{transform:translateZ(-30px);opacity:0}
-}
+@keyframes scanZ{0%{transform:translateZ(-30px);opacity:0}8%{opacity:.9}46%{transform:translateZ(288px);opacity:.9}54%{opacity:0}100%{transform:translateZ(-30px);opacity:0}}
 .stage-fallback{display:none;width:min(64%,240px)}
-/* graceful degrade: static schematic instead of 3D */
-@media(prefers-reduced-motion:reduce){
-  .scene3d{display:none}
-  .stage-fallback{display:block}
-}
+@media(prefers-reduced-motion:reduce){.scene3d{display:none} .stage-fallback{display:block}}
 
 /* ── assistant console ── */
 .assistant .section-head{margin-bottom:26px}
@@ -191,7 +187,6 @@ h1 .accent{color:var(--orange)}
 .chips{display:flex;gap:8px;flex-wrap:wrap;padding:16px 20px 6px}
 .chip{border:1px solid var(--line);background:var(--bg);border-radius:99px;font-size:12.5px;font-weight:500;
   color:var(--off);padding:8px 14px;transition:all .18s}
-.chip:hover{border-color:var(--orange);color:var(--orange)}
 .thread{display:flex;flex-direction:column;gap:16px;padding:10px 20px;max-height:560px;overflow-y:auto;scroll-behavior:smooth}
 .thread:empty{padding:0}
 .umsg{align-self:flex-end;max-width:84%;display:flex;flex-direction:column;align-items:flex-end;gap:7px;animation:msgin .3s ease}
@@ -203,7 +198,7 @@ h1 .accent{color:var(--orange)}
 .typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
 @keyframes blink{0%,70%,100%{opacity:.25}35%{opacity:1}}
 
-/* diagnosis card (in-thread) */
+/* diagnosis card */
 .dx{background:var(--bg);border:1px solid var(--line);border-radius:18px;overflow:hidden;animation:msgin .35s ease}
 .dx-tape{height:7px}
 .dx-tape.easy_diy{background:repeating-linear-gradient(45deg,#3F7048 0 13px,#325A3A 13px 26px)}
@@ -240,12 +235,10 @@ h1 .accent{color:var(--orange)}
 .pro-copy h4{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--orange);margin-bottom:8px;text-transform:uppercase}
 .pro-copy p{font-size:13.5px;line-height:1.65;font-style:italic;padding-right:64px}
 .copy-btn{position:absolute;top:12px;right:12px;font-family:var(--font-mono);font-size:10.5px;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 10px}
-.copy-btn:hover{border-color:var(--orange);color:var(--orange)}
 .pro-links{margin:16px 20px 0}
 .pro-links h4{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--faint);margin-bottom:10px;text-transform:uppercase}
 .pro-links-row{display:flex;gap:9px;flex-wrap:wrap}
 .pro-link{text-decoration:none;border:1px solid var(--line);border-radius:11px;padding:10px 14px;font-size:13px;font-weight:600;background:var(--panel);display:flex;flex-direction:column;gap:2px;transition:all .18s;min-width:126px}
-.pro-link:hover{border-color:var(--red);transform:translateY(-2px)}
 .pro-link small{font-family:var(--font-mono);font-size:9px;color:var(--faint);font-weight:400;letter-spacing:.08em}
 .landlord{margin:12px 20px 0;font-size:12.5px;color:var(--muted);display:flex;gap:8px;line-height:1.55}
 .dx-foot{padding:14px 20px 16px;font-size:10.5px;color:var(--faint);font-style:italic}
@@ -255,7 +248,6 @@ h1 .accent{color:var(--orange)}
 .gfx-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .gfx-head .tagline3{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--orange);text-transform:uppercase}
 .gfx-exit{margin-left:auto;background:none;border:none;color:var(--muted);font-family:var(--font-mono);font-size:11px}
-.gfx-exit:hover{color:var(--off)}
 .progress{height:8px;border-radius:99px;background:var(--panel);border:1px solid var(--line);overflow:hidden;margin-bottom:7px}
 .progress i{display:block;height:100%;background:linear-gradient(90deg,var(--orange-deep),var(--orange));border-radius:99px;transition:width .4s cubic-bezier(.3,.8,.3,1);box-shadow:0 0 12px var(--orange-glow)}
 .gfx-count{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--faint);margin-bottom:16px}
@@ -273,8 +265,8 @@ h1 .accent{color:var(--orange)}
 .gfx-done h3{font-family:var(--font-head);font-size:21px;margin-bottom:8px}
 .gfx-done p{color:var(--muted);font-size:13.5px;line-height:1.6;max-width:42ch;margin:0 auto 18px}
 
-/* ── composer (fixed) ── */
-.composer{position:relative;border-top:1px solid var(--line-soft);background:rgba(255,255,255,.015);padding:14px 20px 12px}
+/* ── composer ── */
+.composer{position:relative;display:flex;flex-direction:column;border-top:1px solid var(--line-soft);background:rgba(255,255,255,.015);padding:14px 20px 12px}
 .drop-hint{position:absolute;inset:6px;z-index:5;display:flex;align-items:center;justify-content:center;
   border:2px dashed var(--orange);border-radius:16px;background:rgba(18,17,16,.88);
   color:var(--orange);font-family:var(--font-head);font-weight:700;font-size:16px;pointer-events:none;
@@ -285,10 +277,8 @@ h1 .accent{color:var(--orange)}
 .attach-preview img{width:44px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--line);flex:none;display:block}
 .attach-name{font-size:11.5px;color:var(--muted);letter-spacing:.04em;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .attach-remove{border:none;background:transparent;color:var(--muted);font-size:17px;line-height:1;padding:2px 5px}
-.attach-remove:hover{color:var(--off)}
 .composer-row{display:flex;gap:10px;align-items:flex-end}
 .icon-btn{width:46px;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--bg);display:flex;align-items:center;justify-content:center;transition:border-color .2s;flex:none;color:var(--muted)}
-.icon-btn:hover{border-color:var(--orange);color:var(--orange)}
 .composer textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:13px;padding:12px 15px;
   font-family:inherit;font-size:16px;line-height:1.5;max-height:130px;background:var(--bg);color:var(--off)}
 .composer textarea::placeholder{color:var(--faint)}
@@ -302,7 +292,37 @@ h1 .accent{color:var(--orange)}
 .legend-card .verdict{display:inline-block;margin-bottom:10px;font-size:9.5px}
 .legend-card p{font-size:12.5px;color:var(--muted);line-height:1.6}
 
-/* ── features ── */
+/* ── MOBILE OVERRIDES ── */
+@media (max-width: 560px) {
+  /* Shrink composer UI elements to maximize the typing area */
+  .hide-mob { display: none; }
+  .send-btn { padding: 0 14px; width: 44px; height: 44px; }
+  .icon-btn { width: 44px; height: 44px; }
+  .composer textarea { padding: 10px 14px; font-size: 16px; /* 16px strictly stops iOS zoom */ }
+  .composer, .thread, .chips { padding-left: 14px; padding-right: 14px; }
+  .console-head { padding: 12px 14px; }
+
+  /* Reflow the diagnosis card data block from row to a 2x2 grid */
+  .dx-specs { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    border-top: none; 
+    border-bottom: none; 
+  }
+  .spec { 
+    border: 1px solid var(--line); 
+    margin-top: -1px; /* Collapses double borders seamlessly */
+    margin-left: -1px;
+  }
+  .spec:last-child {
+    grid-column: span 2; /* If 3 items, make the last one span full width */
+  }
+
+  /* Chat bubble images */
+  .umsg img { max-width: 100%; }
+}
+
+/* ── features & other sections ── */
 .feature-grid{display:grid;grid-template-columns:1fr;gap:18px;perspective:1200px}
 @media(min-width:840px){.feature-grid{grid-template-columns:repeat(3,1fr)}}
 .tilt{transform-style:preserve-3d;transition:transform .18s ease;will-change:transform}
@@ -316,7 +336,6 @@ h1 .accent{color:var(--orange)}
 .feature-card h3{font-family:var(--font-head);font-size:18px;letter-spacing:-.01em;margin-bottom:9px;transform:translateZ(20px)}
 .feature-card p{font-size:13.5px;color:var(--muted);line-height:1.66;transform:translateZ(12px)}
 
-/* ── how (timeline) ── */
 .timeline{list-style:none;display:grid;grid-template-columns:1fr;gap:22px;position:relative;z-index:1}
 @media(min-width:840px){.timeline{grid-template-columns:repeat(3,1fr)}}
 .tstep{display:flex;flex-direction:column;gap:12px}
@@ -330,7 +349,6 @@ h1 .accent{color:var(--orange)}
 .tstep-card h3{font-family:var(--font-head);font-size:17px;margin-bottom:7px}
 .tstep-card p{font-size:13.5px;color:var(--muted);line-height:1.62}
 
-/* ── proof ── */
 .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
 .metric{border:1px solid var(--line);border-radius:16px;padding:22px;background:var(--panel);text-align:center}
 .metric-num{display:block;font-weight:700;font-size:clamp(26px,3vw,36px);color:var(--orange);letter-spacing:-.02em}
@@ -346,7 +364,6 @@ h1 .accent{color:var(--orange)}
 .quote-card small{font-size:11px;color:var(--faint);font-family:var(--font-mono);letter-spacing:.06em}
 .proof-note{margin-top:18px;text-align:center;font-size:10px;color:var(--faint);letter-spacing:.08em}
 
-/* ── pricing ── */
 .bill-toggle{display:flex;justify-content:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:5px;width:fit-content;margin:0 auto 30px}
 .bill-opt{border:none;background:transparent;color:var(--muted);font-weight:600;font-size:13px;padding:9px 18px;border-radius:99px;display:flex;align-items:center;gap:8px;transition:all .2s}
 .bill-opt.is-active{background:var(--orange);color:#1A0D04}
@@ -369,13 +386,12 @@ h1 .accent{color:var(--orange)}
 .tier-feats li::before{content:"—";color:var(--orange);font-weight:700}
 .pricing-note{margin-top:20px;text-align:center;font-size:10px;color:var(--faint);letter-spacing:.08em}
 
-/* ── final CTA & footer ── */
 .cta-final{text-align:center}
 .cta-inner{position:relative;z-index:1}
 .cta-final h2{font-size:clamp(26px,4vw,42px)}
 .cta-final p{color:var(--muted);margin-bottom:26px}
 .cta-trust{margin-top:16px;font-size:10.5px;letter-spacing:.14em;color:var(--faint)}
-.footer{border-top:1px solid var(--line-soft);padding:44px clamp(18px,5vw,48px) 30px;max-width:1220px;margin:0 auto}
+.footer{border-top:1px solid var(--line-soft);padding:44px clamp(16px,5vw,48px) 30px;max-width:1220px;margin:0 auto}
 .footer-top{display:flex;flex-wrap:wrap;gap:36px;justify-content:space-between}
 .footer-brand{max-width:300px}
 .brand-name{font-family:var(--font-head);font-weight:800;font-size:19px;margin-left:8px}
@@ -383,7 +399,6 @@ h1 .accent{color:var(--orange)}
 .footer-cols{display:flex;gap:48px;flex-wrap:wrap}
 .footer-cols h4{font-size:10.5px;letter-spacing:.18em;color:var(--faint);text-transform:uppercase;margin-bottom:12px}
 .footer-cols a{display:block;text-decoration:none;color:var(--muted);font-size:13px;padding:4px 0}
-.footer-cols a:hover{color:var(--off)}
 .footer-bar{border-top:1px solid var(--line-soft);margin-top:32px;padding-top:18px;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-size:11.5px;color:var(--faint)}
 .footer-bar strong{color:var(--muted)}
 
@@ -454,55 +469,46 @@ h1 .accent{color:var(--orange)}
       </div>
       <div class="stage-label mono">FIG.01 — TOOLBOX ASSY · LIVE TEARDOWN</div>
 
-      <!-- animated CSS-3D exploded view: disassembles, gets "scanned", reassembles -->
       <div class="scene3d" aria-hidden="true">
         <div class="iso">
           <div class="spin360">
             <div class="bplate"></div>
             <div class="bring"></div>
 
-            <!-- fasteners ×4 -->
             <div class="part p-screw" style="left:34px;top:18px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
             <div class="part p-screw" style="left:174px;top:18px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
             <div class="part p-screw" style="left:34px;top:110px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
             <div class="part p-screw" style="left:174px;top:110px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
 
-            <!-- chassis (static base) -->
             <div class="part" style="left:10px;top:15px">
               <div class="box rd" style="--w:200px;--d:110px;--h:56px;--c:#D8481F">
                 <div class="face f-top" style="background:linear-gradient(135deg,#F0602E,#D8481F)"></div>
                 <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
               </div>
             </div>
-            <!-- tray -->
             <div class="part p-tray" style="left:28px;top:31px">
               <div class="box rd" style="--w:164px;--d:78px;--h:16px;--c:#7C8790">
                 <div class="face f-top" style="background:linear-gradient(135deg,#98A3AC,#7C8790)"></div>
                 <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
               </div>
             </div>
-            <!-- lid -->
             <div class="part p-lid" style="left:10px;top:15px">
               <div class="box rd" style="--w:200px;--d:110px;--h:18px;--c:#B93A16">
                 <div class="face f-top" style="background:linear-gradient(135deg,#E4551A,#B93A16)"></div>
                 <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
               </div>
             </div>
-            <!-- handle -->
             <div class="part p-handle" style="left:76px;top:52px">
               <div class="box rd" style="--w:68px;--d:16px;--h:14px;--c:#242019">
                 <div class="face f-top" style="background:#2F2A22"></div>
                 <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
               </div>
             </div>
-
-            <!-- AI scan plane (leaf node — opacity animation is safe here) -->
             <div class="scan"></div>
           </div>
         </div>
       </div>
 
-      <!-- static fallback for reduced-motion / low-power -->
       <svg class="stage-fallback" viewBox="0 0 220 260" aria-hidden="true">
         <g fill="none" stroke="#E7E2D6" stroke-width="2" opacity=".9" stroke-linejoin="round">
           <rect x="72" y="18" width="76" height="18" rx="6"/>
@@ -550,6 +556,7 @@ h1 .accent{color:var(--orange)}
       <button class="chip" data-q="There's a crack in my wall near the ceiling that seems to be getting longer.">🧱 Growing wall crack</button>
     </div>
 
+    <!-- The Thread is placed ABOVE the composer, so chat flows naturally -->
     <div class="thread" id="thread" aria-live="polite"></div>
 
     <div class="composer">
@@ -563,8 +570,9 @@ h1 .accent{color:var(--orange)}
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 16l4.6-5.2a2 2 0 0 1 3 0L16 16m-2-2 1.6-1.8a2 2 0 0 1 3 0L20 13.6M4 20h16a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="8.5" r="1.5" fill="#F5631E"/></svg>
         </button>
         <textarea id="input" rows="1" placeholder="e.g. “my washing machine shakes violently on spin” — or add a photo"></textarea>
+        
         <button class="btn btn-primary send-btn" id="sendBtn">
-          Diagnose
+          <span class="hide-mob">Diagnose</span>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
@@ -763,31 +771,30 @@ h1 .accent{color:var(--orange)}
 <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" capture="environment" hidden>
 <script>
 "use strict";
-/* ═══════════ CONFIG (was js/config.js) — edit here only ═══════════ */
 const CONFIG = {
-  BRAND: "Fixel",                       // ← swap the product name in ONE place
+  BRAND: "Fixel",
   TAGLINE: "Snap it. Fix it. Skip the 40-minute tutorial.",
-  FREE_CHECKS: 3,                       // demo session cap (client-side; server also rate-limits)
+  FREE_CHECKS: 3,
   MAX_MB: 8,
   API_ENDPOINT: "/api/diagnose",
-  PRO_LINKS: {                          // configurable referral list — swap for partner URLs later
+  PRO_LINKS: {
     electrician: [
-      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"https://www.thumbtack.com/" },
-      { label:"Angi",      sub:"US · VETTED PROS",  url:"https://www.angi.com/" },
-      { label:"hipages",   sub:"AU · 3 QUOTES",     url:"https://hipages.com.au/find/electricians" },
+      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"[https://www.thumbtack.com/](https://www.thumbtack.com/)" },
+      { label:"Angi",      sub:"US · VETTED PROS",  url:"[https://www.angi.com/](https://www.angi.com/)" },
+      { label:"hipages",   sub:"AU · 3 QUOTES",     url:"[https://hipages.com.au/find/electricians](https://hipages.com.au/find/electricians)" },
     ],
     plumber: [
-      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"https://www.thumbtack.com/" },
-      { label:"Angi",      sub:"US · VETTED PROS",  url:"https://www.angi.com/" },
-      { label:"hipages",   sub:"AU · 3 QUOTES",     url:"https://hipages.com.au/find/plumbers" },
+      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"[https://www.thumbtack.com/](https://www.thumbtack.com/)" },
+      { label:"Angi",      sub:"US · VETTED PROS",  url:"[https://www.angi.com/](https://www.angi.com/)" },
+      { label:"hipages",   sub:"AU · 3 QUOTES",     url:"[https://hipages.com.au/find/plumbers](https://hipages.com.au/find/plumbers)" },
     ],
     hvac: [
-      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"https://www.thumbtack.com/" },
-      { label:"Angi",      sub:"US · VETTED PROS",  url:"https://www.angi.com/" },
+      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"[https://www.thumbtack.com/](https://www.thumbtack.com/)" },
+      { label:"Angi",      sub:"US · VETTED PROS",  url:"[https://www.angi.com/](https://www.angi.com/)" },
     ],
     general: [
-      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"https://www.thumbtack.com/" },
-      { label:"Airtasker", sub:"AU · POST THE JOB", url:"https://www.airtasker.com/au/" },
+      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"[https://www.thumbtack.com/](https://www.thumbtack.com/)" },
+      { label:"Airtasker", sub:"AU · POST THE JOB", url:"[https://www.airtasker.com/au/](https://www.airtasker.com/au/)" },
     ],
   },
 };
@@ -796,12 +803,10 @@ const PRO_TITLE = { electrician:"electrician", plumber:"plumber", hvac:"HVAC tec
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
-/* brand + year */
 document.querySelectorAll("[data-brand]").forEach(el => el.textContent = CONFIG.BRAND);
 document.querySelectorAll("[data-tagline]").forEach(el => el.textContent = CONFIG.TAGLINE);
 $("year").textContent = new Date().getFullYear();
 
-/* ═══════════ nav ═══════════ */
 const nav = $("nav");
 $("navToggle").addEventListener("click", () => {
   const open = nav.classList.toggle("open");
@@ -809,7 +814,6 @@ $("navToggle").addEventListener("click", () => {
 });
 document.querySelectorAll("[data-scroll]").forEach(a => a.addEventListener("click", () => nav.classList.remove("open")));
 
-/* ═══════════ reveal + metric count-up ═══════════ */
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const io = new IntersectionObserver(es => es.forEach(e => {
   if(!e.isIntersecting) return;
@@ -831,7 +835,6 @@ function countUp(el){
   })(t0);
 }
 
-/* ═══════════ tilt cards ═══════════ */
 document.querySelectorAll(".tilt").forEach(card => {
   card.addEventListener("pointermove", e => {
     if(e.pointerType === "touch" || reduced) return;
@@ -842,7 +845,6 @@ document.querySelectorAll(".tilt").forEach(card => {
   card.addEventListener("pointerleave", () => card.style.transform = "");
 });
 
-/* ═══════════ pricing toggle ═══════════ */
 document.querySelectorAll(".bill-opt").forEach(btn => btn.addEventListener("click", () => {
   const yearly = btn.dataset.bill === "yearly";
   document.querySelectorAll(".bill-opt").forEach(b => {
@@ -857,7 +859,6 @@ document.querySelectorAll(".bill-opt").forEach(btn => btn.addEventListener("clic
   });
 }));
 
-/* ═══════════ hero readout ticker (was js/hero-3d.js) ═══════════ */
 (() => {
   const lines = [
     "analysing components…",
@@ -872,7 +873,6 @@ document.querySelectorAll(".bill-opt").forEach(btn => btn.addEventListener("clic
   setInterval(() => { i = (i + 1) % lines.length; el.textContent = lines[i]; }, 2600);
 })();
 
-/* ═══════════ shared diagnosis contract (server enforces the same rules) ═══════════ */
 const SYSTEM_PROMPT = `You are ${CONFIG.BRAND}, an AI that diagnoses everyday household repair problems from a photo and/or a text description, for renters and first-time homeowners. Users may ask follow-up questions in the same conversation.
 
 HARD SAFETY RULES — non-negotiable, regardless of how the user phrases the request, claims of experience, or insistence that it is simple:
@@ -897,13 +897,11 @@ Respond with ONLY a JSON object (no markdown fences, no commentary):
 }
 For easy_diy/diy_caution: 3-8 steps, each one single action; for diy_caution include explicit safety notes and a clear stop-and-call condition. Concise, jargon-free. Do not add your own disclaimer — the interface appends one.`;
 
-/* ═══════════ assistant state ═══════════ */
 let quota = CONFIG.FREE_CHECKS, busy = false, attached = null, history = [];
 const thread = $("thread"), input = $("input"), sendBtn = $("sendBtn");
 const setQuota = () => { $("quota").textContent = quota > 0 ? `${quota} free check${quota===1?"":"s"} left` : "limit reached"; };
 setQuota();
 
-/* ═══════════ attach + drag-drop (FIXED — was the broken part) ═══════════ */
 const consoleEl = $("console"), preview = $("attachPreview");
 
 $("attachBtn").addEventListener("click", () => $("photoInput").click());
@@ -914,9 +912,9 @@ function loadPhoto(file){
   if(!/^image\/(jpeg|png|webp)$/.test(file.type)){ flash("JPG, PNG or WebP only."); return; }
   if(file.size > CONFIG.MAX_MB * 1024 * 1024){ flash(`That photo is over ${CONFIG.MAX_MB} MB — share a smaller size.`); return; }
   const reader = new FileReader();
-  reader.onload = () => {                     // preview only AFTER the file is fully read
+  reader.onload = () => {
     attached = { dataUrl: String(reader.result), media: file.type, b64: String(reader.result).split(",")[1] };
-    $("attachThumb").src = attached.dataUrl;  // real data URL — no broken image
+    $("attachThumb").src = attached.dataUrl;
     $("attachName").textContent = file.name.length > 24 ? file.name.slice(0,22) + "…" : file.name;
     preview.classList.add("show");
   };
@@ -931,9 +929,6 @@ function flash(msg){
   clearTimeout(foot._t); foot._t = setTimeout(() => foot.textContent = orig, 3600);
 }
 
-/* drag counter pattern — dragenter/dragleave fire on every child, so a plain
-   add/remove flickers and can stick "on" (the bug in the screenshot). We count
-   enters/leaves and only clear at zero; drop and window-leave hard-reset. */
 let dragDepth = 0;
 const setDrag = on => consoleEl.classList.toggle("dragging", on);
 ["dragenter","dragover"].forEach(ev => consoleEl.addEventListener(ev, e => {
@@ -947,11 +942,9 @@ consoleEl.addEventListener("drop", e => {
   const f = e.dataTransfer.files && e.dataTransfer.files[0];
   if(f) loadPhoto(f);
 });
-/* stop the browser navigating away when a file is dropped outside the console */
 ["dragover","drop"].forEach(ev => window.addEventListener(ev, e => { e.preventDefault(); if(ev==="drop"){ dragDepth = 0; setDrag(false); } }));
 window.addEventListener("dragend", () => { dragDepth = 0; setDrag(false); });
 
-/* ═══════════ composer ═══════════ */
 input.addEventListener("input", () => { input.style.height = "auto"; input.style.height = Math.min(130, input.scrollHeight) + "px"; });
 input.addEventListener("keydown", e => { if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); send(); } });
 sendBtn.addEventListener("click", send);
@@ -960,7 +953,6 @@ document.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () =
   send();
 }));
 
-/* ═══════════ diagnose flow (was js/app.js) ═══════════ */
 async function send(){
   const text = input.value.trim();
   if(busy || (!text && !attached)) return;
@@ -988,7 +980,6 @@ async function send(){
 }
 
 async function callDiagnose(){
-  /* 1) production path — Vercel function; the OpenAI key lives ONLY server-side */
   try {
     const r = await fetch(CONFIG.API_ENDPOINT, {
       method:"POST", headers:{ "Content-Type":"application/json" },
@@ -997,9 +988,8 @@ async function callDiagnose(){
     if(r.ok){ const d = await r.json(); return normalize(d.card ?? d); }
     if(r.status === 429) throw Object.assign(new Error("rate"), { friendly:"You're going a bit fast — the demo is rate-limited. Try again in a minute." });
     if(r.status !== 404 && r.status !== 405) throw new Error("api " + r.status);
-  } catch(e){ if(e.friendly) throw e; /* else fall through to preview mode */ }
+  } catch(e){ if(e.friendly) throw e; }
 
-  /* 2) preview fallback — only works inside the claude.ai artifact viewer */
   const messages = history.map(m => {
     if(m.role === "assistant") return { role:"assistant", content: m.text };
     const blocks = [];
@@ -1007,7 +997,7 @@ async function callDiagnose(){
     blocks.push({ type:"text", text:m.text });
     return { role:"user", content: blocks };
   });
-  const r = await fetch("https://api.anthropic.com/v1/messages", {
+  const r = await fetch("[https://api.anthropic.com/v1/messages](https://api.anthropic.com/v1/messages)", {
     method:"POST", headers:{ "Content-Type":"application/json" },
     body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:1100, system: SYSTEM_PROMPT, messages })
   });
@@ -1020,18 +1010,19 @@ async function callDiagnose(){
 function normalize(raw){
   let c = raw;
   if(typeof raw === "string"){
-    const clean = raw.trim().replace(/^```(?:json)?\s*/i,"").replace(/```\s*$/,"");
+    // Replaced the literal backticks with unicode \x60 to prevent the markdown 
+    // parser from chopping the file off prematurely!
+    const clean = raw.trim().replace(/^\x60\x60\x60(?:json)?\s*/i,"").replace(/\x60\x60\x60\s*$/,"");
     try { c = JSON.parse(clean); } catch { c = { verdict:"unclear", reply: raw.slice(0, 500) }; }
   }
   if(!["easy_diy","diy_caution","call_pro","unclear"].includes(c.verdict)) c.verdict = "unclear";
   c.tools = Array.isArray(c.tools) ? c.tools.filter(t => t && t.name) : [];
   c.steps = Array.isArray(c.steps) ? c.steps.filter(s => s && s.instruction) : [];
-  if(c.verdict === "call_pro" || c.verdict === "unclear") c.steps = [];   // client backstop for the hard rule
+  if(c.verdict === "call_pro" || c.verdict === "unclear") c.steps = [];
   c.category = CONFIG.PRO_LINKS[c.category] ? c.category : "general";
   return c;
 }
 
-/* ═══════════ renderers ═══════════ */
 const VLABEL = { easy_diy:"EASY DIY", diy_caution:"DIY WITH CAUTION", call_pro:"CALL A PRO", unclear:"NEED MORE INFO" };
 
 function scrollThread(el){ el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block:"nearest" }); }
@@ -1108,7 +1099,6 @@ function renderCard(c){
   scrollThread(el);
 }
 
-/* ═══════════ Guided Fix Mode (was js/fix-mode.js) ═══════════ */
 function launchFixMode(cardEl, card){
   const gfx = cardEl.querySelector("[data-gfx]");
   const bodyBits = cardEl.querySelectorAll(".dx-head,.dx-diag,.dx-reply,.dx-specs,.dx-sec,.dx-actions,.landlord");
