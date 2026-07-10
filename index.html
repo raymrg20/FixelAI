@@ -2,18 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#121110">
-<title>Fixel — Snap it. Fix it. Skip the 40-minute tutorial.</title>
-<meta name="description" content="Fixel diagnoses everyday household repairs from a photo or a description, then walks you through the fix one step at a time. No download, no signup.">
-<meta property="og:title" content="Fixel — Snap it. Fix it.">
-<meta property="og:description" content="AI household-repair diagnosis and a guided, one-step-at-a-time fix. Free, in your browser.">
+<title>Fixel — free AI repair help for first-home buyers & renters</title>
+<meta name="description" content="Photograph or describe a household problem. Fixel gives an honest verdict — safe to DIY, DIY with caution, or call a pro — plus a guided step-by-step fix. Free, in your browser, no signup.">
+<!-- LinkedIn / social share preview -->
+<meta property="og:title" content="Fixel — Snap it. Fix it. Skip the 40-minute tutorial.">
+<meta property="og:description" content="A free AI tool I built for first-home buyers & renters: photo in → honest repair verdict + guided fix out. Try it and tell me what to improve.">
 <meta property="og:type" content="website">
-<link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
-<link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
-<link href="[https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap](https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap)" rel="stylesheet">
+<meta property="og:url" content="https://fixel-ai.vercel.app">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-/* ═════════ FIXEL DESIGN SYSTEM ═════════ */
+/* ═════════ FIXEL — personal showcase build · mobile-first ═════════ */
 :root{
   --bg:#121110; --bg2:#171512; --panel:#1C1A16; --panel2:#232019;
   --line:#2E2A23; --line-soft:#262219;
@@ -25,122 +28,79 @@
   --font-body:"Inter",system-ui,sans-serif;
   --font-mono:"JetBrains Mono",ui-monospace,monospace;
 }
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;min-width:0}
 html{scroll-behavior:smooth}
 body{font-family:var(--font-body);background:var(--bg);color:var(--off);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 button{font-family:inherit;cursor:pointer;color:inherit}
 a{color:inherit}
-img{max-width:100%}
+img,svg{max-width:100%}
 :focus-visible{outline:3px solid var(--orange);outline-offset:2px;border-radius:6px}
 ::selection{background:var(--orange);color:#1A0D04}
 .mono{font-family:var(--font-mono)}
 main{position:relative;z-index:1}
-section{padding:clamp(60px,8vw,104px) clamp(16px,5vw,48px);max-width:1220px;margin:0 auto;position:relative}
-
+section{padding:clamp(44px,7vw,84px) clamp(14px,4.5vw,44px);max-width:1160px;margin:0 auto;position:relative}
 .blueprint{position:absolute;inset:0;pointer-events:none;z-index:0;
-  background:
-    linear-gradient(var(--bp) 1px, transparent 1px) 0 0/54px 54px,
-    linear-gradient(90deg, var(--bp) 1px, transparent 1px) 0 0/54px 54px;
-  mask:radial-gradient(90% 90% at 50% 30%, #000 30%, transparent 100%);
-  -webkit-mask:radial-gradient(90% 90% at 50% 30%, #000 30%, transparent 100%);
-}
-.blueprint.faint{opacity:.5}
+  background:linear-gradient(var(--bp) 1px, transparent 1px) 0 0/54px 54px,
+             linear-gradient(90deg, var(--bp) 1px, transparent 1px) 0 0/54px 54px;
+  mask:radial-gradient(92% 92% at 50% 26%, #000 30%, transparent 100%)}
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);display:inline-flex;align-items:center;gap:9px}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--orange);box-shadow:0 0 10px var(--orange-glow);flex:none}
+.eyebrow.center{justify-content:center;width:100%;text-align:center}
+.section-head{text-align:center;max-width:620px;margin:0 auto clamp(24px,4vw,42px);position:relative;z-index:1}
+h2{font-family:var(--font-head);font-weight:700;font-size:clamp(24px,3.6vw,38px);letter-spacing:-.02em;line-height:1.1;margin:12px 0 10px}
+.section-sub{color:var(--muted);font-size:14.5px;line-height:1.65}
 
-.eyebrow{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);display:inline-flex;align-items:center;gap:9px}
-.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--orange);box-shadow:0 0 10px var(--orange-glow)}
-.eyebrow.center{justify-content:center;width:100%}
-.section-head{text-align:center;max-width:640px;margin:0 auto clamp(30px,4vw,48px);position:relative;z-index:1}
-.section-head.tight{margin-top:clamp(40px,6vw,64px)}
-h2{font-family:var(--font-head);font-weight:700;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.02em;line-height:1.08;margin:14px 0 12px}
-.section-sub{color:var(--muted);font-size:15px;line-height:1.65}
-
-/* ── buttons ── */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-weight:600;font-size:14px;
   border-radius:12px;padding:12px 20px;border:1px solid var(--line);background:var(--panel);color:var(--off);
-  text-decoration:none;transition:transform .18s ease, background .2s, border-color .2s}
+  text-decoration:none;transition:transform .18s ease, background .2s, border-color .2s;min-height:44px}
+.btn:hover{transform:translateY(-1px);border-color:#443E33}
 .btn-primary{background:var(--orange);border-color:var(--orange);color:#1A0D04;
   box-shadow:0 12px 30px -12px var(--orange-glow), inset 0 1px 0 rgba(255,255,255,.25)}
-.btn-outline{background:transparent}
-.btn-ghost{background:transparent;border-color:transparent;color:var(--muted)}
-.btn-lg{padding:15px 24px;font-size:15px;border-radius:14px}
-.btn-block{width:100%}
+.btn-primary:hover{background:var(--orange-deep);border-color:var(--orange-deep)}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--muted)}
+.btn-ghost:hover{color:var(--off)}
+.btn-lg{padding:14px 22px;font-size:15px;border-radius:14px}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
 
-/* hover rules isolated to mouse devices to prevent sticky hover on touch */
-@media (hover: hover) {
-  .btn:hover{transform:translateY(-1px);border-color:#443E33}
-  .btn-primary:hover{background:var(--orange-deep);border-color:var(--orange-deep)}
-  .btn-ghost:hover{color:var(--off);border-color:var(--line)}
-  .nav-links a:hover{color:var(--off)}
-  .chip:hover{border-color:var(--orange);color:var(--orange)}
-  .attach-remove:hover{color:var(--off)}
-  .icon-btn:hover{border-color:var(--orange);color:var(--orange)}
-  .copy-btn:hover{border-color:var(--orange);color:var(--orange)}
-  .pro-link:hover{border-color:var(--red);transform:translateY(-2px)}
-  .gfx-exit:hover{color:var(--off)}
-  .footer-cols a:hover{color:var(--off)}
-}
-
-/* ── nav ── */
+/* ── topbar ── */
 .nav{position:sticky;top:0;z-index:80;border-bottom:1px solid var(--line-soft);
-  background:rgba(18,17,16,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.nav-inner{max-width:1220px;margin:0 auto;display:flex;align-items:center;gap:24px;height:66px;padding:0 clamp(16px,5vw,48px)}
-.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-head);font-weight:800;font-size:20px;letter-spacing:-.01em;text-decoration:none}
-.brand-mark{width:32px;height:32px;border-radius:9px;background:var(--orange);color:#1A0D04;display:flex;align-items:center;justify-content:center;transform:rotate(-4deg);box-shadow:0 0 22px var(--orange-glow)}
-.brand-mark.small{width:26px;height:26px;box-shadow:none}
-.nav-links{display:none;gap:26px;margin-left:6px}
-.nav-links a{text-decoration:none;font-size:13.5px;color:var(--muted);transition:color .2s}
-.nav-cta{margin-left:auto;display:flex;gap:10px;align-items:center}
-.nav-toggle{display:flex;flex-direction:column;gap:5px;background:none;border:none;padding:8px;margin-left:auto}
-.nav-toggle i{width:22px;height:2px;background:var(--off);border-radius:2px;transition:transform .25s, opacity .2s}
-.nav.open .nav-toggle i:nth-child(1){transform:translateY(7px) rotate(45deg)}
-.nav.open .nav-toggle i:nth-child(2){opacity:0}
-.nav.open .nav-toggle i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-.nav-mobile{display:none;flex-direction:column;padding:8px clamp(16px,5vw,48px) 18px;gap:4px;border-top:1px solid var(--line-soft)}
-.nav.open .nav-mobile{display:flex}
-.nav-mobile a{text-decoration:none;padding:11px 4px;color:var(--muted);font-size:15px;border-bottom:1px solid var(--line-soft)}
-@media(min-width:900px){
-  .nav-links{display:flex}
-  .nav-toggle{display:none}
-  .nav.open .nav-mobile{display:none}
-}
+  background:rgba(18,17,16,.85);backdrop-filter:blur(14px)}
+.nav-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;gap:12px;height:60px;padding:0 clamp(14px,4.5vw,44px)}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--font-head);font-weight:800;font-size:19px;text-decoration:none}
+.brand-mark{width:30px;height:30px;border-radius:9px;background:var(--orange);color:#1A0D04;display:flex;align-items:center;justify-content:center;transform:rotate(-4deg);box-shadow:0 0 20px var(--orange-glow);flex:none}
+.nav-tag{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;color:var(--faint);border:1px solid var(--line);border-radius:99px;padding:4px 9px;white-space:nowrap}
+.nav-cta{margin-left:auto;display:flex;gap:8px;align-items:center}
+.nav-cta .btn{padding:9px 14px;font-size:12.5px;min-height:38px}
+@media(max-width:560px){.nav-tag{display:none}.nav-cta .feedback-link{display:none}}
 
-/* ── hero ── */
-.hero{padding-top:clamp(48px,6vw,84px);display:grid;grid-template-columns:1fr;gap:44px;align-items:center}
-@media(min-width:980px){.hero{grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr)}}
-.hero-copy{position:relative;z-index:1}
-h1{font-family:var(--font-head);font-weight:800;letter-spacing:-.03em;font-size:clamp(34px,9vw,60px);line-height:1.02;margin:18px 0 16px}
+/* ── hero (compact) ── */
+.hero{padding-top:clamp(36px,5vw,64px);padding-bottom:clamp(24px,4vw,44px);
+  display:grid;grid-template-columns:1fr;gap:30px;align-items:center}
+@media(min-width:900px){.hero{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}}
+h1{font-family:var(--font-head);font-weight:800;letter-spacing:-.03em;font-size:clamp(30px,6.4vw,54px);line-height:1.04;margin:16px 0 14px}
 h1 .accent{color:var(--orange)}
-.lede{color:var(--muted);font-size:16px;line-height:1.7;max-width:52ch}
+.lede{color:var(--muted);font-size:15.5px;line-height:1.7;max-width:52ch}
 .lede strong{color:var(--off)}
-.hero-cta{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap}
-.trust-strip{list-style:none;display:flex;gap:20px;flex-wrap:wrap;margin-top:22px}
-.trust-strip li{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.08em;color:var(--muted)}
-.trust-strip svg{width:14px;height:14px;stroke:var(--ok);stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.hero-cta{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
+.trust-strip{list-style:none;display:flex;gap:14px 18px;flex-wrap:wrap;margin-top:18px}
+.trust-strip li{display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.07em;color:var(--muted)}
+.trust-strip svg{width:13px;height:13px;stroke:var(--ok);stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
-/* ── 3D hero stage ── */
-.hero-stage{position:relative;z-index:1;overflow:hidden}
+/* ── 3D hero stage (desktop only — mobile gets the schematic) ── */
+.hero-stage{position:relative;z-index:1;display:none}
+@media(min-width:760px){.hero-stage{display:block}}
 .stage-frame{position:relative;border:1px dashed var(--line);border-radius:20px;
-  background:radial-gradient(560px 360px at 50% 30%, rgba(245,99,30,.06), transparent 65%), var(--bg2);
-  min-height:clamp(320px,42vw,480px);display:flex;align-items:center;justify-content:center;overflow:hidden}
-.stage-label{position:absolute;top:14px;left:16px;font-size:10px;letter-spacing:.2em;color:var(--faint);z-index:5}
-.stage-ticks .tick{position:absolute;width:14px;height:14px;border-color:var(--faint);border-style:solid;opacity:.7;z-index:5}
-.tick.tl{top:8px;left:8px;border-width:1.5px 0 0 1.5px}
-.tick.tr{top:8px;right:8px;border-width:1.5px 1.5px 0 0}
-.tick.bl{bottom:8px;left:8px;border-width:0 0 1.5px 1.5px}
-.tick.br{bottom:8px;right:8px;border-width:0 1.5px 1.5px 0}
-.stage-readout{position:absolute;left:16px;bottom:14px;z-index:5;font-size:10.5px;letter-spacing:.12em;color:var(--muted);display:flex;align-items:center;gap:8px}
-.rd-dot{width:7px;height:7px;border-radius:50%;background:var(--orange);display:inline-block;animation:pulse 1.6s ease infinite}
+  background:radial-gradient(520px 340px at 50% 30%, rgba(245,99,30,.06), transparent 65%), var(--bg2);
+  min-height:clamp(320px,36vw,430px);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.stage-label{position:absolute;top:13px;left:15px;font-size:9.5px;letter-spacing:.18em;color:var(--faint);z-index:5}
+.stage-readout{position:absolute;left:15px;bottom:13px;z-index:5;font-size:10px;letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;gap:8px}
+.rd-dot{width:7px;height:7px;border-radius:50%;background:var(--orange);display:inline-block;animation:pulse 1.6s ease infinite;flex:none}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-.legend3d{position:absolute;right:16px;bottom:14px;z-index:5;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;color:var(--faint);display:none;gap:12px}
-@media(min-width:640px){.legend3d{display:flex}}
-.legend3d b{color:var(--orange);font-weight:700}
-
-/* 3D Scene */
+.legend3d{position:absolute;right:15px;bottom:13px;z-index:5;font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--faint);display:flex;gap:10px}
+.legend3d b{color:var(--orange)}
 .scene3d{perspective:1500px;perspective-origin:50% 30%}
 .iso{transform-style:preserve-3d;transform:rotateX(60deg) scale(var(--z3,1))}
-@media(max-width:640px){.iso{--z3:.62}}
-@media(max-width:400px){.iso{--z3:.52}}
+@media(max-width:1100px){.iso{--z3:.78}}
 .spin360{position:relative;width:220px;height:140px;transform-style:preserve-3d;animation:spin360 34s linear infinite}
 @keyframes spin360{from{transform:rotateZ(0)}to{transform:rotateZ(360deg)}}
 .bplate{position:absolute;left:-62px;top:-84px;width:344px;height:308px;border:1.5px dashed rgba(126,162,192,.32);border-radius:22px;transform:translateZ(-40px);
@@ -151,6 +111,7 @@ h1 .accent{color:var(--orange)}
 .part{position:absolute;transform-style:preserve-3d}
 .face{position:absolute}
 .f-top{left:0;top:0;width:var(--w);height:var(--d);transform:translateZ(var(--h));background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
+.f-top::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(0,0,0,.12));border-radius:inherit}
 .f-s{left:0;top:var(--d);width:var(--w);height:var(--h);transform-origin:top;transform:rotateX(90deg);background:var(--c)}
 .f-n{left:0;top:0;width:var(--w);height:var(--h);transform-origin:top;transform:rotateX(90deg);background:var(--c)}
 .f-e{left:var(--w);top:0;width:var(--h);height:var(--d);transform-origin:left;transform:rotateY(-90deg);background:var(--c)}
@@ -171,27 +132,31 @@ h1 .accent{color:var(--orange)}
   border:1px solid rgba(245,99,30,.55);box-shadow:0 0 26px rgba(245,99,30,.25);
   animation:scanZ 4.6s cubic-bezier(.4,0,.5,1) infinite}
 @keyframes scanZ{0%{transform:translateZ(-30px);opacity:0}8%{opacity:.9}46%{transform:translateZ(288px);opacity:.9}54%{opacity:0}100%{transform:translateZ(-30px);opacity:0}}
-.stage-fallback{display:none;width:min(64%,240px)}
-@media(prefers-reduced-motion:reduce){.scene3d{display:none} .stage-fallback{display:block}}
+.stage-fallback{display:none;width:min(60%,220px)}
+@media(prefers-reduced-motion:reduce){.scene3d{display:none}.stage-fallback{display:block}}
 
-/* ── assistant console ── */
-.assistant .section-head{margin-bottom:26px}
-.console{position:relative;border:1px solid var(--line);border-radius:22px;overflow:hidden;
-  background:linear-gradient(180deg,var(--panel),var(--bg2));box-shadow:0 34px 90px -34px rgba(0,0,0,.8)}
-.console.dragging{border-color:var(--orange);box-shadow:0 0 0 3px rgba(245,99,30,.25), 0 34px 90px -34px rgba(0,0,0,.8)}
-.console-head{display:flex;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid var(--line-soft);flex-wrap:wrap;background:rgba(255,255,255,.015)}
-.lamp{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px rgba(87,184,121,.14),0 0 10px rgba(87,184,121,.7)}
-.console-head b{font-family:var(--font-head);font-size:16px}
-.console-sub{font-size:12.5px;color:var(--muted)}
-.quota{margin-left:auto;font-size:11px;letter-spacing:.1em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:6px 12px;background:var(--bg)}
-.chips{display:flex;gap:8px;flex-wrap:wrap;padding:16px 20px 6px}
+/* ── the tool (showcase) ── */
+.tool-section{padding-top:clamp(20px,3vw,36px)}
+.console{position:relative;border:1px solid var(--line);border-radius:20px;overflow:hidden;
+  background:linear-gradient(180deg,var(--panel),var(--bg2));box-shadow:0 30px 80px -32px rgba(0,0,0,.8)}
+.console.dragging{border-color:var(--orange);box-shadow:0 0 0 3px rgba(245,99,30,.25), 0 30px 80px -32px rgba(0,0,0,.8)}
+.console-head{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--line-soft);flex-wrap:wrap;background:rgba(255,255,255,.015)}
+.lamp{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px rgba(87,184,121,.14),0 0 10px rgba(87,184,121,.7);flex:none}
+.console-head b{font-family:var(--font-head);font-size:15px}
+.console-sub{font-size:12px;color:var(--muted)}
+@media(max-width:560px){.console-sub{display:none}}
+.quota{margin-left:auto;font-size:10.5px;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:5px 11px;background:var(--bg);white-space:nowrap}
+/* chips: horizontal scroll on mobile, wrap on desktop */
+.chips{display:flex;gap:8px;padding:14px 16px 6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+@media(min-width:720px){.chips{flex-wrap:wrap;overflow:visible}}
 .chip{border:1px solid var(--line);background:var(--bg);border-radius:99px;font-size:12.5px;font-weight:500;
-  color:var(--off);padding:8px 14px;transition:all .18s}
-.thread{display:flex;flex-direction:column;gap:16px;padding:10px 20px;max-height:560px;overflow-y:auto;scroll-behavior:smooth}
-.thread:empty{padding:0}
-.umsg{align-self:flex-end;max-width:84%;display:flex;flex-direction:column;align-items:flex-end;gap:7px;animation:msgin .3s ease}
-.umsg .bubble{background:var(--panel2);border:1px solid var(--line);color:var(--off);padding:11px 15px;border-radius:15px 15px 5px 15px;font-size:14px;line-height:1.55}
-.umsg img{max-width:200px;border-radius:12px;border:1px solid var(--line)}
+  color:var(--off);padding:9px 14px;transition:border-color .18s, color .18s;white-space:nowrap;flex:none;min-height:38px}
+.chip:hover{border-color:var(--orange);color:var(--orange)}
+.thread{display:flex;flex-direction:column;gap:14px;padding:12px 16px;max-height:min(64vh,620px);overflow-y:auto;scroll-behavior:smooth}
+.umsg{align-self:flex-end;max-width:88%;display:flex;flex-direction:column;align-items:flex-end;gap:7px;animation:msgin .3s ease}
+.umsg .bubble{background:var(--panel2);border:1px solid var(--line);padding:11px 15px;border-radius:15px 15px 5px 15px;font-size:14px;line-height:1.55;overflow-wrap:anywhere}
+.umsg img{max-width:min(200px,60vw);border-radius:12px;border:1px solid var(--line)}
 @keyframes msgin{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
 .typing{display:flex;gap:5px;padding:14px 17px;background:var(--panel2);border:1px solid var(--line);border-radius:15px;width:fit-content;animation:msgin .3s ease}
 .typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
@@ -199,287 +164,191 @@ h1 .accent{color:var(--orange)}
 @keyframes blink{0%,70%,100%{opacity:.25}35%{opacity:1}}
 
 /* diagnosis card */
-.dx{background:var(--bg);border:1px solid var(--line);border-radius:18px;overflow:hidden;animation:msgin .35s ease}
+.dx{background:var(--bg);border:1px solid var(--line);border-radius:16px;overflow:hidden;animation:msgin .35s ease;position:relative}
+.dx.example{border-color:#3A352C}
+.example-ribbon{position:absolute;top:10px;right:-32px;transform:rotate(38deg);background:var(--panel2);border:1px solid var(--line);
+  color:var(--muted);font-family:var(--font-mono);font-size:8.5px;letter-spacing:.16em;padding:4px 36px;z-index:2}
 .dx-tape{height:7px}
 .dx-tape.easy_diy{background:repeating-linear-gradient(45deg,#3F7048 0 13px,#325A3A 13px 26px)}
 .dx-tape.diy_caution{background:repeating-linear-gradient(45deg,var(--amber) 0 13px,#C1912B 13px 26px)}
 .dx-tape.call_pro{background:repeating-linear-gradient(45deg,var(--red) 0 13px,#1A1815 13px 26px)}
 .dx-tape.unclear{background:repeating-linear-gradient(45deg,#5C564C 0 13px,#4A453D 13px 26px)}
-.dx-head{display:flex;align-items:flex-start;gap:14px;padding:18px 20px 4px;flex-wrap:wrap}
-.dx-title{font-family:var(--font-head);font-weight:700;font-size:19px;letter-spacing:-.02em;flex:1;min-width:170px}
-.verdict{font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.13em;white-space:nowrap;
-  padding:7px 12px;border:2px solid currentColor;border-radius:8px;transform:rotate(1.8deg)}
+.dx-head{display:flex;align-items:flex-start;gap:12px;padding:16px 16px 4px;flex-wrap:wrap}
+.dx-title{font-family:var(--font-head);font-weight:700;font-size:18px;letter-spacing:-.02em;flex:1;min-width:150px}
+.verdict{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.12em;white-space:nowrap;
+  padding:7px 11px;border:2px solid currentColor;border-radius:8px;transform:rotate(1.8deg)}
 .dx .verdict{animation:stamp .42s cubic-bezier(.2,1.5,.4,1) both}
 @keyframes stamp{from{opacity:0;transform:rotate(13deg) scale(1.9)}to{opacity:1;transform:rotate(1.8deg) scale(1)}}
 .verdict.easy_diy{color:var(--ok);background:rgba(87,184,121,.09)}
 .verdict.diy_caution{color:var(--amber);background:rgba(226,172,59,.09)}
 .verdict.call_pro{color:var(--red);background:rgba(224,82,67,.09)}
 .verdict.unclear{color:var(--muted);background:rgba(167,158,144,.08)}
-.dx-diag{padding:8px 20px 2px;font-size:14px;line-height:1.68}
-.dx-reply{margin:10px 20px 4px;font-size:14px;line-height:1.65;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
-.dx-specs{display:flex;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:16px;flex-wrap:wrap}
-.spec{flex:1;min-width:110px;padding:12px 18px;border-right:1px solid var(--line)}
+.dx-diag{padding:8px 16px 2px;font-size:14px;line-height:1.66}
+.dx-reply{margin:10px 16px 4px;font-size:14px;line-height:1.62;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.dx-specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:14px}
+.spec{padding:11px 14px;border-right:1px solid var(--line)}
 .spec:last-child{border-right:none}
-.spec .k{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
-.spec .v{font-family:var(--font-head);font-weight:700;font-size:16px;margin-top:3px}
+.spec .k{font-family:var(--font-mono);font-size:9px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+.spec .v{font-family:var(--font-head);font-weight:700;font-size:15px;margin-top:3px}
 .spec .v.save{color:var(--ok)}
-.dx-sec{padding:16px 20px 0}
-.dx-sec h4{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--faint);text-transform:uppercase;margin-bottom:10px}
-.toolchips{display:flex;gap:8px;flex-wrap:wrap}
-.toolchip{font-size:12.5px;border:1px solid var(--line);border-radius:9px;padding:7px 11px;background:var(--panel);display:flex;gap:8px;align-items:center}
-.toolchip .bx{width:12px;height:12px;border:1.5px solid var(--orange);border-radius:3px;flex:none}
+.dx-sec{padding:14px 16px 0}
+.dx-sec h4{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase;margin-bottom:9px}
+.toolchips{display:flex;gap:7px;flex-wrap:wrap}
+.toolchip{font-size:12px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:var(--panel);display:flex;gap:7px;align-items:center}
+.toolchip .bx{width:11px;height:11px;border:1.5px solid var(--orange);border-radius:3px;flex:none}
 .toolchip.opt{opacity:.6}
-.dx-actions{display:flex;gap:10px;padding:18px 20px;flex-wrap:wrap}
-.why-pro{margin:14px 20px 0;border-left:3px solid var(--red);background:rgba(224,82,67,.07);border-radius:0 12px 12px 0;padding:13px 15px;font-size:13.5px;line-height:1.65}
-.pro-copy{margin:14px 20px 0;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px 16px;position:relative}
-.pro-copy h4{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--orange);margin-bottom:8px;text-transform:uppercase}
-.pro-copy p{font-size:13.5px;line-height:1.65;font-style:italic;padding-right:64px}
-.copy-btn{position:absolute;top:12px;right:12px;font-family:var(--font-mono);font-size:10.5px;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 10px}
-.pro-links{margin:16px 20px 0}
-.pro-links h4{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--faint);margin-bottom:10px;text-transform:uppercase}
-.pro-links-row{display:flex;gap:9px;flex-wrap:wrap}
-.pro-link{text-decoration:none;border:1px solid var(--line);border-radius:11px;padding:10px 14px;font-size:13px;font-weight:600;background:var(--panel);display:flex;flex-direction:column;gap:2px;transition:all .18s;min-width:126px}
-.pro-link small{font-family:var(--font-mono);font-size:9px;color:var(--faint);font-weight:400;letter-spacing:.08em}
-.landlord{margin:12px 20px 0;font-size:12.5px;color:var(--muted);display:flex;gap:8px;line-height:1.55}
-.dx-foot{padding:14px 20px 16px;font-size:10.5px;color:var(--faint);font-style:italic}
+.dx-actions{display:flex;gap:10px;padding:16px;flex-wrap:wrap}
+.dx-actions .btn{flex:1;min-width:180px}
+.why-pro{margin:12px 16px 0;border-left:3px solid var(--red);background:rgba(224,82,67,.07);border-radius:0 12px 12px 0;padding:12px 14px;font-size:13.5px;line-height:1.62}
+.pro-copy{margin:12px 16px 0;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px;position:relative}
+.pro-copy h4{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;color:var(--orange);margin-bottom:8px;text-transform:uppercase}
+.pro-copy p{font-size:13px;line-height:1.62;font-style:italic;padding-right:58px;overflow-wrap:anywhere}
+.copy-btn{position:absolute;top:11px;right:11px;font-family:var(--font-mono);font-size:10px;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 9px}
+.copy-btn:hover{border-color:var(--orange);color:var(--orange)}
+.pro-links{margin:14px 16px 0}
+.pro-links h4{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;color:var(--faint);margin-bottom:9px;text-transform:uppercase}
+.pro-links-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.pro-link{text-decoration:none;border:1px solid var(--line);border-radius:11px;padding:11px 13px;font-size:13px;font-weight:600;background:var(--panel);display:flex;flex-direction:column;gap:2px;transition:border-color .18s, transform .18s}
+.pro-link:hover{border-color:var(--red);transform:translateY(-2px)}
+.pro-link small{font-family:var(--font-mono);font-size:8.5px;color:var(--faint);font-weight:400;letter-spacing:.06em}
+.landlord{margin:12px 16px 0;font-size:12.5px;color:var(--muted);display:flex;gap:8px;line-height:1.55}
+.dx-foot{padding:13px 16px 15px;font-size:10px;color:var(--faint);font-style:italic}
 
 /* guided fix mode */
-.gfx{padding:18px 20px 20px;display:flex;flex-direction:column}
-.gfx-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.gfx-head .tagline3{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--orange);text-transform:uppercase}
-.gfx-exit{margin-left:auto;background:none;border:none;color:var(--muted);font-family:var(--font-mono);font-size:11px}
+.gfx{padding:14px 16px 18px;display:flex;flex-direction:column}
+.gfx-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.gfx-head .tagline3{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--orange);text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gfx-exit{margin-left:auto;background:none;border:none;color:var(--muted);font-family:var(--font-mono);font-size:11px;flex:none;padding:6px}
+.gfx-exit:hover{color:var(--off)}
 .progress{height:8px;border-radius:99px;background:var(--panel);border:1px solid var(--line);overflow:hidden;margin-bottom:7px}
 .progress i{display:block;height:100%;background:linear-gradient(90deg,var(--orange-deep),var(--orange));border-radius:99px;transition:width .4s cubic-bezier(.3,.8,.3,1);box-shadow:0 0 12px var(--orange-glow)}
-.gfx-count{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--faint);margin-bottom:16px}
-.gfx-step{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:22px;display:flex;flex-direction:column;gap:15px;position:relative;overflow:hidden}
-.gfx-step::before{content:attr(data-num);position:absolute;right:12px;top:0;font-family:var(--font-mono);font-weight:700;font-size:66px;color:rgba(245,99,30,.10);line-height:1.15}
-.gfx-instr{font-family:var(--font-head);font-weight:600;font-size:clamp(16px,2.1vw,20px);line-height:1.45;letter-spacing:-.01em;padding-right:44px}
-.gfx-safety{border-left:3px solid var(--amber);background:rgba(226,172,59,.08);border-radius:0 10px 10px 0;padding:10px 13px;font-size:12.5px;line-height:1.6}
-.gfx-safety b{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--amber)}
-.gfx-check{display:flex;align-items:center;gap:11px;user-select:none;cursor:pointer;font-size:13.5px;font-weight:500}
-.gfx-check input{width:19px;height:19px;accent-color:var(--orange);cursor:pointer}
-.gfx-nav{display:flex;gap:10px;margin-top:16px}
+.gfx-count{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--faint);margin-bottom:14px}
+.gfx-step{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:18px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
+.gfx-step::before{content:attr(data-num);position:absolute;right:10px;top:0;font-family:var(--font-mono);font-weight:700;font-size:58px;color:rgba(245,99,30,.10);line-height:1.15}
+.gfx-instr{font-family:var(--font-head);font-weight:600;font-size:clamp(16px,4.4vw,20px);line-height:1.45;letter-spacing:-.01em;padding-right:38px}
+.gfx-safety{border-left:3px solid var(--amber);background:rgba(226,172,59,.08);border-radius:0 10px 10px 0;padding:10px 12px;font-size:12.5px;line-height:1.6}
+.gfx-safety b{font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;color:var(--amber)}
+.gfx-check{display:flex;align-items:center;gap:11px;user-select:none;cursor:pointer;font-size:13.5px;font-weight:500;min-height:44px}
+.gfx-check input{width:20px;height:20px;accent-color:var(--orange);cursor:pointer;flex:none}
+.gfx-nav{display:flex;gap:10px;margin-top:14px}
 .gfx-nav .btn{flex:1}
-.gfx-done{text-align:center;padding:30px 14px}
-.gfx-done .big{font-size:40px;margin-bottom:10px}
-.gfx-done h3{font-family:var(--font-head);font-size:21px;margin-bottom:8px}
-.gfx-done p{color:var(--muted);font-size:13.5px;line-height:1.6;max-width:42ch;margin:0 auto 18px}
+.gfx-done{text-align:center;padding:26px 12px}
+.gfx-done .big{font-size:38px;margin-bottom:8px}
+.gfx-done h3{font-family:var(--font-head);font-size:20px;margin-bottom:8px}
+.gfx-done p{color:var(--muted);font-size:13.5px;line-height:1.6;max-width:42ch;margin:0 auto 16px}
 
-/* ── composer ── */
-.composer{position:relative;display:flex;flex-direction:column;border-top:1px solid var(--line-soft);background:rgba(255,255,255,.015);padding:14px 20px 12px}
+/* composer */
+.composer{position:relative;border-top:1px solid var(--line-soft);background:rgba(255,255,255,.015);padding:12px 14px 10px}
 .drop-hint{position:absolute;inset:6px;z-index:5;display:flex;align-items:center;justify-content:center;
-  border:2px dashed var(--orange);border-radius:16px;background:rgba(18,17,16,.88);
-  color:var(--orange);font-family:var(--font-head);font-weight:700;font-size:16px;pointer-events:none;
-  opacity:0;transition:opacity .15s}
+  border:2px dashed var(--orange);border-radius:14px;background:rgba(18,17,16,.88);
+  color:var(--orange);font-family:var(--font-head);font-weight:700;font-size:15px;pointer-events:none;
+  opacity:0;transition:opacity .15s;text-align:center;padding:10px}
 .console.dragging .drop-hint{opacity:1}
-.attach-preview{display:none;align-items:center;gap:11px;margin-bottom:12px;background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:8px 11px;width:fit-content;max-width:100%}
+.attach-preview{display:none;align-items:center;gap:10px;margin-bottom:10px;background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:7px 10px;width:fit-content;max-width:100%}
 .attach-preview.show{display:flex}
 .attach-preview img{width:44px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--line);flex:none;display:block}
-.attach-name{font-size:11.5px;color:var(--muted);letter-spacing:.04em;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.attach-remove{border:none;background:transparent;color:var(--muted);font-size:17px;line-height:1;padding:2px 5px}
-.composer-row{display:flex;gap:10px;align-items:flex-end}
+.attach-name{font-size:11px;color:var(--muted);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.attach-remove{border:none;background:transparent;color:var(--muted);font-size:18px;line-height:1;padding:4px 8px;min-height:36px}
+.attach-remove:hover{color:var(--off)}
+.composer-row{display:flex;gap:8px;align-items:flex-end}
 .icon-btn{width:46px;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--bg);display:flex;align-items:center;justify-content:center;transition:border-color .2s;flex:none;color:var(--muted)}
-.composer textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:13px;padding:12px 15px;
-  font-family:inherit;font-size:16px;line-height:1.5;max-height:130px;background:var(--bg);color:var(--off)}
+.icon-btn:hover{border-color:var(--orange);color:var(--orange)}
+.composer textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:13px;padding:12px 14px;
+  font-family:inherit;font-size:16px;line-height:1.5;max-height:130px;background:var(--bg);color:var(--off);min-height:46px}
 .composer textarea::placeholder{color:var(--faint)}
 .composer textarea:focus{outline:none;border-color:var(--orange)}
-.send-btn{height:46px;padding:0 18px;border-radius:12px;flex:none}
-.composer-foot{margin-top:10px;font-size:10px;letter-spacing:.06em;color:var(--faint);text-align:center}
+.send-btn{height:46px;padding:0 16px;border-radius:12px;flex:none;min-height:46px}
+@media(max-width:420px){.send-btn span{display:none}} /* icon-only send on tiny screens */
+.composer-foot{margin-top:9px;font-size:9.5px;letter-spacing:.05em;color:var(--faint);text-align:center;line-height:1.5}
 
 /* legend */
-.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:26px}
-.legend-card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:16px 18px}
-.legend-card .verdict{display:inline-block;margin-bottom:10px;font-size:9.5px}
+.legend{display:grid;grid-template-columns:1fr;gap:12px;margin-top:22px}
+@media(min-width:640px){.legend{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1020px){.legend{grid-template-columns:repeat(4,1fr)}}
+.legend-card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:15px 16px}
+.legend-card .verdict{display:inline-block;margin-bottom:9px;font-size:9px;animation:none}
 .legend-card p{font-size:12.5px;color:var(--muted);line-height:1.6}
 
-/* ── MOBILE OVERRIDES ── */
-@media (max-width: 560px) {
-  /* Shrink composer UI elements to maximize the typing area */
-  .hide-mob { display: none; }
-  .send-btn { padding: 0 14px; width: 44px; height: 44px; }
-  .icon-btn { width: 44px; height: 44px; }
-  .composer textarea { padding: 10px 14px; font-size: 16px; /* 16px strictly stops iOS zoom */ }
-  .composer, .thread, .chips { padding-left: 14px; padding-right: 14px; }
-  .console-head { padding: 12px 14px; }
+/* how it works (compact) */
+.timeline{list-style:none;display:grid;grid-template-columns:1fr;gap:16px;position:relative;z-index:1}
+@media(min-width:760px){.timeline{grid-template-columns:repeat(3,1fr)}}
+.tstep-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px}
+.tstep-num{font-family:var(--font-mono);font-weight:700;font-size:11px;color:var(--orange);border:1.5px solid var(--orange);border-radius:8px;padding:4px 9px;letter-spacing:.12em;display:inline-block;margin-bottom:14px}
+.schematic{height:104px;border:1px dashed var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:13px;color:var(--muted);background:rgba(255,255,255,.014)}
+.schematic svg{width:104px;height:82px}
+.tstep-card h3{font-family:var(--font-head);font-size:16.5px;margin-bottom:6px}
+.tstep-card p{font-size:13px;color:var(--muted);line-height:1.6}
 
-  /* Reflow the diagnosis card data block from row to a 2x2 grid */
-  .dx-specs { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    border-top: none; 
-    border-bottom: none; 
-  }
-  .spec { 
-    border: 1px solid var(--line); 
-    margin-top: -1px; /* Collapses double borders seamlessly */
-    margin-left: -1px;
-  }
-  .spec:last-child {
-    grid-column: span 2; /* If 3 items, make the last one span full width */
-  }
+/* about + feedback */
+.about-card{background:linear-gradient(165deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:20px;padding:clamp(22px,4vw,36px);position:relative;z-index:1}
+.about-card p{font-size:14.5px;line-height:1.75;color:var(--muted);max-width:64ch}
+.about-card p+p{margin-top:12px}
+.about-card strong{color:var(--off)}
+.feedback-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.feedback-row .btn{flex:1;min-width:200px}
+@media(max-width:520px){.feedback-row .btn{min-width:100%}}
 
-  /* Chat bubble images */
-  .umsg img { max-width: 100%; }
-}
+/* footer */
+footer{border-top:1px solid var(--line-soft);padding:26px clamp(14px,4.5vw,44px) calc(26px + env(safe-area-inset-bottom));max-width:1160px;margin:0 auto;
+  display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-size:11.5px;color:var(--faint);line-height:1.6}
+footer strong{color:var(--muted)}
 
-/* ── features & other sections ── */
-.feature-grid{display:grid;grid-template-columns:1fr;gap:18px;perspective:1200px}
-@media(min-width:840px){.feature-grid{grid-template-columns:repeat(3,1fr)}}
-.tilt{transform-style:preserve-3d;transition:transform .18s ease;will-change:transform}
-.feature-card{background:linear-gradient(165deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:18px}
-.feature-card.is-featured{border-color:rgba(245,99,30,.5);background:linear-gradient(180deg,rgba(245,99,30,.09),var(--panel) 44%)}
-.tilt-inner{padding:26px;transform-style:preserve-3d}
-.feature-ico{width:52px;height:52px;border-radius:14px;background:var(--bg);border:1px solid var(--line);color:var(--orange);
-  display:flex;align-items:center;justify-content:center;margin-bottom:16px;transform:translateZ(28px);box-shadow:0 10px 24px -10px rgba(0,0,0,.7)}
-.feature-ico svg{width:24px;height:24px}
-.feature-tag{display:block;font-size:10px;letter-spacing:.2em;color:var(--faint);margin-bottom:8px;transform:translateZ(20px)}
-.feature-card h3{font-family:var(--font-head);font-size:18px;letter-spacing:-.01em;margin-bottom:9px;transform:translateZ(20px)}
-.feature-card p{font-size:13.5px;color:var(--muted);line-height:1.66;transform:translateZ(12px)}
-
-.timeline{list-style:none;display:grid;grid-template-columns:1fr;gap:22px;position:relative;z-index:1}
-@media(min-width:840px){.timeline{grid-template-columns:repeat(3,1fr)}}
-.tstep{display:flex;flex-direction:column;gap:12px}
-.tstep-rail{display:flex;align-items:center;gap:12px}
-.tstep-num{font-weight:700;font-size:12px;color:var(--orange);border:1.5px solid var(--orange);border-radius:8px;padding:5px 10px;letter-spacing:.14em}
-.tstep-rail::after{content:"";flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--line) 0 7px, transparent 7px 13px)}
-.tstep:last-child .tstep-rail::after{background:none}
-.tstep-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;flex:1}
-.schematic{height:118px;border:1px dashed var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;color:var(--muted);background:rgba(255,255,255,.014)}
-.schematic svg{width:110px;height:86px}
-.tstep-card h3{font-family:var(--font-head);font-size:17px;margin-bottom:7px}
-.tstep-card p{font-size:13.5px;color:var(--muted);line-height:1.62}
-
-.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
-.metric{border:1px solid var(--line);border-radius:16px;padding:22px;background:var(--panel);text-align:center}
-.metric-num{display:block;font-weight:700;font-size:clamp(26px,3vw,36px);color:var(--orange);letter-spacing:-.02em}
-.metric-label{font-size:12px;color:var(--muted);margin-top:7px;display:block;line-height:1.5}
-.quote-grid{display:grid;grid-template-columns:1fr;gap:16px}
-@media(min-width:840px){.quote-grid{grid-template-columns:repeat(3,1fr)}}
-.quote-card{border:1px solid var(--line);border-radius:16px;padding:22px;background:linear-gradient(165deg,var(--panel),var(--bg2))}
-.quote-card blockquote{font-size:14px;line-height:1.66}
-.quote-card figcaption{display:flex;align-items:center;gap:11px;margin-top:16px}
-.q-av{width:36px;height:36px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);color:var(--orange);
-  font-family:var(--font-mono);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
-.quote-card b{font-size:13px;display:block}
-.quote-card small{font-size:11px;color:var(--faint);font-family:var(--font-mono);letter-spacing:.06em}
-.proof-note{margin-top:18px;text-align:center;font-size:10px;color:var(--faint);letter-spacing:.08em}
-
-.bill-toggle{display:flex;justify-content:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:5px;width:fit-content;margin:0 auto 30px}
-.bill-opt{border:none;background:transparent;color:var(--muted);font-weight:600;font-size:13px;padding:9px 18px;border-radius:99px;display:flex;align-items:center;gap:8px;transition:all .2s}
-.bill-opt.is-active{background:var(--orange);color:#1A0D04}
-.save-badge{font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;border:1px solid currentColor;border-radius:99px;padding:2px 7px}
-.tier-grid{display:grid;grid-template-columns:1fr;gap:18px;align-items:stretch}
-@media(min-width:900px){.tier-grid{grid-template-columns:repeat(3,1fr)}}
-.tier{border:1px solid var(--line);border-radius:20px;padding:28px;background:var(--panel);display:flex;flex-direction:column;position:relative}
-.tier.is-popular{border-color:var(--orange);background:linear-gradient(180deg,rgba(245,99,30,.10),var(--panel) 44%);box-shadow:0 26px 64px -26px var(--orange-glow)}
-.popular-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:9.5px;letter-spacing:.16em;background:var(--orange);color:#1A0D04;font-weight:700;border-radius:99px;padding:5px 13px}
-.tier-name{font-family:var(--font-head);font-size:17px}
-.tier-desc{font-size:12.5px;color:var(--muted);margin-top:5px;min-height:32px}
-.tier-price{display:flex;align-items:baseline;gap:3px;margin:16px 0 4px}
-.tier-price .cur{font-size:19px;color:var(--muted)}
-.tier-price .amt{font-family:var(--font-head);font-weight:800;font-size:44px;letter-spacing:-.03em}
-.tier-price .per{font-size:13px;color:var(--muted)}
-.tier-billed{font-size:10px;color:var(--faint);letter-spacing:.1em;margin-bottom:14px;min-height:14px}
-.tier .btn{margin:8px 0 18px}
-.tier-feats{list-style:none;display:flex;flex-direction:column;gap:10px}
-.tier-feats li{font-size:13.5px;display:flex;gap:9px;line-height:1.5}
-.tier-feats li::before{content:"—";color:var(--orange);font-weight:700}
-.pricing-note{margin-top:20px;text-align:center;font-size:10px;color:var(--faint);letter-spacing:.08em}
-
-.cta-final{text-align:center}
-.cta-inner{position:relative;z-index:1}
-.cta-final h2{font-size:clamp(26px,4vw,42px)}
-.cta-final p{color:var(--muted);margin-bottom:26px}
-.cta-trust{margin-top:16px;font-size:10.5px;letter-spacing:.14em;color:var(--faint)}
-.footer{border-top:1px solid var(--line-soft);padding:44px clamp(16px,5vw,48px) 30px;max-width:1220px;margin:0 auto}
-.footer-top{display:flex;flex-wrap:wrap;gap:36px;justify-content:space-between}
-.footer-brand{max-width:300px}
-.brand-name{font-family:var(--font-head);font-weight:800;font-size:19px;margin-left:8px}
-.footer-tag{color:var(--muted);font-size:13px;margin-top:10px;line-height:1.6}
-.footer-cols{display:flex;gap:48px;flex-wrap:wrap}
-.footer-cols h4{font-size:10.5px;letter-spacing:.18em;color:var(--faint);text-transform:uppercase;margin-bottom:12px}
-.footer-cols a{display:block;text-decoration:none;color:var(--muted);font-size:13px;padding:4px 0}
-.footer-bar{border-top:1px solid var(--line-soft);margin-top:32px;padding-top:18px;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-size:11.5px;color:var(--faint)}
-.footer-bar strong{color:var(--muted)}
-
-/* reveal on scroll */
-.rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.3,1)}
+.rv{opacity:0;transform:translateY(20px);transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.3,1)}
 .rv.on{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){
-  .rv{opacity:1;transform:none;transition:none}
-  html{scroll-behavior:auto}
-}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<header class="nav" id="nav">
+<header class="nav">
   <div class="nav-inner">
-    <a href="#top" class="brand" data-scroll>
+    <a href="#top" class="brand">
       <span class="brand-mark" aria-hidden="true">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a4.6 4.6 0 0 0-6.1 5.7L3 17.6V21h3.4l5.6-5.6a4.6 4.6 0 0 0 5.7-6.1L14.2 12.7l-2.6-.5-.5-2.6 3.6-3.3Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a4.6 4.6 0 0 0-6.1 5.7L3 17.6V21h3.4l5.6-5.6a4.6 4.6 0 0 0 5.7-6.1L14.2 12.7l-2.6-.5-.5-2.6 3.6-3.3Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>
       </span>
       <span data-brand>Fixel</span>
     </a>
-    <nav class="nav-links">
-      <a href="#assistant" data-scroll>Live demo</a>
-      <a href="#features" data-scroll>Why it's different</a>
-      <a href="#how" data-scroll>How it works</a>
-      <a href="#pricing" data-scroll>Pricing</a>
-    </nav>
+    <span class="nav-tag">FREE · PERSONAL PROJECT</span>
     <div class="nav-cta">
-      <a href="#assistant" class="btn btn-primary" data-scroll>Diagnose free</a>
+      <a href="#feedback" class="btn btn-ghost feedback-link">Give feedback</a>
+      <a href="#tool" class="btn btn-primary">Try it</a>
     </div>
-    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false"><i></i><i></i><i></i></button>
   </div>
-  <nav class="nav-mobile">
-    <a href="#assistant" data-scroll>Live demo</a>
-    <a href="#features" data-scroll>Why it's different</a>
-    <a href="#how" data-scroll>How it works</a>
-    <a href="#pricing" data-scroll>Pricing</a>
-  </nav>
 </header>
 
-<main>
-<section class="hero" id="top">
+<main id="top">
+<!-- ═══════ compact hero ═══════ -->
+<section class="hero">
   <div class="blueprint" aria-hidden="true"></div>
-
   <div class="hero-copy">
-    <span class="eyebrow"><span class="dot"></span> Everyday repair help · Free · No login</span>
-    <h1>Snap it. <span class="accent">Fix it.</span><br>Skip the 40-minute<br>YouTube tutorial.</h1>
-    <p class="lede">Show <span data-brand>Fixel</span> a photo or just describe what's wrong. In seconds you get a real diagnosis, an honest risk verdict, and a <strong>guided, one-step-at-a-time fix</strong> — not a wall of text you have to decode mid-repair.</p>
+    <span class="eyebrow"><span class="dot"></span> For first-home buyers &amp; renters · No signup</span>
+    <h1>Something's broken.<br><span class="accent">Find out how bad</span><br>— in 30 seconds.</h1>
+    <p class="lede">Photograph it or describe it. <span data-brand>Fixel</span> gives you an honest verdict — <strong>safe to DIY, DIY with caution, or call a pro</strong> — then walks you through the fix one step at a time. No 40-minute tutorials, no guessing which video matches your tap.</p>
     <div class="hero-cta">
-      <a href="#assistant" class="btn btn-primary btn-lg" data-scroll>
+      <a href="#tool" class="btn btn-primary btn-lg">
         Diagnose my problem — free
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
-      <a href="#how" class="btn btn-ghost btn-lg" data-scroll>See how it works</a>
     </div>
     <ul class="trust-strip" aria-label="Why it's easy to try">
-      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> No download</li>
-      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> No signup</li>
-      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Works in your browser</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> FREE</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> NO SIGNUP</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> WORKS ON YOUR PHONE</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> PHOTOS AREN'T STORED</li>
     </ul>
   </div>
 
-  <div class="hero-stage" id="heroStage">
+  <div class="hero-stage" aria-hidden="true">
     <div class="stage-frame">
-      <div class="stage-ticks" aria-hidden="true">
-        <span class="tick tl"></span><span class="tick tr"></span>
-        <span class="tick bl"></span><span class="tick br"></span>
-      </div>
-      <div class="stage-label mono">FIG.01 — TOOLBOX ASSY · LIVE TEARDOWN</div>
-
-      <div class="scene3d" aria-hidden="true">
+      <div class="stage-label mono">FIG.01 — LIVE TEARDOWN · AUTO-ROTATE</div>
+      <div class="scene3d">
         <div class="iso">
           <div class="spin360">
             <div class="bplate"></div>
             <div class="bring"></div>
-
             <div class="part p-screw" style="left:34px;top:18px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
             <div class="part p-screw" style="left:174px;top:18px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
             <div class="part p-screw" style="left:34px;top:110px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
             <div class="part p-screw" style="left:174px;top:110px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
-
             <div class="part" style="left:10px;top:15px">
               <div class="box rd" style="--w:200px;--d:110px;--h:56px;--c:#D8481F">
                 <div class="face f-top" style="background:linear-gradient(135deg,#F0602E,#D8481F)"></div>
@@ -508,34 +377,27 @@ h1 .accent{color:var(--orange)}
           </div>
         </div>
       </div>
-
       <svg class="stage-fallback" viewBox="0 0 220 260" aria-hidden="true">
         <g fill="none" stroke="#E7E2D6" stroke-width="2" opacity=".9" stroke-linejoin="round">
-          <rect x="72" y="18" width="76" height="18" rx="6"/>
-          <rect x="46" y="66" width="128" height="24" rx="6"/>
-          <rect x="58" y="122" width="104" height="18" rx="5"/>
-          <rect x="42" y="172" width="136" height="52" rx="8"/>
+          <rect x="72" y="18" width="76" height="18" rx="6"/><rect x="46" y="66" width="128" height="24" rx="6"/>
+          <rect x="58" y="122" width="104" height="18" rx="5"/><rect x="42" y="172" width="136" height="52" rx="8"/>
         </g>
         <g stroke="#F5631E" stroke-width="2" stroke-dasharray="3 5" opacity=".8">
           <line x1="110" y1="36" x2="110" y2="66"/><line x1="110" y1="90" x2="110" y2="122"/><line x1="110" y1="140" x2="110" y2="172"/>
         </g>
       </svg>
-
-      <div class="stage-readout mono" id="stageReadout">
-        <span class="rd-dot"></span><span id="readoutText">analysing components…</span>
-      </div>
-      <div class="legend3d" aria-hidden="true">
-        <span><b>01</b> HANDLE</span><span><b>02</b> LID</span><span><b>03</b> TRAY</span><span><b>04</b> CHASSIS</span>
-      </div>
+      <div class="stage-readout mono"><span class="rd-dot"></span><span id="readoutText">analysing components…</span></div>
+      <div class="legend3d"><span><b>01</b> HANDLE</span><span><b>02</b> LID</span><span><b>03</b> TRAY</span><span><b>04</b> CHASSIS</span></div>
     </div>
   </div>
 </section>
 
-<section class="assistant" id="assistant">
+<!-- ═══════ THE TOOL — the showcase ═══════ -->
+<section class="tool-section" id="tool">
   <div class="section-head">
-    <span class="eyebrow center"><span class="dot"></span> Live · this is the real product</span>
-    <h2>Show us what's broken.</h2>
-    <p class="section-sub">Upload a photo, describe it, or both. You'll get a diagnosis card and — when it's safe to DIY — a guided walkthrough. When it isn't, an honest "call a pro" with the exact words to say.</p>
+    <span class="eyebrow center"><span class="dot"></span> Live · this is the real product, not a mockup</span>
+    <h2>Show it what's broken.</h2>
+    <p class="section-sub">Below is a real result so you can see what you'll get. Then tap a common problem — or describe your own, with a photo if you have one.</p>
   </div>
 
   <div class="console" id="console">
@@ -556,8 +418,7 @@ h1 .accent{color:var(--orange)}
       <button class="chip" data-q="There's a crack in my wall near the ceiling that seems to be getting longer.">🧱 Growing wall crack</button>
     </div>
 
-    <!-- The Thread is placed ABOVE the composer, so chat flows naturally -->
-    <div class="thread" id="thread" aria-live="polite"></div>
+    <div class="thread" id="thread"></div>
 
     <div class="composer">
       <div class="attach-preview" id="attachPreview">
@@ -569,232 +430,113 @@ h1 .accent{color:var(--orange)}
         <button class="icon-btn" id="attachBtn" title="Add a photo of the problem" aria-label="Add a photo">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 16l4.6-5.2a2 2 0 0 1 3 0L16 16m-2-2 1.6-1.8a2 2 0 0 1 3 0L20 13.6M4 20h16a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="8.5" r="1.5" fill="#F5631E"/></svg>
         </button>
-        <textarea id="input" rows="1" placeholder="e.g. “my washing machine shakes violently on spin” — or add a photo"></textarea>
-        
-        <button class="btn btn-primary send-btn" id="sendBtn">
-          <span class="hide-mob">Diagnose</span>
+        <textarea id="input" rows="1" placeholder="Describe the problem — or add a photo"></textarea>
+        <button class="btn btn-primary send-btn" id="sendBtn" aria-label="Diagnose">
+          <span>Diagnose</span>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
-      <p class="composer-foot mono">📷 On your phone the camera opens straight away · JPG / PNG / WebP · max 8 MB</p>
+      <p class="composer-foot mono">📷 On your phone the camera opens straight away · JPG / PNG / WebP · max 8 MB · photos aren't stored</p>
     </div>
   </div>
 
   <div class="legend">
-    <div class="legend-card rv"><span class="verdict easy_diy">EASY DIY</span><p>Ordinary tools, no real risk. You get numbered steps, a tool checklist, and honest time &amp; savings estimates.</p></div>
+    <div class="legend-card rv"><span class="verdict easy_diy">EASY DIY</span><p>Ordinary tools, no real risk. Numbered steps, a tool checklist, and honest time &amp; savings estimates.</p></div>
     <div class="legend-card rv"><span class="verdict diy_caution">DIY WITH CAUTION</span><p>Doable, but there's a way to make it worse. Every step carries its own warning and a clear "stop here" line.</p></div>
-    <div class="legend-card rv"><span class="verdict call_pro">CALL A PRO</span><p>Electrical beyond a switch plate, gas, structural, injury risk — never DIY steps. You get the likely cause, a word-for-word script, and real links to a licensed pro.</p></div>
+    <div class="legend-card rv"><span class="verdict call_pro">CALL A PRO</span><p>Electrical beyond a switch plate, gas, structural, injury risk — never DIY steps. You get the likely cause, a word-for-word script, and links to a licensed pro.</p></div>
     <div class="legend-card rv"><span class="verdict unclear">NEED MORE INFO</span><p>If a photo is too dark or a description too vague to triage safely, <span data-brand>Fixel</span> says so and asks — it never guesses on safety.</p></div>
   </div>
 </section>
 
-<section class="features" id="features">
-  <div class="section-head">
-    <span class="eyebrow center"><span class="dot"></span> Why it's different</span>
-    <h2>Not another photo-to-wall-of-text app.</h2>
-    <p class="section-sub">Three things the app-store crowd doesn't do.</p>
-  </div>
-  <div class="feature-grid">
-    <article class="feature-card tilt rv"><div class="tilt-inner">
-      <div class="feature-ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8V6a2 2 0 0 1 2-2h2m8 0h2a2 2 0 0 1 2 2v2m0 8v2a2 2 0 0 1-2 2h-2m-8 0H6a2 2 0 0 1-2-2v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="3.4" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="7.2" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 3" opacity=".6"/></svg></div>
-      <span class="feature-tag mono">01 · DIAGNOSE</span>
-      <h3>Instant photo diagnosis</h3>
-      <p>Point your camera at the problem. An answer in seconds — the likely cause, severity, time and cost — instead of a YouTube rabbit hole and 12 half-matching thumbnails.</p>
-    </div></article>
-    <article class="feature-card tilt is-featured rv"><div class="tilt-inner">
-      <div class="feature-ico"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".35"/><path d="M5 12h6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="5" cy="12" r="2.4" fill="currentColor"/><circle cx="12" cy="12" r="2.4" stroke="currentColor" stroke-width="1.8"/><circle cx="19" cy="12" r="2.4" stroke="currentColor" stroke-width="1.8" opacity=".5"/></svg></div>
-      <span class="feature-tag mono">02 · GUIDE</span>
-      <h3>Guided Fix Mode</h3>
-      <p>The differentiator. One step at a time, in big readable text — with a progress bar, the tools you need for <em>this</em> step, and a safety check built right into the flow. Follow it one-handed while you work.</p>
-    </div></article>
-    <article class="feature-card tilt rv"><div class="tilt-inner">
-      <div class="feature-ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.2-2.8 7.6-7 9-4.2-1.4-7-4.8-7-9V6l7-3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.5 12.2 11.3 14l3.4-3.6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <span class="feature-tag mono">03 · TRIAGE</span>
-      <h3>Honest triage</h3>
-      <p>It tells you when <em>not</em> to DIY — and hands you a ready-to-send paragraph describing the issue for your tradesperson, plus links to find one. No pretending everything's fixable.</p>
-    </div></article>
-  </div>
-</section>
-
-<section class="how" id="how">
-  <div class="blueprint faint" aria-hidden="true"></div>
+<!-- ═══════ how it works (compact) ═══════ -->
+<section id="how">
+  <div class="blueprint" aria-hidden="true"></div>
   <div class="section-head">
     <span class="eyebrow center"><span class="dot"></span> Three steps</span>
     <h2>Snap → Diagnose → Fix or refer.</h2>
-    <p class="section-sub">From "what is that noise" to "sorted" without opening a single browser tab.</p>
   </div>
   <ol class="timeline">
-    <li class="tstep rv">
-      <div class="tstep-rail"><span class="tstep-num mono">01</span></div>
-      <div class="tstep-card tilt"><div class="tilt-inner">
-        <div class="schematic"><svg viewBox="0 0 120 90" fill="none"><rect x="18" y="16" width="84" height="58" rx="8" stroke="currentColor" stroke-width="2"/><circle cx="60" cy="45" r="15" stroke="currentColor" stroke-width="2"/><circle cx="60" cy="45" r="6" fill="#F5631E"/><rect x="46" y="8" width="28" height="10" rx="3" stroke="currentColor" stroke-width="2"/><path d="M12 45h6M102 45h6M60 74v6" stroke="#F5631E" stroke-width="2" stroke-dasharray="2 3"/></svg></div>
-        <h3>Snap or describe</h3>
-        <p>Photograph the leak, the crack, the part that won't budge — or type a sentence. Both is best.</p>
-      </div></div>
-    </li>
-    <li class="tstep rv">
-      <div class="tstep-rail"><span class="tstep-num mono">02</span></div>
-      <div class="tstep-card tilt"><div class="tilt-inner">
-        <div class="schematic"><svg viewBox="0 0 120 90" fill="none"><path d="M24 66V30l18-12 18 12v36" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M60 66V24l18-8 18 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round" opacity=".5"/><circle cx="42" cy="40" r="4" fill="#F5631E"/><path d="M14 74h92" stroke="currentColor" stroke-width="2"/><path d="M78 34l4 4 8-9" stroke="#F5631E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <h3>Get a verdict</h3>
-        <p>A diagnosis card lands: what's wrong, how risky, how long, and what you'll save versus a call-out.</p>
-      </div></div>
-    </li>
-    <li class="tstep rv">
-      <div class="tstep-rail"><span class="tstep-num mono">03</span></div>
-      <div class="tstep-card tilt"><div class="tilt-inner">
-        <div class="schematic"><svg viewBox="0 0 120 90" fill="none"><path d="M20 24h34v42H20zM66 24h34v42H66z" stroke="currentColor" stroke-width="2"/><path d="M27 36h20M27 46h20M27 56h12" stroke="#F5631E" stroke-width="2" stroke-linecap="round"/><path d="M73 45l6 6 14-16" stroke="#F5631E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <h3>Fix it — or refer it</h3>
-        <p>Safe? Launch Guided Fix Mode. Not safe? Copy the pro script and find a licensed local pro.</p>
-      </div></div>
-    </li>
+    <li class="rv"><div class="tstep-card">
+      <span class="tstep-num">01</span>
+      <div class="schematic"><svg viewBox="0 0 120 90" fill="none"><rect x="18" y="16" width="84" height="58" rx="8" stroke="currentColor" stroke-width="2"/><circle cx="60" cy="45" r="15" stroke="currentColor" stroke-width="2"/><circle cx="60" cy="45" r="6" fill="#F5631E"/><rect x="46" y="8" width="28" height="10" rx="3" stroke="currentColor" stroke-width="2"/><path d="M12 45h6M102 45h6M60 74v6" stroke="#F5631E" stroke-width="2" stroke-dasharray="2 3"/></svg></div>
+      <h3>Snap or describe</h3>
+      <p>Photograph the leak, the crack, the part that won't budge — or type a sentence. Both is best.</p>
+    </div></li>
+    <li class="rv"><div class="tstep-card">
+      <span class="tstep-num">02</span>
+      <div class="schematic"><svg viewBox="0 0 120 90" fill="none"><path d="M24 66V30l18-12 18 12v36" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M60 66V24l18-8 18 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round" opacity=".5"/><circle cx="42" cy="40" r="4" fill="#F5631E"/><path d="M14 74h92" stroke="currentColor" stroke-width="2"/><path d="M78 34l4 4 8-9" stroke="#F5631E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h3>Get a verdict</h3>
+      <p>A diagnosis card lands: what's wrong, how risky, how long, and what you'll save versus a call-out.</p>
+    </div></li>
+    <li class="rv"><div class="tstep-card">
+      <span class="tstep-num">03</span>
+      <div class="schematic"><svg viewBox="0 0 120 90" fill="none"><path d="M20 24h34v42H20zM66 24h34v42H66z" stroke="currentColor" stroke-width="2"/><path d="M27 36h20M27 46h20M27 56h12" stroke="#F5631E" stroke-width="2" stroke-linecap="round"/><path d="M73 45l6 6 14-16" stroke="#F5631E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h3>Fix it — or refer it</h3>
+      <p>Safe? Launch Guided Fix Mode. Not safe? Copy the pro script and find a licensed local pro.</p>
+    </div></li>
   </ol>
 </section>
 
-<section class="proof">
-  <div class="metrics">
-    <div class="metric rv"><span class="metric-num mono" data-count="180" data-prefix="$">$0</span><span class="metric-label">avg. saved per fix vs. a call-out<sup>*</sup></span></div>
-    <div class="metric rv"><span class="metric-num mono" data-count="9" data-suffix="s">0s</span><span class="metric-label">average time to first diagnosis<sup>*</sup></span></div>
-    <div class="metric rv"><span class="metric-num mono" data-count="100" data-suffix="%">0%</span><span class="metric-label">of high-risk jobs routed to a pro</span></div>
-  </div>
-  <div class="section-head tight">
-    <span class="eyebrow center"><span class="dot"></span> Early users</span>
-    <h2>Fixed it themselves. Felt like a genius.</h2>
-  </div>
-  <div class="quote-grid">
-    <figure class="quote-card rv">
-      <blockquote>"Fixed my running toilet in 12 minutes. The step-by-step thing meant I never had to put my phone down and scrub back through a video."</blockquote>
-      <figcaption><span class="q-av">JM</span><span><b>Jordan M.</b><small>Renter · Sydney</small></span></figcaption>
-    </figure>
-    <figure class="quote-card rv">
-      <blockquote>"It told me the sparking outlet was a hard no and gave me a paragraph to text my electrician. Saved me from doing something stupid."</blockquote>
-      <figcaption><span class="q-av">PA</span><span><b>Priya A.</b><small>First-home owner</small></span></figcaption>
-    </figure>
-    <figure class="quote-card rv">
-      <blockquote>"Saved $180 on a service call for a dishwasher that just had a blocked filter. Photo, answer, done — no signup, no app."</blockquote>
-      <figcaption><span class="q-av">DT</span><span><b>Dane T.</b><small>Landlord · 3 properties</small></span></figcaption>
-    </figure>
-  </div>
-  <p class="proof-note mono">* Illustrative placeholders — structured so real usage data drops straight in.</p>
-</section>
-
-<section class="pricing" id="pricing">
+<!-- ═══════ about + feedback (LinkedIn-facing) ═══════ -->
+<section id="feedback">
   <div class="section-head">
-    <span class="eyebrow center"><span class="dot"></span> Pricing</span>
-    <h2>Start free. Upgrade when it pays for itself.</h2>
-    <p class="section-sub">One avoided call-out covers a year of Pro.</p>
+    <span class="eyebrow center"><span class="dot"></span> Why this exists</span>
+    <h2>Built by one person. Made better by you.</h2>
   </div>
-  <div class="bill-toggle" role="group" aria-label="Billing period">
-    <button class="bill-opt is-active" data-bill="monthly" aria-pressed="true">Monthly</button>
-    <button class="bill-opt" data-bill="yearly" aria-pressed="false">Yearly <span class="save-badge">Save 20%</span></button>
-  </div>
-  <div class="tier-grid">
-    <article class="tier rv">
-      <h3 class="tier-name">Free</h3>
-      <p class="tier-desc">For the occasional "what is that?"</p>
-      <div class="tier-price"><span class="cur">$</span><span class="amt" data-price data-monthly="0" data-yearly="0">0</span><span class="per">/mo</span></div>
-      <p class="tier-billed mono" data-billed>free forever</p>
-      <a href="#assistant" class="btn btn-outline btn-block" data-scroll>Start free</a>
-      <ul class="tier-feats">
-        <li>3 diagnoses / month</li>
-        <li>Full diagnosis cards</li>
-        <li>Guided Fix Mode</li>
-        <li>Pro-referral scripts &amp; links</li>
-      </ul>
-    </article>
-    <article class="tier is-popular rv">
-      <span class="popular-badge mono">MOST POPULAR</span>
-      <h3 class="tier-name">Pro</h3>
-      <p class="tier-desc">For the household fixer-upper.</p>
-      <div class="tier-price"><span class="cur">$</span><span class="amt" data-price data-monthly="9" data-yearly="7">9</span><span class="per">/mo</span></div>
-      <p class="tier-billed mono" data-billed>billed monthly</p>
-      <a href="#assistant" class="btn btn-primary btn-block" data-scroll>Go Pro</a>
-      <ul class="tier-feats">
-        <li><b>Unlimited</b> diagnoses</li>
-        <li>Saved repair history</li>
-        <li>Re-open any past fix</li>
-        <li>Priority diagnosis engine</li>
-        <li>Everything in Free</li>
-      </ul>
-    </article>
-    <article class="tier rv">
-      <h3 class="tier-name">Household</h3>
-      <p class="tier-desc">For landlords &amp; multi-property homes.</p>
-      <div class="tier-price"><span class="cur">$</span><span class="amt" data-price data-monthly="24" data-yearly="19">24</span><span class="per">/mo</span></div>
-      <p class="tier-billed mono" data-billed>billed monthly</p>
-      <a href="#assistant" class="btn btn-outline btn-block" data-scroll>Choose Household</a>
-      <ul class="tier-feats">
-        <li>Multiple properties</li>
-        <li>Shareable diagnosis reports</li>
-        <li>Tenant-friendly summaries</li>
-        <li>Everything in Pro</li>
-      </ul>
-    </article>
-  </div>
-  <p class="pricing-note mono">Buttons are placeholders — no payment is taken in this MVP.</p>
-</section>
-
-<section class="cta-final">
-  <div class="blueprint" aria-hidden="true"></div>
-  <div class="cta-inner">
-    <h2>Something's broken right now, isn't it?</h2>
-    <p>Point your phone at it. You'll know how bad it is before you touch a thing.</p>
-    <a href="#assistant" class="btn btn-primary btn-lg" data-scroll>
-      Diagnose my problem — free
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
-    <p class="cta-trust mono">no download · no signup · works in your browser</p>
+  <div class="about-card rv">
+    <p>I built <strong><span data-brand>Fixel</span></strong> because buying or renting your first home comes with a hundred small breakages nobody teaches you about — and the choice is usually <strong>an hour of YouTube roulette</strong> or <strong>paying a call-out fee to learn it was a $5 washer</strong>. This tool gives you the honest answer first: what it probably is, whether it's safe to touch, and exactly what to do or say next.</p>
+    <p>It's <strong>free, with no signup and no catch</strong> — a personal project, not a startup. What I need most right now is real feedback: try it on something actually broken in your place, then tell me where it nailed it and where it fell flat.</p>
+    <div class="feedback-row">
+      <a class="btn btn-primary" id="linkedinBtn" href="#" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.55V9h3.57v11.45Z"/></svg>
+        Tell me what to improve — on LinkedIn
+      </a>
+      <button class="btn btn-ghost" id="shareBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M8.7 10.7 15.3 7.3m-6.6 6 6.6 3.4M9 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm0 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" stroke="currentColor" stroke-width="1.8"/></svg>
+        <span id="shareLabel">Share this tool</span>
+      </button>
+    </div>
   </div>
 </section>
 </main>
 
-<footer class="footer">
-  <div class="footer-top">
-    <div class="footer-brand">
-      <span class="brand-mark small" aria-hidden="true" style="display:inline-flex;vertical-align:middle">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a4.6 4.6 0 0 0-6.1 5.7L3 17.6V21h3.4l5.6-5.6a4.6 4.6 0 0 0 5.7-6.1L14.2 12.7l-2.6-.5-.5-2.6 3.6-3.3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-      </span><span class="brand-name" data-brand>Fixel</span>
-      <p class="footer-tag" data-tagline>Snap it. Fix it. Skip the 40-minute tutorial.</p>
-    </div>
-    <div class="footer-cols">
-      <div><h4 class="mono">Product</h4><a href="#assistant" data-scroll>Diagnose</a><a href="#how" data-scroll>How it works</a><a href="#pricing" data-scroll>Pricing</a></div>
-      <div><h4 class="mono">Company</h4><a href="#top" data-scroll>About</a><a href="#top" data-scroll>Contact</a><a href="#top" data-scroll>Careers</a></div>
-      <div><h4 class="mono">Legal</h4><a href="#top" data-scroll>Privacy</a><a href="#top" data-scroll>Terms</a><a href="#top" data-scroll>Safety policy</a></div>
-    </div>
-  </div>
-  <div class="footer-bar">
-    <p><strong>Guidance only</strong> — not a substitute for a professional inspection. Renters: some repairs are legally your landlord's responsibility.</p>
-    <p class="mono">© <span id="year">2026</span> <span data-brand>Fixel</span> · MVP · v1.0</p>
-  </div>
+<footer>
+  <p><strong>Guidance only</strong> — not a substitute for a professional inspection. For anything electrical (beyond a switch plate), gas, or structural, <span data-brand>Fixel</span> will always point you to a licensed professional. Renters: some repairs are legally your landlord's responsibility.</p>
+  <p class="mono">© <span id="year">2026</span> <span data-brand>Fixel</span> · a personal project · v1.1</p>
 </footer>
 
 <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" capture="environment" hidden>
 <script>
 "use strict";
+/* ═══════════ CONFIG — edit here only ═══════════ */
 const CONFIG = {
   BRAND: "Fixel",
-  TAGLINE: "Snap it. Fix it. Skip the 40-minute tutorial.",
+  SITE_URL: "https://fixel-ai.vercel.app",
+  // ↓ paste your LinkedIn post/profile URL so the feedback button goes somewhere real
+  LINKEDIN_URL: "https://www.linkedin.com/",
   FREE_CHECKS: 3,
   MAX_MB: 8,
   API_ENDPOINT: "/api/diagnose",
+  /* NOTE: keep these as PLAIN url strings — a previous copy/paste turned them
+     into markdown "[url](url)" which broke every button. */
   PRO_LINKS: {
     electrician: [
-      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"[https://www.thumbtack.com/](https://www.thumbtack.com/)" },
-      { label:"Angi",      sub:"US · VETTED PROS",  url:"[https://www.angi.com/](https://www.angi.com/)" },
-      { label:"hipages",   sub:"AU · 3 QUOTES",     url:"[https://hipages.com.au/find/electricians](https://hipages.com.au/find/electricians)" },
+      { label:"hipages",   sub:"AU · GET 3 QUOTES", url:"https://hipages.com.au/find/electricians" },
+      { label:"Airtasker", sub:"AU · POST THE JOB", url:"https://www.airtasker.com/au/services/electrician/" },
+      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"https://www.thumbtack.com/" },
     ],
     plumber: [
-      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"[https://www.thumbtack.com/](https://www.thumbtack.com/)" },
-      { label:"Angi",      sub:"US · VETTED PROS",  url:"[https://www.angi.com/](https://www.angi.com/)" },
-      { label:"hipages",   sub:"AU · 3 QUOTES",     url:"[https://hipages.com.au/find/plumbers](https://hipages.com.au/find/plumbers)" },
+      { label:"hipages",   sub:"AU · GET 3 QUOTES", url:"https://hipages.com.au/find/plumbers" },
+      { label:"Airtasker", sub:"AU · POST THE JOB", url:"https://www.airtasker.com/au/services/plumber/" },
+      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"https://www.thumbtack.com/" },
     ],
     hvac: [
-      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"[https://www.thumbtack.com/](https://www.thumbtack.com/)" },
-      { label:"Angi",      sub:"US · VETTED PROS",  url:"[https://www.angi.com/](https://www.angi.com/)" },
+      { label:"hipages",   sub:"AU · GET 3 QUOTES", url:"https://hipages.com.au/" },
+      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"https://www.thumbtack.com/" },
     ],
     general: [
-      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"[https://www.thumbtack.com/](https://www.thumbtack.com/)" },
-      { label:"Airtasker", sub:"AU · POST THE JOB", url:"[https://www.airtasker.com/au/](https://www.airtasker.com/au/)" },
+      { label:"Airtasker", sub:"AU · POST THE JOB", url:"https://www.airtasker.com/au/" },
+      { label:"hipages",   sub:"AU · GET 3 QUOTES", url:"https://hipages.com.au/" },
     ],
   },
 };
@@ -802,78 +544,34 @@ const PRO_TITLE = { electrician:"electrician", plumber:"plumber", hvac:"HVAC tec
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 document.querySelectorAll("[data-brand]").forEach(el => el.textContent = CONFIG.BRAND);
-document.querySelectorAll("[data-tagline]").forEach(el => el.textContent = CONFIG.TAGLINE);
 $("year").textContent = new Date().getFullYear();
 
-const nav = $("nav");
-$("navToggle").addEventListener("click", () => {
-  const open = nav.classList.toggle("open");
-  $("navToggle").setAttribute("aria-expanded", String(open));
-});
-document.querySelectorAll("[data-scroll]").forEach(a => a.addEventListener("click", () => nav.classList.remove("open")));
-
-const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const io = new IntersectionObserver(es => es.forEach(e => {
-  if(!e.isIntersecting) return;
-  e.target.classList.add("on");
-  e.target.querySelectorAll("[data-count]").forEach(countUp);
-  if(e.target.hasAttribute("data-count")) countUp(e.target);
-  io.unobserve(e.target);
-}), { threshold:.16 });
-document.querySelectorAll(".rv, .metric").forEach(el => io.observe(el));
-function countUp(el){
-  if(el._counted) return; el._counted = true;
-  const end = +el.dataset.count, pre = el.dataset.prefix || "", suf = el.dataset.suffix || "";
-  if(reduced){ el.textContent = pre + end + suf; return; }
-  const t0 = performance.now(), dur = 1100;
-  (function tick(t){
-    const k = Math.min(1, (t - t0) / dur), v = Math.round(end * (1 - Math.pow(1 - k, 3)));
-    el.textContent = pre + v + suf;
-    if(k < 1) requestAnimationFrame(tick);
-  })(t0);
-}
-
-document.querySelectorAll(".tilt").forEach(card => {
-  card.addEventListener("pointermove", e => {
-    if(e.pointerType === "touch" || reduced) return;
-    const r = card.getBoundingClientRect();
-    const x = (e.clientX - r.left)/r.width - .5, y = (e.clientY - r.top)/r.height - .5;
-    card.style.transform = `rotateY(${x*10}deg) rotateX(${-y*10}deg)`;
-  });
-  card.addEventListener("pointerleave", () => card.style.transform = "");
+/* feedback + share */
+$("linkedinBtn").href = CONFIG.LINKEDIN_URL;
+$("shareBtn").addEventListener("click", async () => {
+  const data = { title: `${CONFIG.BRAND} — free AI repair help`, text: "Honest repair verdicts + guided fixes, free in your browser:", url: CONFIG.SITE_URL };
+  if(navigator.share){ try { await navigator.share(data); } catch {} return; }
+  try { await navigator.clipboard.writeText(CONFIG.SITE_URL); $("shareLabel").textContent = "Link copied ✓"; }
+  catch { $("shareLabel").textContent = CONFIG.SITE_URL; }
+  setTimeout(() => $("shareLabel").textContent = "Share this tool", 2400);
 });
 
-document.querySelectorAll(".bill-opt").forEach(btn => btn.addEventListener("click", () => {
-  const yearly = btn.dataset.bill === "yearly";
-  document.querySelectorAll(".bill-opt").forEach(b => {
-    const on = b === btn;
-    b.classList.toggle("is-active", on);
-    b.setAttribute("aria-pressed", String(on));
-  });
-  document.querySelectorAll("[data-price]").forEach(p => p.textContent = yearly ? p.dataset.yearly : p.dataset.monthly);
-  document.querySelectorAll("[data-billed]").forEach(p => {
-    if(p.textContent.includes("free")) return;
-    p.textContent = yearly ? "per month, billed yearly" : "billed monthly";
-  });
-}));
+/* reveal on scroll */
+const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add("on"); io.unobserve(e.target); } }), { threshold:.14 });
+document.querySelectorAll(".rv").forEach(el => io.observe(el));
 
+/* hero readout ticker */
 (() => {
-  const lines = [
-    "analysing components…",
-    "isolating fault: lid hinge — play detected",
-    "checking fastener torque ×4 … OK",
-    `verdict: EASY DIY · 3 steps · ~10 min`,
-    "reassembling…",
-  ];
-  let i = 0;
-  const el = $("readoutText");
-  if(!el || reduced) return;
-  setInterval(() => { i = (i + 1) % lines.length; el.textContent = lines[i]; }, 2600);
+  const el = $("readoutText"); if(!el || reduced) return;
+  const lines = ["analysing components…","isolating fault: lid hinge — play detected","checking fastener torque ×4 … OK","verdict: EASY DIY · 3 steps · ~10 min","reassembling…"];
+  let i = 0; setInterval(() => { i = (i + 1) % lines.length; el.textContent = lines[i]; }, 2600);
 })();
 
-const SYSTEM_PROMPT = `You are ${CONFIG.BRAND}, an AI that diagnoses everyday household repair problems from a photo and/or a text description, for renters and first-time homeowners. Users may ask follow-up questions in the same conversation.
+/* ═══════════ shared diagnosis contract (server enforces the same rules) ═══════════ */
+const SYSTEM_PROMPT = `You are ${CONFIG.BRAND}, an AI that diagnoses everyday household repair problems from a photo and/or a text description, for renters and first-home buyers. Users may ask follow-up questions in the same conversation.
 
 HARD SAFETY RULES — non-negotiable, regardless of how the user phrases the request, claims of experience, or insistence that it is simple:
 - Any electrical work beyond swapping a switch plate cover or a plug-in light fixture/bulb (sparking or buzzing switches, outlets, wiring, breaker panels, hardwired fixtures), anything involving gas, structural issues (foundation, load-bearing walls, sagging ceilings, large or widening cracks), water contacting electrics, significant mould, roof work, or anything with realistic injury risk: verdict MUST be "call_pro" and steps MUST be []. Never provide DIY steps, workarounds, or partial instructions for these — not even "just to check".
@@ -897,13 +595,14 @@ Respond with ONLY a JSON object (no markdown fences, no commentary):
 }
 For easy_diy/diy_caution: 3-8 steps, each one single action; for diy_caution include explicit safety notes and a clear stop-and-call condition. Concise, jargon-free. Do not add your own disclaimer — the interface appends one.`;
 
+/* ═══════════ state ═══════════ */
 let quota = CONFIG.FREE_CHECKS, busy = false, attached = null, history = [];
 const thread = $("thread"), input = $("input"), sendBtn = $("sendBtn");
 const setQuota = () => { $("quota").textContent = quota > 0 ? `${quota} free check${quota===1?"":"s"} left` : "limit reached"; };
 setQuota();
 
+/* ═══════════ attach + drag-drop (depth-counter pattern — do not "simplify") ═══════════ */
 const consoleEl = $("console"), preview = $("attachPreview");
-
 $("attachBtn").addEventListener("click", () => $("photoInput").click());
 $("photoInput").addEventListener("change", e => { const f = e.target.files[0]; e.target.value = ""; if(f) loadPhoto(f); });
 $("attachRemove").addEventListener("click", clearAttach);
@@ -915,7 +614,7 @@ function loadPhoto(file){
   reader.onload = () => {
     attached = { dataUrl: String(reader.result), media: file.type, b64: String(reader.result).split(",")[1] };
     $("attachThumb").src = attached.dataUrl;
-    $("attachName").textContent = file.name.length > 24 ? file.name.slice(0,22) + "…" : file.name;
+    $("attachName").textContent = file.name.length > 22 ? file.name.slice(0,20) + "…" : file.name;
     preview.classList.add("show");
   };
   reader.onerror = () => flash("Couldn't read that image — try another one.");
@@ -924,42 +623,34 @@ function loadPhoto(file){
 function clearAttach(){ attached = null; preview.classList.remove("show"); $("attachThumb").removeAttribute("src"); }
 function flash(msg){
   const foot = document.querySelector(".composer-foot");
-  const orig = `📷 On your phone the camera opens straight away · JPG / PNG / WebP · max ${CONFIG.MAX_MB} MB`;
+  const orig = `📷 On your phone the camera opens straight away · JPG / PNG / WebP · max ${CONFIG.MAX_MB} MB · photos aren't stored`;
   foot.textContent = "⚠ " + msg;
   clearTimeout(foot._t); foot._t = setTimeout(() => foot.textContent = orig, 3600);
 }
-
 let dragDepth = 0;
 const setDrag = on => consoleEl.classList.toggle("dragging", on);
-["dragenter","dragover"].forEach(ev => consoleEl.addEventListener(ev, e => {
-  e.preventDefault();
-  if(ev === "dragenter"){ dragDepth++; }
-  setDrag(true);
-}));
+["dragenter","dragover"].forEach(ev => consoleEl.addEventListener(ev, e => { e.preventDefault(); if(ev === "dragenter") dragDepth++; setDrag(true); }));
 consoleEl.addEventListener("dragleave", () => { dragDepth = Math.max(0, dragDepth - 1); if(dragDepth === 0) setDrag(false); });
-consoleEl.addEventListener("drop", e => {
-  e.preventDefault(); dragDepth = 0; setDrag(false);
-  const f = e.dataTransfer.files && e.dataTransfer.files[0];
-  if(f) loadPhoto(f);
-});
-["dragover","drop"].forEach(ev => window.addEventListener(ev, e => { e.preventDefault(); if(ev==="drop"){ dragDepth = 0; setDrag(false); } }));
+consoleEl.addEventListener("drop", e => { e.preventDefault(); dragDepth = 0; setDrag(false); const f = e.dataTransfer.files && e.dataTransfer.files[0]; if(f) loadPhoto(f); });
+["dragover","drop"].forEach(ev => window.addEventListener(ev, e => { e.preventDefault(); if(ev === "drop"){ dragDepth = 0; setDrag(false); } }));
 window.addEventListener("dragend", () => { dragDepth = 0; setDrag(false); });
 
+/* ═══════════ composer ═══════════ */
 input.addEventListener("input", () => { input.style.height = "auto"; input.style.height = Math.min(130, input.scrollHeight) + "px"; });
 input.addEventListener("keydown", e => { if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); send(); } });
 sendBtn.addEventListener("click", send);
 document.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => {
-  input.value = b.dataset.q; input.dispatchEvent(new Event("input"));
-  send();
+  input.value = b.dataset.q; input.dispatchEvent(new Event("input")); send();
 }));
 
+/* ═══════════ diagnose flow ═══════════ */
 async function send(){
   const text = input.value.trim();
   if(busy || (!text && !attached)) return;
-  if(quota <= 0){ addNotice(`You've used the ${CONFIG.FREE_CHECKS} free checks in this demo session (an MVP cost cap). Refresh the page to reset.`); return; }
+  if(quota <= 0){ addNotice(`You've used the ${CONFIG.FREE_CHECKS} free checks this session (it's a personal project — the cap keeps my API bill sane). Refresh the page to reset.`); return; }
 
   const userText = text || "Here's a photo of the problem — what's wrong and can I fix it myself?";
-  history.push({ role:"user", text: userText, image: attached ? { media: attached.media, b64: attached.b64 } : null });
+  history.push({ role:"user", text:userText, image: attached ? { media: attached.media, b64: attached.b64 } : null });
   addUser(userText, attached ? attached.dataUrl : null);
   input.value = ""; input.style.height = "auto"; clearAttach();
   busy = true; sendBtn.disabled = true; typing(true);
@@ -973,7 +664,7 @@ async function send(){
     renderCard(card);
   } catch(err) {
     typing(false); history.pop();
-    addNotice(err.friendly || "Couldn't reach the diagnosis engine — this check wasn't counted. If you're running locally, use `vercel dev` so /api/diagnose is live, then try again.");
+    addNotice(err.friendly || "Couldn't reach the diagnosis engine — this check wasn't counted. Give it another try in a moment.");
   } finally {
     busy = false; sendBtn.disabled = false;
   }
@@ -990,6 +681,7 @@ async function callDiagnose(){
     if(r.status !== 404 && r.status !== 405) throw new Error("api " + r.status);
   } catch(e){ if(e.friendly) throw e; }
 
+  /* preview fallback — only works inside the claude.ai artifact viewer */
   const messages = history.map(m => {
     if(m.role === "assistant") return { role:"assistant", content: m.text };
     const blocks = [];
@@ -997,7 +689,7 @@ async function callDiagnose(){
     blocks.push({ type:"text", text:m.text });
     return { role:"user", content: blocks };
   });
-  const r = await fetch("[https://api.anthropic.com/v1/messages](https://api.anthropic.com/v1/messages)", {
+  const r = await fetch("https://api.anthropic.com/v1/messages", {
     method:"POST", headers:{ "Content-Type":"application/json" },
     body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:1100, system: SYSTEM_PROMPT, messages })
   });
@@ -1010,9 +702,7 @@ async function callDiagnose(){
 function normalize(raw){
   let c = raw;
   if(typeof raw === "string"){
-    // Replaced the literal backticks with unicode \x60 to prevent the markdown 
-    // parser from chopping the file off prematurely!
-    const clean = raw.trim().replace(/^\x60\x60\x60(?:json)?\s*/i,"").replace(/\x60\x60\x60\s*$/,"");
+    const clean = raw.trim().replace(/^```(?:json)?\s*/i,"").replace(/```\s*$/,"");
     try { c = JSON.parse(clean); } catch { c = { verdict:"unclear", reply: raw.slice(0, 500) }; }
   }
   if(!["easy_diy","diy_caution","call_pro","unclear"].includes(c.verdict)) c.verdict = "unclear";
@@ -1023,8 +713,8 @@ function normalize(raw){
   return c;
 }
 
+/* ═══════════ renderers ═══════════ */
 const VLABEL = { easy_diy:"EASY DIY", diy_caution:"DIY WITH CAUTION", call_pro:"CALL A PRO", unclear:"NEED MORE INFO" };
-
 function scrollThread(el){ el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block:"nearest" }); }
 function addUser(text, imgSrc){
   const el = document.createElement("div"); el.className = "umsg";
@@ -1044,10 +734,10 @@ function addNotice(msg){
   thread.appendChild(el); scrollThread(el);
 }
 
-function renderCard(c){
-  const el = document.createElement("div"); el.className = "dx";
+function renderCard(c, opts = {}){
+  const el = document.createElement("div"); el.className = "dx" + (opts.example ? " example" : "");
   const v = c.verdict, isDIY = v === "easy_diy" || v === "diy_caution";
-  let html = `<div class="dx-tape ${v}"></div>
+  let html = `${opts.example ? '<span class="example-ribbon">EXAMPLE</span>' : ""}<div class="dx-tape ${v}"></div>
     <div class="dx-head">
       <div class="dx-title">${esc(c.title || "Diagnosis")}</div>
       <span class="verdict ${v}">${VLABEL[v]}</span>
@@ -1067,9 +757,7 @@ function renderCard(c){
     }
     if(c.landlord_note) html += `<div class="landlord"><span>🏠</span><span>${esc(c.landlord_note)}</span></div>`;
     if(c.steps.length){
-      html += `<div class="dx-actions">
-        <button class="btn btn-primary" data-act="fix">Start Guided Fix — ${c.steps.length} steps</button>
-      </div>`;
+      html += `<div class="dx-actions"><button class="btn btn-primary" data-act="fix">Start Guided Fix — ${c.steps.length} steps</button></div>`;
     }
   }
 
@@ -1096,9 +784,10 @@ function renderCard(c){
     navigator.clipboard?.writeText(b.dataset.copy);
     b.textContent = "COPIED ✓"; setTimeout(() => b.textContent = "COPY", 1800);
   }));
-  scrollThread(el);
+  if(!opts.example) scrollThread(el);
 }
 
+/* ═══════════ Guided Fix Mode ═══════════ */
 function launchFixMode(cardEl, card){
   const gfx = cardEl.querySelector("[data-gfx]");
   const bodyBits = cardEl.querySelectorAll(".dx-head,.dx-diag,.dx-reply,.dx-specs,.dx-sec,.dx-actions,.landlord");
@@ -1149,6 +838,31 @@ function launchFixMode(cardEl, card){
   function exit(){ gfx.hidden = true; gfx.innerHTML = ""; bodyBits.forEach(n => n.style.display = ""); }
   draw();
 }
+
+/* ═══════════ seeded showcase example (no API call, doesn't use a check) ═══════════ */
+renderCard({
+  verdict: "easy_diy",
+  category: "plumber",
+  title: "Dripping tap — worn washer",
+  diagnosis: "A steady drip from a tap that's fully closed is almost always a worn washer or cartridge seal inside the handle. It's one of the cheapest, most beginner-friendly fixes in the house — and left alone it wastes thousands of litres a year.",
+  time_estimate: "~25 min",
+  cost_saved: "$120–180",
+  tools: [
+    { name:"Adjustable spanner" },
+    { name:"Flathead + Phillips screwdriver" },
+    { name:"Replacement washer or cartridge ($5–15)" },
+    { name:"Cloth to protect the chrome", optional:true },
+  ],
+  steps: [
+    { instruction:"Turn off the water at the isolation valve under the sink (or the mains tap outside). Open the tap to drain what's left in the line.", tools:[], safety:"If you can't find any shut-off, stop here — don't work on a live line." },
+    { instruction:"Pop off the tap's decorative cap and undo the handle screw underneath, then lift the handle off.", tools:["Flathead screwdriver"], safety:"" },
+    { instruction:"Wrap a cloth around the exposed valve body and loosen it with the spanner — turn counter-clockwise, steady pressure.", tools:["Adjustable spanner","Cloth"], safety:"" },
+    { instruction:"Pull out the old washer or cartridge and take it to the hardware store to match the exact size. Fit the new one the same way the old one sat.", tools:["Replacement washer/cartridge"], safety:"" },
+    { instruction:"Reassemble in reverse order, turn the water back on slowly, and test — the drip should be gone. If it still drips, the valve seat may be worn: that's the point to call a plumber.", tools:[], safety:"" },
+  ],
+  landlord_note: "Renting? A persistent drip is usually the landlord's responsibility — report it in writing and keep a copy.",
+  reply: "",
+}, { example:true });
 </script>
 </body>
 </html>
