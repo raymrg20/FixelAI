@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#121110">
+<title>Fixel — Snap it. Fix it. Skip the 40-minute tutorial.</title>
+<meta name="description" content="Fixel diagnoses everyday household repairs from a photo or a description, then walks you through the fix one step at a time — or hands you the exact words to tell a pro. No download, no signup.">
+<meta property="og:title" content="Fixel — Snap it. Fix it.">
+<meta property="og:description" content="AI household-repair diagnosis and a guided, one-step-at-a-time fix. Free, in your browser.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ═════════ FIXEL DESIGN SYSTEM — modern workshop, self-contained ═════════ */
+:root{
+  --bg:#121110; --bg2:#171512; --panel:#1C1A16; --panel2:#232019;
+  --line:#2E2A23; --line-soft:#262219;
+  --off:#F3EFE6; --muted:#A79E90; --faint:#6F695E;
+  --orange:#F5631E; --orange-deep:#D14E12; --orange-glow:rgba(245,99,30,.35);
+  --bp:rgba(126,162,192,.09);
+  --ok:#57B879; --amber:#E2AC3B; --red:#E05243;
+  --font-head:"Bricolage Grotesque",system-ui,sans-serif;
+  --font-body:"Inter",system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--off);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;color:inherit}
+a{color:inherit}
+img{max-width:100%}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px;border-radius:6px}
+::selection{background:var(--orange);color:#1A0D04}
+.mono{font-family:var(--font-mono)}
+main{position:relative;z-index:1}
+section{padding:clamp(60px,8vw,104px) clamp(18px,5vw,48px);max-width:1220px;margin:0 auto;position:relative}
+
+.blueprint{position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:
+    linear-gradient(var(--bp) 1px, transparent 1px) 0 0/54px 54px,
+    linear-gradient(90deg, var(--bp) 1px, transparent 1px) 0 0/54px 54px;
+  mask:radial-gradient(90% 90% at 50% 30%, #000 30%, transparent 100%);
+}
+.blueprint.faint{opacity:.5}
+
+.eyebrow{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);display:inline-flex;align-items:center;gap:9px}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--orange);box-shadow:0 0 10px var(--orange-glow)}
+.eyebrow.center{justify-content:center;width:100%}
+.section-head{text-align:center;max-width:640px;margin:0 auto clamp(30px,4vw,48px);position:relative;z-index:1}
+.section-head.tight{margin-top:clamp(40px,6vw,64px)}
+h2{font-family:var(--font-head);font-weight:700;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.02em;line-height:1.08;margin:14px 0 12px}
+.section-sub{color:var(--muted);font-size:15px;line-height:1.65}
+
+/* ── buttons ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-weight:600;font-size:14px;
+  border-radius:12px;padding:12px 20px;border:1px solid var(--line);background:var(--panel);color:var(--off);
+  text-decoration:none;transition:transform .18s ease, background .2s, border-color .2s}
+.btn:hover{transform:translateY(-1px);border-color:#443E33}
+.btn-primary{background:var(--orange);border-color:var(--orange);color:#1A0D04;
+  box-shadow:0 12px 30px -12px var(--orange-glow), inset 0 1px 0 rgba(255,255,255,.25)}
+.btn-primary:hover{background:var(--orange-deep);border-color:var(--orange-deep)}
+.btn-outline{background:transparent}
+.btn-ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn-ghost:hover{color:var(--off);border-color:var(--line)}
+.btn-lg{padding:15px 24px;font-size:15px;border-radius:14px}
+.btn-block{width:100%}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+/* ── nav ── */
+.nav{position:sticky;top:0;z-index:80;border-bottom:1px solid var(--line-soft);
+  background:rgba(18,17,16,.82);backdrop-filter:blur(14px)}
+.nav-inner{max-width:1220px;margin:0 auto;display:flex;align-items:center;gap:24px;height:66px;padding:0 clamp(18px,5vw,48px)}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-head);font-weight:800;font-size:20px;letter-spacing:-.01em;text-decoration:none}
+.brand-mark{width:32px;height:32px;border-radius:9px;background:var(--orange);color:#1A0D04;display:flex;align-items:center;justify-content:center;transform:rotate(-4deg);box-shadow:0 0 22px var(--orange-glow)}
+.brand-mark.small{width:26px;height:26px;box-shadow:none}
+.nav-links{display:none;gap:26px;margin-left:6px}
+.nav-links a{text-decoration:none;font-size:13.5px;color:var(--muted);transition:color .2s}
+.nav-links a:hover{color:var(--off)}
+.nav-cta{margin-left:auto;display:flex;gap:10px;align-items:center}
+.nav-toggle{display:flex;flex-direction:column;gap:5px;background:none;border:none;padding:8px;margin-left:auto}
+.nav-toggle i{width:22px;height:2px;background:var(--off);border-radius:2px;transition:transform .25s, opacity .2s}
+.nav.open .nav-toggle i:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav.open .nav-toggle i:nth-child(2){opacity:0}
+.nav.open .nav-toggle i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.nav-mobile{display:none;flex-direction:column;padding:8px clamp(18px,5vw,48px) 18px;gap:4px;border-top:1px solid var(--line-soft)}
+.nav.open .nav-mobile{display:flex}
+.nav-mobile a{text-decoration:none;padding:11px 4px;color:var(--muted);font-size:15px;border-bottom:1px solid var(--line-soft)}
+@media(min-width:900px){
+  .nav-links{display:flex}
+  .nav-toggle{display:none}
+  .nav.open .nav-mobile{display:none}
+}
+
+/* ── hero ── */
+.hero{padding-top:clamp(48px,6vw,84px);display:grid;grid-template-columns:1fr;gap:44px;align-items:center}
+@media(min-width:980px){.hero{grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr)}}
+.hero-copy{position:relative;z-index:1}
+h1{font-family:var(--font-head);font-weight:800;letter-spacing:-.03em;font-size:clamp(34px,5.4vw,60px);line-height:1.02;margin:18px 0 16px}
+h1 .accent{color:var(--orange)}
+.lede{color:var(--muted);font-size:16px;line-height:1.7;max-width:52ch}
+.lede strong{color:var(--off)}
+.hero-cta{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap}
+.trust-strip{list-style:none;display:flex;gap:20px;flex-wrap:wrap;margin-top:22px}
+.trust-strip li{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.08em;color:var(--muted)}
+.trust-strip svg{width:14px;height:14px;stroke:var(--ok);stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── 3D hero stage ── */
+.hero-stage{position:relative;z-index:1}
+.stage-frame{position:relative;border:1px dashed var(--line);border-radius:20px;
+  background:radial-gradient(560px 360px at 50% 30%, rgba(245,99,30,.06), transparent 65%), var(--bg2);
+  min-height:clamp(360px,42vw,480px);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.stage-label{position:absolute;top:14px;left:16px;font-size:10px;letter-spacing:.2em;color:var(--faint);z-index:5}
+.stage-ticks .tick{position:absolute;width:14px;height:14px;border-color:var(--faint);border-style:solid;opacity:.7;z-index:5}
+.tick.tl{top:8px;left:8px;border-width:1.5px 0 0 1.5px}
+.tick.tr{top:8px;right:8px;border-width:1.5px 1.5px 0 0}
+.tick.bl{bottom:8px;left:8px;border-width:0 0 1.5px 1.5px}
+.tick.br{bottom:8px;right:8px;border-width:0 1.5px 1.5px 0}
+.stage-readout{position:absolute;left:16px;bottom:14px;z-index:5;font-size:10.5px;letter-spacing:.12em;color:var(--muted);display:flex;align-items:center;gap:8px}
+.rd-dot{width:7px;height:7px;border-radius:50%;background:var(--orange);display:inline-block;animation:pulse 1.6s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.legend3d{position:absolute;right:16px;bottom:14px;z-index:5;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;color:var(--faint);display:none;gap:12px}
+@media(min-width:640px){.legend3d{display:flex}}
+.legend3d b{color:var(--orange);font-weight:700}
+
+/* the 3D scene — RULE: transform-only animations inside; opacity/filter
+   animations on any ancestor of 3D children force flattening. Leaves only. */
+.scene3d{perspective:1500px;perspective-origin:50% 30%}
+.iso{transform-style:preserve-3d;transform:rotateX(60deg) scale(var(--z3,1))}
+@media(max-width:640px){.iso{--z3:.62}}
+@media(min-width:641px) and (max-width:1100px){.iso{--z3:.8}}
+.spin360{position:relative;width:220px;height:140px;transform-style:preserve-3d;animation:spin360 34s linear infinite}
+@keyframes spin360{from{transform:rotateZ(0)}to{transform:rotateZ(360deg)}}
+.bplate{position:absolute;left:-62px;top:-84px;width:344px;height:308px;border:1.5px dashed rgba(126,162,192,.32);border-radius:22px;transform:translateZ(-40px);
+  background:linear-gradient(rgba(126,162,192,.09) 1px, transparent 1px) 0 0/28px 28px,
+             linear-gradient(90deg, rgba(126,162,192,.09) 1px, transparent 1px) 0 0/28px 28px}
+.bplate::before{content:"+";position:absolute;left:10px;top:4px;color:rgba(126,162,192,.6);font-family:var(--font-mono)}
+.bplate::after{content:"+";position:absolute;right:10px;bottom:4px;color:rgba(126,162,192,.6);font-family:var(--font-mono)}
+.bring{position:absolute;left:14px;top:-22px;width:192px;height:184px;border:1px dashed rgba(245,99,30,.4);border-radius:50%;transform:translateZ(-38px)}
+.box{position:absolute;transform-style:preserve-3d}
+.part{position:absolute;transform-style:preserve-3d}
+.face{position:absolute}
+.f-top{left:0;top:0;width:var(--w);height:var(--d);transform:translateZ(var(--h));background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
+.f-top::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(0,0,0,.12));border-radius:inherit}
+.f-s{left:0;top:var(--d);width:var(--w);height:var(--h);transform-origin:top;transform:rotateX(90deg);background:var(--c)}
+.f-n{left:0;top:0;width:var(--w);height:var(--h);transform-origin:top;transform:rotateX(90deg);background:var(--c)}
+.f-e{left:var(--w);top:0;width:var(--h);height:var(--d);transform-origin:left;transform:rotateY(-90deg);background:var(--c)}
+.f-w{left:0;top:0;width:var(--h);height:var(--d);transform-origin:left;transform:rotateY(-90deg);background:var(--c)}
+.f-s::after,.f-n::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.16),rgba(0,0,0,.32));border-radius:inherit}
+.f-e::after,.f-w::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.32),rgba(0,0,0,.46));border-radius:inherit}
+.rd .face{border-radius:7px}
+/* breathing explode/assemble loop — each part rides its own Z keyframes */
+@keyframes riseTray{0%,14%{transform:translateZ(26px)}42%,66%{transform:translateZ(122px)}94%,100%{transform:translateZ(26px)}}
+@keyframes riseLid{0%,14%{transform:translateZ(56px)}42%,66%{transform:translateZ(198px)}94%,100%{transform:translateZ(56px)}}
+@keyframes riseHandle{0%,14%{transform:translateZ(74px)}42%,66%{transform:translateZ(262px)}94%,100%{transform:translateZ(74px)}}
+@keyframes dropScrews{0%,14%{transform:translateZ(2px)}42%,66%{transform:translateZ(-26px)}94%,100%{transform:translateZ(2px)}}
+.p-tray{animation:riseTray 9s cubic-bezier(.45,0,.2,1) infinite}
+.p-lid{animation:riseLid 9s cubic-bezier(.45,0,.2,1) infinite}
+.p-handle{animation:riseHandle 9s cubic-bezier(.45,0,.2,1) infinite}
+.p-screw{animation:dropScrews 9s cubic-bezier(.45,0,.2,1) infinite}
+/* scan plane — a LEAF, so its opacity animation cannot flatten any 3D children */
+.scan{position:absolute;left:-26px;top:-42px;width:272px;height:224px;border-radius:16px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(245,99,30,.16),rgba(245,99,30,.05));
+  border:1px solid rgba(245,99,30,.55);box-shadow:0 0 26px rgba(245,99,30,.25);
+  animation:scanZ 4.6s cubic-bezier(.4,0,.5,1) infinite}
+@keyframes scanZ{
+  0%{transform:translateZ(-30px);opacity:0}
+  8%{opacity:.9}
+  46%{transform:translateZ(288px);opacity:.9}
+  54%{opacity:0}
+  100%{transform:translateZ(-30px);opacity:0}
+}
+.stage-fallback{display:none;width:min(64%,240px)}
+/* graceful degrade: static schematic instead of 3D */
+@media(prefers-reduced-motion:reduce){
+  .scene3d{display:none}
+  .stage-fallback{display:block}
+}
+
+/* ── assistant console ── */
+.assistant .section-head{margin-bottom:26px}
+.console{position:relative;border:1px solid var(--line);border-radius:22px;overflow:hidden;
+  background:linear-gradient(180deg,var(--panel),var(--bg2));box-shadow:0 34px 90px -34px rgba(0,0,0,.8)}
+.console.dragging{border-color:var(--orange);box-shadow:0 0 0 3px rgba(245,99,30,.25), 0 34px 90px -34px rgba(0,0,0,.8)}
+.console-head{display:flex;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid var(--line-soft);flex-wrap:wrap;background:rgba(255,255,255,.015)}
+.lamp{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px rgba(87,184,121,.14),0 0 10px rgba(87,184,121,.7)}
+.console-head b{font-family:var(--font-head);font-size:16px}
+.console-sub{font-size:12.5px;color:var(--muted)}
+.quota{margin-left:auto;font-size:11px;letter-spacing:.1em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:6px 12px;background:var(--bg)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding:16px 20px 6px}
+.chip{border:1px solid var(--line);background:var(--bg);border-radius:99px;font-size:12.5px;font-weight:500;
+  color:var(--off);padding:8px 14px;transition:all .18s}
+.chip:hover{border-color:var(--orange);color:var(--orange)}
+.thread{display:flex;flex-direction:column;gap:16px;padding:10px 20px;max-height:560px;overflow-y:auto;scroll-behavior:smooth}
+.thread:empty{padding:0}
+.umsg{align-self:flex-end;max-width:84%;display:flex;flex-direction:column;align-items:flex-end;gap:7px;animation:msgin .3s ease}
+.umsg .bubble{background:var(--panel2);border:1px solid var(--line);color:var(--off);padding:11px 15px;border-radius:15px 15px 5px 15px;font-size:14px;line-height:1.55}
+.umsg img{max-width:200px;border-radius:12px;border:1px solid var(--line)}
+@keyframes msgin{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.typing{display:flex;gap:5px;padding:14px 17px;background:var(--panel2);border:1px solid var(--line);border-radius:15px;width:fit-content;animation:msgin .3s ease}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,70%,100%{opacity:.25}35%{opacity:1}}
+
+/* diagnosis card (in-thread) */
+.dx{background:var(--bg);border:1px solid var(--line);border-radius:18px;overflow:hidden;animation:msgin .35s ease}
+.dx-tape{height:7px}
+.dx-tape.easy_diy{background:repeating-linear-gradient(45deg,#3F7048 0 13px,#325A3A 13px 26px)}
+.dx-tape.diy_caution{background:repeating-linear-gradient(45deg,var(--amber) 0 13px,#C1912B 13px 26px)}
+.dx-tape.call_pro{background:repeating-linear-gradient(45deg,var(--red) 0 13px,#1A1815 13px 26px)}
+.dx-tape.unclear{background:repeating-linear-gradient(45deg,#5C564C 0 13px,#4A453D 13px 26px)}
+.dx-head{display:flex;align-items:flex-start;gap:14px;padding:18px 20px 4px;flex-wrap:wrap}
+.dx-title{font-family:var(--font-head);font-weight:700;font-size:19px;letter-spacing:-.02em;flex:1;min-width:170px}
+.verdict{font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.13em;white-space:nowrap;
+  padding:7px 12px;border:2px solid currentColor;border-radius:8px;transform:rotate(1.8deg)}
+.dx .verdict{animation:stamp .42s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes stamp{from{opacity:0;transform:rotate(13deg) scale(1.9)}to{opacity:1;transform:rotate(1.8deg) scale(1)}}
+.verdict.easy_diy{color:var(--ok);background:rgba(87,184,121,.09)}
+.verdict.diy_caution{color:var(--amber);background:rgba(226,172,59,.09)}
+.verdict.call_pro{color:var(--red);background:rgba(224,82,67,.09)}
+.verdict.unclear{color:var(--muted);background:rgba(167,158,144,.08)}
+.dx-diag{padding:8px 20px 2px;font-size:14px;line-height:1.68}
+.dx-reply{margin:10px 20px 4px;font-size:14px;line-height:1.65;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.dx-specs{display:flex;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:16px;flex-wrap:wrap}
+.spec{flex:1;min-width:110px;padding:12px 18px;border-right:1px solid var(--line)}
+.spec:last-child{border-right:none}
+.spec .k{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
+.spec .v{font-family:var(--font-head);font-weight:700;font-size:16px;margin-top:3px}
+.spec .v.save{color:var(--ok)}
+.dx-sec{padding:16px 20px 0}
+.dx-sec h4{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--faint);text-transform:uppercase;margin-bottom:10px}
+.toolchips{display:flex;gap:8px;flex-wrap:wrap}
+.toolchip{font-size:12.5px;border:1px solid var(--line);border-radius:9px;padding:7px 11px;background:var(--panel);display:flex;gap:8px;align-items:center}
+.toolchip .bx{width:12px;height:12px;border:1.5px solid var(--orange);border-radius:3px;flex:none}
+.toolchip.opt{opacity:.6}
+.dx-actions{display:flex;gap:10px;padding:18px 20px;flex-wrap:wrap}
+.why-pro{margin:14px 20px 0;border-left:3px solid var(--red);background:rgba(224,82,67,.07);border-radius:0 12px 12px 0;padding:13px 15px;font-size:13.5px;line-height:1.65}
+.pro-copy{margin:14px 20px 0;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px 16px;position:relative}
+.pro-copy h4{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--orange);margin-bottom:8px;text-transform:uppercase}
+.pro-copy p{font-size:13.5px;line-height:1.65;font-style:italic;padding-right:64px}
+.copy-btn{position:absolute;top:12px;right:12px;font-family:var(--font-mono);font-size:10.5px;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 10px}
+.copy-btn:hover{border-color:var(--orange);color:var(--orange)}
+.pro-links{margin:16px 20px 0}
+.pro-links h4{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--faint);margin-bottom:10px;text-transform:uppercase}
+.pro-links-row{display:flex;gap:9px;flex-wrap:wrap}
+.pro-link{text-decoration:none;border:1px solid var(--line);border-radius:11px;padding:10px 14px;font-size:13px;font-weight:600;background:var(--panel);display:flex;flex-direction:column;gap:2px;transition:all .18s;min-width:126px}
+.pro-link:hover{border-color:var(--red);transform:translateY(-2px)}
+.pro-link small{font-family:var(--font-mono);font-size:9px;color:var(--faint);font-weight:400;letter-spacing:.08em}
+.landlord{margin:12px 20px 0;font-size:12.5px;color:var(--muted);display:flex;gap:8px;line-height:1.55}
+.dx-foot{padding:14px 20px 16px;font-size:10.5px;color:var(--faint);font-style:italic}
+
+/* guided fix mode */
+.gfx{padding:18px 20px 20px;display:flex;flex-direction:column}
+.gfx-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.gfx-head .tagline3{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;color:var(--orange);text-transform:uppercase}
+.gfx-exit{margin-left:auto;background:none;border:none;color:var(--muted);font-family:var(--font-mono);font-size:11px}
+.gfx-exit:hover{color:var(--off)}
+.progress{height:8px;border-radius:99px;background:var(--panel);border:1px solid var(--line);overflow:hidden;margin-bottom:7px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--orange-deep),var(--orange));border-radius:99px;transition:width .4s cubic-bezier(.3,.8,.3,1);box-shadow:0 0 12px var(--orange-glow)}
+.gfx-count{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--faint);margin-bottom:16px}
+.gfx-step{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:22px;display:flex;flex-direction:column;gap:15px;position:relative;overflow:hidden}
+.gfx-step::before{content:attr(data-num);position:absolute;right:12px;top:0;font-family:var(--font-mono);font-weight:700;font-size:66px;color:rgba(245,99,30,.10);line-height:1.15}
+.gfx-instr{font-family:var(--font-head);font-weight:600;font-size:clamp(16px,2.1vw,20px);line-height:1.45;letter-spacing:-.01em;padding-right:44px}
+.gfx-safety{border-left:3px solid var(--amber);background:rgba(226,172,59,.08);border-radius:0 10px 10px 0;padding:10px 13px;font-size:12.5px;line-height:1.6}
+.gfx-safety b{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;color:var(--amber)}
+.gfx-check{display:flex;align-items:center;gap:11px;user-select:none;cursor:pointer;font-size:13.5px;font-weight:500}
+.gfx-check input{width:19px;height:19px;accent-color:var(--orange);cursor:pointer}
+.gfx-nav{display:flex;gap:10px;margin-top:16px}
+.gfx-nav .btn{flex:1}
+.gfx-done{text-align:center;padding:30px 14px}
+.gfx-done .big{font-size:40px;margin-bottom:10px}
+.gfx-done h3{font-family:var(--font-head);font-size:21px;margin-bottom:8px}
+.gfx-done p{color:var(--muted);font-size:13.5px;line-height:1.6;max-width:42ch;margin:0 auto 18px}
+
+/* ── composer (fixed) ── */
+.composer{position:relative;border-top:1px solid var(--line-soft);background:rgba(255,255,255,.015);padding:14px 20px 12px}
+.drop-hint{position:absolute;inset:6px;z-index:5;display:flex;align-items:center;justify-content:center;
+  border:2px dashed var(--orange);border-radius:16px;background:rgba(18,17,16,.88);
+  color:var(--orange);font-family:var(--font-head);font-weight:700;font-size:16px;pointer-events:none;
+  opacity:0;transition:opacity .15s}
+.console.dragging .drop-hint{opacity:1}
+.attach-preview{display:none;align-items:center;gap:11px;margin-bottom:12px;background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:8px 11px;width:fit-content;max-width:100%}
+.attach-preview.show{display:flex}
+.attach-preview img{width:44px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--line);flex:none;display:block}
+.attach-name{font-size:11.5px;color:var(--muted);letter-spacing:.04em;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.attach-remove{border:none;background:transparent;color:var(--muted);font-size:17px;line-height:1;padding:2px 5px}
+.attach-remove:hover{color:var(--off)}
+.composer-row{display:flex;gap:10px;align-items:flex-end}
+.icon-btn{width:46px;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--bg);display:flex;align-items:center;justify-content:center;transition:border-color .2s;flex:none;color:var(--muted)}
+.icon-btn:hover{border-color:var(--orange);color:var(--orange)}
+.composer textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:13px;padding:12px 15px;
+  font-family:inherit;font-size:16px;line-height:1.5;max-height:130px;background:var(--bg);color:var(--off)}
+.composer textarea::placeholder{color:var(--faint)}
+.composer textarea:focus{outline:none;border-color:var(--orange)}
+.send-btn{height:46px;padding:0 18px;border-radius:12px;flex:none}
+.composer-foot{margin-top:10px;font-size:10px;letter-spacing:.06em;color:var(--faint);text-align:center}
+
+/* legend */
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:26px}
+.legend-card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:16px 18px}
+.legend-card .verdict{display:inline-block;margin-bottom:10px;font-size:9.5px}
+.legend-card p{font-size:12.5px;color:var(--muted);line-height:1.6}
+
+/* ── features ── */
+.feature-grid{display:grid;grid-template-columns:1fr;gap:18px;perspective:1200px}
+@media(min-width:840px){.feature-grid{grid-template-columns:repeat(3,1fr)}}
+.tilt{transform-style:preserve-3d;transition:transform .18s ease;will-change:transform}
+.feature-card{background:linear-gradient(165deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:18px}
+.feature-card.is-featured{border-color:rgba(245,99,30,.5);background:linear-gradient(180deg,rgba(245,99,30,.09),var(--panel) 44%)}
+.tilt-inner{padding:26px;transform-style:preserve-3d}
+.feature-ico{width:52px;height:52px;border-radius:14px;background:var(--bg);border:1px solid var(--line);color:var(--orange);
+  display:flex;align-items:center;justify-content:center;margin-bottom:16px;transform:translateZ(28px);box-shadow:0 10px 24px -10px rgba(0,0,0,.7)}
+.feature-ico svg{width:24px;height:24px}
+.feature-tag{display:block;font-size:10px;letter-spacing:.2em;color:var(--faint);margin-bottom:8px;transform:translateZ(20px)}
+.feature-card h3{font-family:var(--font-head);font-size:18px;letter-spacing:-.01em;margin-bottom:9px;transform:translateZ(20px)}
+.feature-card p{font-size:13.5px;color:var(--muted);line-height:1.66;transform:translateZ(12px)}
+
+/* ── how (timeline) ── */
+.timeline{list-style:none;display:grid;grid-template-columns:1fr;gap:22px;position:relative;z-index:1}
+@media(min-width:840px){.timeline{grid-template-columns:repeat(3,1fr)}}
+.tstep{display:flex;flex-direction:column;gap:12px}
+.tstep-rail{display:flex;align-items:center;gap:12px}
+.tstep-num{font-weight:700;font-size:12px;color:var(--orange);border:1.5px solid var(--orange);border-radius:8px;padding:5px 10px;letter-spacing:.14em}
+.tstep-rail::after{content:"";flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--line) 0 7px, transparent 7px 13px)}
+.tstep:last-child .tstep-rail::after{background:none}
+.tstep-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;flex:1}
+.schematic{height:118px;border:1px dashed var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;color:var(--muted);background:rgba(255,255,255,.014)}
+.schematic svg{width:110px;height:86px}
+.tstep-card h3{font-family:var(--font-head);font-size:17px;margin-bottom:7px}
+.tstep-card p{font-size:13.5px;color:var(--muted);line-height:1.62}
+
+/* ── proof ── */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+.metric{border:1px solid var(--line);border-radius:16px;padding:22px;background:var(--panel);text-align:center}
+.metric-num{display:block;font-weight:700;font-size:clamp(26px,3vw,36px);color:var(--orange);letter-spacing:-.02em}
+.metric-label{font-size:12px;color:var(--muted);margin-top:7px;display:block;line-height:1.5}
+.quote-grid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:840px){.quote-grid{grid-template-columns:repeat(3,1fr)}}
+.quote-card{border:1px solid var(--line);border-radius:16px;padding:22px;background:linear-gradient(165deg,var(--panel),var(--bg2))}
+.quote-card blockquote{font-size:14px;line-height:1.66}
+.quote-card figcaption{display:flex;align-items:center;gap:11px;margin-top:16px}
+.q-av{width:36px;height:36px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);color:var(--orange);
+  font-family:var(--font-mono);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.quote-card b{font-size:13px;display:block}
+.quote-card small{font-size:11px;color:var(--faint);font-family:var(--font-mono);letter-spacing:.06em}
+.proof-note{margin-top:18px;text-align:center;font-size:10px;color:var(--faint);letter-spacing:.08em}
+
+/* ── pricing ── */
+.bill-toggle{display:flex;justify-content:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:5px;width:fit-content;margin:0 auto 30px}
+.bill-opt{border:none;background:transparent;color:var(--muted);font-weight:600;font-size:13px;padding:9px 18px;border-radius:99px;display:flex;align-items:center;gap:8px;transition:all .2s}
+.bill-opt.is-active{background:var(--orange);color:#1A0D04}
+.save-badge{font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;border:1px solid currentColor;border-radius:99px;padding:2px 7px}
+.tier-grid{display:grid;grid-template-columns:1fr;gap:18px;align-items:stretch}
+@media(min-width:900px){.tier-grid{grid-template-columns:repeat(3,1fr)}}
+.tier{border:1px solid var(--line);border-radius:20px;padding:28px;background:var(--panel);display:flex;flex-direction:column;position:relative}
+.tier.is-popular{border-color:var(--orange);background:linear-gradient(180deg,rgba(245,99,30,.10),var(--panel) 44%);box-shadow:0 26px 64px -26px var(--orange-glow)}
+.popular-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:9.5px;letter-spacing:.16em;background:var(--orange);color:#1A0D04;font-weight:700;border-radius:99px;padding:5px 13px}
+.tier-name{font-family:var(--font-head);font-size:17px}
+.tier-desc{font-size:12.5px;color:var(--muted);margin-top:5px;min-height:32px}
+.tier-price{display:flex;align-items:baseline;gap:3px;margin:16px 0 4px}
+.tier-price .cur{font-size:19px;color:var(--muted)}
+.tier-price .amt{font-family:var(--font-head);font-weight:800;font-size:44px;letter-spacing:-.03em}
+.tier-price .per{font-size:13px;color:var(--muted)}
+.tier-billed{font-size:10px;color:var(--faint);letter-spacing:.1em;margin-bottom:14px;min-height:14px}
+.tier .btn{margin:8px 0 18px}
+.tier-feats{list-style:none;display:flex;flex-direction:column;gap:10px}
+.tier-feats li{font-size:13.5px;display:flex;gap:9px;line-height:1.5}
+.tier-feats li::before{content:"—";color:var(--orange);font-weight:700}
+.pricing-note{margin-top:20px;text-align:center;font-size:10px;color:var(--faint);letter-spacing:.08em}
+
+/* ── final CTA & footer ── */
+.cta-final{text-align:center}
+.cta-inner{position:relative;z-index:1}
+.cta-final h2{font-size:clamp(26px,4vw,42px)}
+.cta-final p{color:var(--muted);margin-bottom:26px}
+.cta-trust{margin-top:16px;font-size:10.5px;letter-spacing:.14em;color:var(--faint)}
+.footer{border-top:1px solid var(--line-soft);padding:44px clamp(18px,5vw,48px) 30px;max-width:1220px;margin:0 auto}
+.footer-top{display:flex;flex-wrap:wrap;gap:36px;justify-content:space-between}
+.footer-brand{max-width:300px}
+.brand-name{font-family:var(--font-head);font-weight:800;font-size:19px;margin-left:8px}
+.footer-tag{color:var(--muted);font-size:13px;margin-top:10px;line-height:1.6}
+.footer-cols{display:flex;gap:48px;flex-wrap:wrap}
+.footer-cols h4{font-size:10.5px;letter-spacing:.18em;color:var(--faint);text-transform:uppercase;margin-bottom:12px}
+.footer-cols a{display:block;text-decoration:none;color:var(--muted);font-size:13px;padding:4px 0}
+.footer-cols a:hover{color:var(--off)}
+.footer-bar{border-top:1px solid var(--line-soft);margin-top:32px;padding-top:18px;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-size:11.5px;color:var(--faint)}
+.footer-bar strong{color:var(--muted)}
+
+/* reveal on scroll */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.3,1)}
+.rv.on{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;transition:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand" data-scroll>
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a4.6 4.6 0 0 0-6.1 5.7L3 17.6V21h3.4l5.6-5.6a4.6 4.6 0 0 0 5.7-6.1L14.2 12.7l-2.6-.5-.5-2.6 3.6-3.3Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>
+      </span>
+      <span data-brand>Fixel</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#assistant" data-scroll>Live demo</a>
+      <a href="#features" data-scroll>Why it's different</a>
+      <a href="#how" data-scroll>How it works</a>
+      <a href="#pricing" data-scroll>Pricing</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#assistant" class="btn btn-primary" data-scroll>Diagnose free</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false"><i></i><i></i><i></i></button>
+  </div>
+  <nav class="nav-mobile">
+    <a href="#assistant" data-scroll>Live demo</a>
+    <a href="#features" data-scroll>Why it's different</a>
+    <a href="#how" data-scroll>How it works</a>
+    <a href="#pricing" data-scroll>Pricing</a>
+  </nav>
+</header>
+
+<main>
+<section class="hero" id="top">
+  <div class="blueprint" aria-hidden="true"></div>
+
+  <div class="hero-copy">
+    <span class="eyebrow"><span class="dot"></span> Everyday repair help · Free · No login</span>
+    <h1>Snap it. <span class="accent">Fix it.</span><br>Skip the 40-minute<br>YouTube tutorial.</h1>
+    <p class="lede">Show <span data-brand>Fixel</span> a photo or just describe what's wrong. In seconds you get a real diagnosis, an honest risk verdict, and a <strong>guided, one-step-at-a-time fix</strong> — not a wall of text you have to decode mid-repair.</p>
+    <div class="hero-cta">
+      <a href="#assistant" class="btn btn-primary btn-lg" data-scroll>
+        Diagnose my problem — free
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#how" class="btn btn-ghost btn-lg" data-scroll>See how it works</a>
+    </div>
+    <ul class="trust-strip" aria-label="Why it's easy to try">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> No download</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> No signup</li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Works in your browser</li>
+    </ul>
+  </div>
+
+  <div class="hero-stage" id="heroStage">
+    <div class="stage-frame">
+      <div class="stage-ticks" aria-hidden="true">
+        <span class="tick tl"></span><span class="tick tr"></span>
+        <span class="tick bl"></span><span class="tick br"></span>
+      </div>
+      <div class="stage-label mono">FIG.01 — TOOLBOX ASSY · LIVE TEARDOWN</div>
+
+      <!-- animated CSS-3D exploded view: disassembles, gets "scanned", reassembles -->
+      <div class="scene3d" aria-hidden="true">
+        <div class="iso">
+          <div class="spin360">
+            <div class="bplate"></div>
+            <div class="bring"></div>
+
+            <!-- fasteners ×4 -->
+            <div class="part p-screw" style="left:34px;top:18px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
+            <div class="part p-screw" style="left:174px;top:18px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
+            <div class="part p-screw" style="left:34px;top:110px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
+            <div class="part p-screw" style="left:174px;top:110px"><div class="box rd" style="--w:12px;--d:12px;--h:9px;--c:#8B8478"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
+
+            <!-- chassis (static base) -->
+            <div class="part" style="left:10px;top:15px">
+              <div class="box rd" style="--w:200px;--d:110px;--h:56px;--c:#D8481F">
+                <div class="face f-top" style="background:linear-gradient(135deg,#F0602E,#D8481F)"></div>
+                <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+              </div>
+            </div>
+            <!-- tray -->
+            <div class="part p-tray" style="left:28px;top:31px">
+              <div class="box rd" style="--w:164px;--d:78px;--h:16px;--c:#7C8790">
+                <div class="face f-top" style="background:linear-gradient(135deg,#98A3AC,#7C8790)"></div>
+                <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+              </div>
+            </div>
+            <!-- lid -->
+            <div class="part p-lid" style="left:10px;top:15px">
+              <div class="box rd" style="--w:200px;--d:110px;--h:18px;--c:#B93A16">
+                <div class="face f-top" style="background:linear-gradient(135deg,#E4551A,#B93A16)"></div>
+                <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+              </div>
+            </div>
+            <!-- handle -->
+            <div class="part p-handle" style="left:76px;top:52px">
+              <div class="box rd" style="--w:68px;--d:16px;--h:14px;--c:#242019">
+                <div class="face f-top" style="background:#2F2A22"></div>
+                <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+              </div>
+            </div>
+
+            <!-- AI scan plane (leaf node — opacity animation is safe here) -->
+            <div class="scan"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- static fallback for reduced-motion / low-power -->
+      <svg class="stage-fallback" viewBox="0 0 220 260" aria-hidden="true">
+        <g fill="none" stroke="#E7E2D6" stroke-width="2" opacity=".9" stroke-linejoin="round">
+          <rect x="72" y="18" width="76" height="18" rx="6"/>
+          <rect x="46" y="66" width="128" height="24" rx="6"/>
+          <rect x="58" y="122" width="104" height="18" rx="5"/>
+          <rect x="42" y="172" width="136" height="52" rx="8"/>
+        </g>
+        <g stroke="#F5631E" stroke-width="2" stroke-dasharray="3 5" opacity=".8">
+          <line x1="110" y1="36" x2="110" y2="66"/><line x1="110" y1="90" x2="110" y2="122"/><line x1="110" y1="140" x2="110" y2="172"/>
+        </g>
+      </svg>
+
+      <div class="stage-readout mono" id="stageReadout">
+        <span class="rd-dot"></span><span id="readoutText">analysing components…</span>
+      </div>
+      <div class="legend3d" aria-hidden="true">
+        <span><b>01</b> HANDLE</span><span><b>02</b> LID</span><span><b>03</b> TRAY</span><span><b>04</b> CHASSIS</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="assistant" id="assistant">
+  <div class="section-head">
+    <span class="eyebrow center"><span class="dot"></span> Live · this is the real product</span>
+    <h2>Show us what's broken.</h2>
+    <p class="section-sub">Upload a photo, describe it, or both. You'll get a diagnosis card and — when it's safe to DIY — a guided walkthrough. When it isn't, an honest "call a pro" with the exact words to say.</p>
+  </div>
+
+  <div class="console" id="console">
+    <div class="drop-hint" aria-hidden="true">Drop your photo to attach it</div>
+    <div class="console-head">
+      <span class="lamp" aria-hidden="true"></span>
+      <b>Repair Assistant</b>
+      <span class="console-sub">Describe it, photograph it, or both — follow-ups welcome.</span>
+      <span class="quota mono" id="quota" aria-live="polite"></span>
+    </div>
+
+    <div class="chips" id="chips" aria-label="Example problems">
+      <button class="chip" data-q="My toilet keeps running for a few minutes after every flush. I'm renting — is this my problem or the landlord's?">🚽 Toilet won't stop running</button>
+      <button class="chip" data-q="My kitchen tap drips steadily even when it's fully closed.">💧 Dripping tap</button>
+      <button class="chip" data-q="My bedroom door squeaks loudly every time it opens.">🚪 Squeaky door hinge</button>
+      <button class="chip" data-q="My bathroom sink drains really slowly and gurgles. It's been getting worse for two weeks.">🪠 Slow, gurgling drain</button>
+      <button class="chip" data-q="There's a light switch in my hallway that sparks and buzzes when I flip it. Can I fix that myself?">⚡ Sparking light switch</button>
+      <button class="chip" data-q="There's a crack in my wall near the ceiling that seems to be getting longer.">🧱 Growing wall crack</button>
+    </div>
+
+    <div class="thread" id="thread" aria-live="polite"></div>
+
+    <div class="composer">
+      <div class="attach-preview" id="attachPreview">
+        <img id="attachThumb" alt="Attached photo preview">
+        <span class="attach-name mono" id="attachName">photo.jpg</span>
+        <button id="attachRemove" class="attach-remove" aria-label="Remove attached photo">×</button>
+      </div>
+      <div class="composer-row">
+        <button class="icon-btn" id="attachBtn" title="Add a photo of the problem" aria-label="Add a photo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 16l4.6-5.2a2 2 0 0 1 3 0L16 16m-2-2 1.6-1.8a2 2 0 0 1 3 0L20 13.6M4 20h16a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="8.5" r="1.5" fill="#F5631E"/></svg>
+        </button>
+        <textarea id="input" rows="1" placeholder="e.g. “my washing machine shakes violently on spin” — or add a photo"></textarea>
+        <button class="btn btn-primary send-btn" id="sendBtn">
+          Diagnose
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <p class="composer-foot mono">📷 On your phone the camera opens straight away · JPG / PNG / WebP · max 8 MB</p>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-card rv"><span class="verdict easy_diy">EASY DIY</span><p>Ordinary tools, no real risk. You get numbered steps, a tool checklist, and honest time &amp; savings estimates.</p></div>
+    <div class="legend-card rv"><span class="verdict diy_caution">DIY WITH CAUTION</span><p>Doable, but there's a way to make it worse. Every step carries its own warning and a clear "stop here" line.</p></div>
+    <div class="legend-card rv"><span class="verdict call_pro">CALL A PRO</span><p>Electrical beyond a switch plate, gas, structural, injury risk — never DIY steps. You get the likely cause, a word-for-word script, and real links to a licensed pro.</p></div>
+    <div class="legend-card rv"><span class="verdict unclear">NEED MORE INFO</span><p>If a photo is too dark or a description too vague to triage safely, <span data-brand>Fixel</span> says so and asks — it never guesses on safety.</p></div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="section-head">
+    <span class="eyebrow center"><span class="dot"></span> Why it's different</span>
+    <h2>Not another photo-to-wall-of-text app.</h2>
+    <p class="section-sub">Three things the app-store crowd doesn't do.</p>
+  </div>
+  <div class="feature-grid">
+    <article class="feature-card tilt rv"><div class="tilt-inner">
+      <div class="feature-ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8V6a2 2 0 0 1 2-2h2m8 0h2a2 2 0 0 1 2 2v2m0 8v2a2 2 0 0 1-2 2h-2m-8 0H6a2 2 0 0 1-2-2v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="3.4" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="7.2" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 3" opacity=".6"/></svg></div>
+      <span class="feature-tag mono">01 · DIAGNOSE</span>
+      <h3>Instant photo diagnosis</h3>
+      <p>Point your camera at the problem. An answer in seconds — the likely cause, severity, time and cost — instead of a YouTube rabbit hole and 12 half-matching thumbnails.</p>
+    </div></article>
+    <article class="feature-card tilt is-featured rv"><div class="tilt-inner">
+      <div class="feature-ico"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".35"/><path d="M5 12h6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="5" cy="12" r="2.4" fill="currentColor"/><circle cx="12" cy="12" r="2.4" stroke="currentColor" stroke-width="1.8"/><circle cx="19" cy="12" r="2.4" stroke="currentColor" stroke-width="1.8" opacity=".5"/></svg></div>
+      <span class="feature-tag mono">02 · GUIDE</span>
+      <h3>Guided Fix Mode</h3>
+      <p>The differentiator. One step at a time, in big readable text — with a progress bar, the tools you need for <em>this</em> step, and a safety check built right into the flow. Follow it one-handed while you work.</p>
+    </div></article>
+    <article class="feature-card tilt rv"><div class="tilt-inner">
+      <div class="feature-ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.2-2.8 7.6-7 9-4.2-1.4-7-4.8-7-9V6l7-3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.5 12.2 11.3 14l3.4-3.6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <span class="feature-tag mono">03 · TRIAGE</span>
+      <h3>Honest triage</h3>
+      <p>It tells you when <em>not</em> to DIY — and hands you a ready-to-send paragraph describing the issue for your tradesperson, plus links to find one. No pretending everything's fixable.</p>
+    </div></article>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="blueprint faint" aria-hidden="true"></div>
+  <div class="section-head">
+    <span class="eyebrow center"><span class="dot"></span> Three steps</span>
+    <h2>Snap → Diagnose → Fix or refer.</h2>
+    <p class="section-sub">From "what is that noise" to "sorted" without opening a single browser tab.</p>
+  </div>
+  <ol class="timeline">
+    <li class="tstep rv">
+      <div class="tstep-rail"><span class="tstep-num mono">01</span></div>
+      <div class="tstep-card tilt"><div class="tilt-inner">
+        <div class="schematic"><svg viewBox="0 0 120 90" fill="none"><rect x="18" y="16" width="84" height="58" rx="8" stroke="currentColor" stroke-width="2"/><circle cx="60" cy="45" r="15" stroke="currentColor" stroke-width="2"/><circle cx="60" cy="45" r="6" fill="#F5631E"/><rect x="46" y="8" width="28" height="10" rx="3" stroke="currentColor" stroke-width="2"/><path d="M12 45h6M102 45h6M60 74v6" stroke="#F5631E" stroke-width="2" stroke-dasharray="2 3"/></svg></div>
+        <h3>Snap or describe</h3>
+        <p>Photograph the leak, the crack, the part that won't budge — or type a sentence. Both is best.</p>
+      </div></div>
+    </li>
+    <li class="tstep rv">
+      <div class="tstep-rail"><span class="tstep-num mono">02</span></div>
+      <div class="tstep-card tilt"><div class="tilt-inner">
+        <div class="schematic"><svg viewBox="0 0 120 90" fill="none"><path d="M24 66V30l18-12 18 12v36" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M60 66V24l18-8 18 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round" opacity=".5"/><circle cx="42" cy="40" r="4" fill="#F5631E"/><path d="M14 74h92" stroke="currentColor" stroke-width="2"/><path d="M78 34l4 4 8-9" stroke="#F5631E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Get a verdict</h3>
+        <p>A diagnosis card lands: what's wrong, how risky, how long, and what you'll save versus a call-out.</p>
+      </div></div>
+    </li>
+    <li class="tstep rv">
+      <div class="tstep-rail"><span class="tstep-num mono">03</span></div>
+      <div class="tstep-card tilt"><div class="tilt-inner">
+        <div class="schematic"><svg viewBox="0 0 120 90" fill="none"><path d="M20 24h34v42H20zM66 24h34v42H66z" stroke="currentColor" stroke-width="2"/><path d="M27 36h20M27 46h20M27 56h12" stroke="#F5631E" stroke-width="2" stroke-linecap="round"/><path d="M73 45l6 6 14-16" stroke="#F5631E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Fix it — or refer it</h3>
+        <p>Safe? Launch Guided Fix Mode. Not safe? Copy the pro script and find a licensed local pro.</p>
+      </div></div>
+    </li>
+  </ol>
+</section>
+
+<section class="proof">
+  <div class="metrics">
+    <div class="metric rv"><span class="metric-num mono" data-count="180" data-prefix="$">$0</span><span class="metric-label">avg. saved per fix vs. a call-out<sup>*</sup></span></div>
+    <div class="metric rv"><span class="metric-num mono" data-count="9" data-suffix="s">0s</span><span class="metric-label">average time to first diagnosis<sup>*</sup></span></div>
+    <div class="metric rv"><span class="metric-num mono" data-count="100" data-suffix="%">0%</span><span class="metric-label">of high-risk jobs routed to a pro</span></div>
+  </div>
+  <div class="section-head tight">
+    <span class="eyebrow center"><span class="dot"></span> Early users</span>
+    <h2>Fixed it themselves. Felt like a genius.</h2>
+  </div>
+  <div class="quote-grid">
+    <figure class="quote-card rv">
+      <blockquote>"Fixed my running toilet in 12 minutes. The step-by-step thing meant I never had to put my phone down and scrub back through a video."</blockquote>
+      <figcaption><span class="q-av">JM</span><span><b>Jordan M.</b><small>Renter · Sydney</small></span></figcaption>
+    </figure>
+    <figure class="quote-card rv">
+      <blockquote>"It told me the sparking outlet was a hard no and gave me a paragraph to text my electrician. Saved me from doing something stupid."</blockquote>
+      <figcaption><span class="q-av">PA</span><span><b>Priya A.</b><small>First-home owner</small></span></figcaption>
+    </figure>
+    <figure class="quote-card rv">
+      <blockquote>"Saved $180 on a service call for a dishwasher that just had a blocked filter. Photo, answer, done — no signup, no app."</blockquote>
+      <figcaption><span class="q-av">DT</span><span><b>Dane T.</b><small>Landlord · 3 properties</small></span></figcaption>
+    </figure>
+  </div>
+  <p class="proof-note mono">* Illustrative placeholders — structured so real usage data drops straight in.</p>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="section-head">
+    <span class="eyebrow center"><span class="dot"></span> Pricing</span>
+    <h2>Start free. Upgrade when it pays for itself.</h2>
+    <p class="section-sub">One avoided call-out covers a year of Pro.</p>
+  </div>
+  <div class="bill-toggle" role="group" aria-label="Billing period">
+    <button class="bill-opt is-active" data-bill="monthly" aria-pressed="true">Monthly</button>
+    <button class="bill-opt" data-bill="yearly" aria-pressed="false">Yearly <span class="save-badge">Save 20%</span></button>
+  </div>
+  <div class="tier-grid">
+    <article class="tier rv">
+      <h3 class="tier-name">Free</h3>
+      <p class="tier-desc">For the occasional "what is that?"</p>
+      <div class="tier-price"><span class="cur">$</span><span class="amt" data-price data-monthly="0" data-yearly="0">0</span><span class="per">/mo</span></div>
+      <p class="tier-billed mono" data-billed>free forever</p>
+      <a href="#assistant" class="btn btn-outline btn-block" data-scroll>Start free</a>
+      <ul class="tier-feats">
+        <li>3 diagnoses / month</li>
+        <li>Full diagnosis cards</li>
+        <li>Guided Fix Mode</li>
+        <li>Pro-referral scripts &amp; links</li>
+      </ul>
+    </article>
+    <article class="tier is-popular rv">
+      <span class="popular-badge mono">MOST POPULAR</span>
+      <h3 class="tier-name">Pro</h3>
+      <p class="tier-desc">For the household fixer-upper.</p>
+      <div class="tier-price"><span class="cur">$</span><span class="amt" data-price data-monthly="9" data-yearly="7">9</span><span class="per">/mo</span></div>
+      <p class="tier-billed mono" data-billed>billed monthly</p>
+      <a href="#assistant" class="btn btn-primary btn-block" data-scroll>Go Pro</a>
+      <ul class="tier-feats">
+        <li><b>Unlimited</b> diagnoses</li>
+        <li>Saved repair history</li>
+        <li>Re-open any past fix</li>
+        <li>Priority diagnosis engine</li>
+        <li>Everything in Free</li>
+      </ul>
+    </article>
+    <article class="tier rv">
+      <h3 class="tier-name">Household</h3>
+      <p class="tier-desc">For landlords &amp; multi-property homes.</p>
+      <div class="tier-price"><span class="cur">$</span><span class="amt" data-price data-monthly="24" data-yearly="19">24</span><span class="per">/mo</span></div>
+      <p class="tier-billed mono" data-billed>billed monthly</p>
+      <a href="#assistant" class="btn btn-outline btn-block" data-scroll>Choose Household</a>
+      <ul class="tier-feats">
+        <li>Multiple properties</li>
+        <li>Shareable diagnosis reports</li>
+        <li>Tenant-friendly summaries</li>
+        <li>Everything in Pro</li>
+      </ul>
+    </article>
+  </div>
+  <p class="pricing-note mono">Buttons are placeholders — no payment is taken in this MVP.</p>
+</section>
+
+<section class="cta-final">
+  <div class="blueprint" aria-hidden="true"></div>
+  <div class="cta-inner">
+    <h2>Something's broken right now, isn't it?</h2>
+    <p>Point your phone at it. You'll know how bad it is before you touch a thing.</p>
+    <a href="#assistant" class="btn btn-primary btn-lg" data-scroll>
+      Diagnose my problem — free
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12h15m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="cta-trust mono">no download · no signup · works in your browser</p>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <span class="brand-mark small" aria-hidden="true" style="display:inline-flex;vertical-align:middle">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a4.6 4.6 0 0 0-6.1 5.7L3 17.6V21h3.4l5.6-5.6a4.6 4.6 0 0 0 5.7-6.1L14.2 12.7l-2.6-.5-.5-2.6 3.6-3.3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      </span><span class="brand-name" data-brand>Fixel</span>
+      <p class="footer-tag" data-tagline>Snap it. Fix it. Skip the 40-minute tutorial.</p>
+    </div>
+    <div class="footer-cols">
+      <div><h4 class="mono">Product</h4><a href="#assistant" data-scroll>Diagnose</a><a href="#how" data-scroll>How it works</a><a href="#pricing" data-scroll>Pricing</a></div>
+      <div><h4 class="mono">Company</h4><a href="#top" data-scroll>About</a><a href="#top" data-scroll>Contact</a><a href="#top" data-scroll>Careers</a></div>
+      <div><h4 class="mono">Legal</h4><a href="#top" data-scroll>Privacy</a><a href="#top" data-scroll>Terms</a><a href="#top" data-scroll>Safety policy</a></div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <p><strong>Guidance only</strong> — not a substitute for a professional inspection. Renters: some repairs are legally your landlord's responsibility.</p>
+    <p class="mono">© <span id="year">2026</span> <span data-brand>Fixel</span> · MVP · v1.0</p>
+  </div>
+</footer>
+
+<input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" capture="environment" hidden>
+<script>
+"use strict";
+/* ═══════════ CONFIG (was js/config.js) — edit here only ═══════════ */
+const CONFIG = {
+  BRAND: "Fixel",                       // ← swap the product name in ONE place
+  TAGLINE: "Snap it. Fix it. Skip the 40-minute tutorial.",
+  FREE_CHECKS: 3,                       // demo session cap (client-side; server also rate-limits)
+  MAX_MB: 8,
+  API_ENDPOINT: "/api/diagnose",
+  PRO_LINKS: {                          // configurable referral list — swap for partner URLs later
+    electrician: [
+      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"https://www.thumbtack.com/" },
+      { label:"Angi",      sub:"US · VETTED PROS",  url:"https://www.angi.com/" },
+      { label:"hipages",   sub:"AU · 3 QUOTES",     url:"https://hipages.com.au/find/electricians" },
+    ],
+    plumber: [
+      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"https://www.thumbtack.com/" },
+      { label:"Angi",      sub:"US · VETTED PROS",  url:"https://www.angi.com/" },
+      { label:"hipages",   sub:"AU · 3 QUOTES",     url:"https://hipages.com.au/find/plumbers" },
+    ],
+    hvac: [
+      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"https://www.thumbtack.com/" },
+      { label:"Angi",      sub:"US · VETTED PROS",  url:"https://www.angi.com/" },
+    ],
+    general: [
+      { label:"Thumbtack", sub:"US · GET QUOTES",   url:"https://www.thumbtack.com/" },
+      { label:"Airtasker", sub:"AU · POST THE JOB", url:"https://www.airtasker.com/au/" },
+    ],
+  },
+};
+const PRO_TITLE = { electrician:"electrician", plumber:"plumber", hvac:"HVAC technician", general:"tradesperson" };
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+/* brand + year */
+document.querySelectorAll("[data-brand]").forEach(el => el.textContent = CONFIG.BRAND);
+document.querySelectorAll("[data-tagline]").forEach(el => el.textContent = CONFIG.TAGLINE);
+$("year").textContent = new Date().getFullYear();
+
+/* ═══════════ nav ═══════════ */
+const nav = $("nav");
+$("navToggle").addEventListener("click", () => {
+  const open = nav.classList.toggle("open");
+  $("navToggle").setAttribute("aria-expanded", String(open));
+});
+document.querySelectorAll("[data-scroll]").forEach(a => a.addEventListener("click", () => nav.classList.remove("open")));
+
+/* ═══════════ reveal + metric count-up ═══════════ */
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if(!e.isIntersecting) return;
+  e.target.classList.add("on");
+  e.target.querySelectorAll("[data-count]").forEach(countUp);
+  if(e.target.hasAttribute("data-count")) countUp(e.target);
+  io.unobserve(e.target);
+}), { threshold:.16 });
+document.querySelectorAll(".rv, .metric").forEach(el => io.observe(el));
+function countUp(el){
+  if(el._counted) return; el._counted = true;
+  const end = +el.dataset.count, pre = el.dataset.prefix || "", suf = el.dataset.suffix || "";
+  if(reduced){ el.textContent = pre + end + suf; return; }
+  const t0 = performance.now(), dur = 1100;
+  (function tick(t){
+    const k = Math.min(1, (t - t0) / dur), v = Math.round(end * (1 - Math.pow(1 - k, 3)));
+    el.textContent = pre + v + suf;
+    if(k < 1) requestAnimationFrame(tick);
+  })(t0);
+}
+
+/* ═══════════ tilt cards ═══════════ */
+document.querySelectorAll(".tilt").forEach(card => {
+  card.addEventListener("pointermove", e => {
+    if(e.pointerType === "touch" || reduced) return;
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left)/r.width - .5, y = (e.clientY - r.top)/r.height - .5;
+    card.style.transform = `rotateY(${x*10}deg) rotateX(${-y*10}deg)`;
+  });
+  card.addEventListener("pointerleave", () => card.style.transform = "");
+});
+
+/* ═══════════ pricing toggle ═══════════ */
+document.querySelectorAll(".bill-opt").forEach(btn => btn.addEventListener("click", () => {
+  const yearly = btn.dataset.bill === "yearly";
+  document.querySelectorAll(".bill-opt").forEach(b => {
+    const on = b === btn;
+    b.classList.toggle("is-active", on);
+    b.setAttribute("aria-pressed", String(on));
+  });
+  document.querySelectorAll("[data-price]").forEach(p => p.textContent = yearly ? p.dataset.yearly : p.dataset.monthly);
+  document.querySelectorAll("[data-billed]").forEach(p => {
+    if(p.textContent.includes("free")) return;
+    p.textContent = yearly ? "per month, billed yearly" : "billed monthly";
+  });
+}));
+
+/* ═══════════ hero readout ticker (was js/hero-3d.js) ═══════════ */
+(() => {
+  const lines = [
+    "analysing components…",
+    "isolating fault: lid hinge — play detected",
+    "checking fastener torque ×4 … OK",
+    `verdict: EASY DIY · 3 steps · ~10 min`,
+    "reassembling…",
+  ];
+  let i = 0;
+  const el = $("readoutText");
+  if(!el || reduced) return;
+  setInterval(() => { i = (i + 1) % lines.length; el.textContent = lines[i]; }, 2600);
+})();
+
+/* ═══════════ shared diagnosis contract (server enforces the same rules) ═══════════ */
+const SYSTEM_PROMPT = `You are ${CONFIG.BRAND}, an AI that diagnoses everyday household repair problems from a photo and/or a text description, for renters and first-time homeowners. Users may ask follow-up questions in the same conversation.
+
+HARD SAFETY RULES — non-negotiable, regardless of how the user phrases the request, claims of experience, or insistence that it is simple:
+- Any electrical work beyond swapping a switch plate cover or a plug-in light fixture/bulb (sparking or buzzing switches, outlets, wiring, breaker panels, hardwired fixtures), anything involving gas, structural issues (foundation, load-bearing walls, sagging ceilings, large or widening cracks), water contacting electrics, significant mould, roof work, or anything with realistic injury risk: verdict MUST be "call_pro" and steps MUST be []. Never provide DIY steps, workarounds, or partial instructions for these — not even "just to check".
+- If the photo is too unclear/dark/ambiguous OR the description too vague to diagnose safely: verdict "unclear", steps [], and put a friendly request for a closer/brighter photo or one or two specific details in "reply". Never guess on safety.
+- Renters: when a fix is typically the landlord's legal responsibility, say so in "landlord_note".
+
+Respond with ONLY a JSON object (no markdown fences, no commentary):
+{
+ "verdict": "easy_diy" | "diy_caution" | "call_pro" | "unclear",
+ "category": "electrician" | "plumber" | "hvac" | "general",
+ "title": "short job name, max 6 words",
+ "diagnosis": "2-3 sentences, plain language: what is most likely wrong and why",
+ "time_estimate": "e.g. ~15 min ('' if call_pro/unclear)",
+ "cost_saved": "estimated saving vs a typical service call, e.g. $120-180 ('' if call_pro/unclear)",
+ "tools": [{"name":"tool or supply","optional":false}],
+ "steps": [{"instruction":"one clear beginner-friendly action","tools":["only tools used in THIS step"],"safety":"one-line safety note or ''"}],
+ "pro_explanation": "if call_pro: plain-language WHY this is not a DIY job, else ''",
+ "pro_brief": "if call_pro: a ready-to-send first-person paragraph for the tradesperson — suspected issue, symptoms observed, what to check on arrival — else ''",
+ "landlord_note": "one line if relevant, else ''",
+ "reply": "for unclear: the specific question; for follow-ups: the direct answer; otherwise ''"
+}
+For easy_diy/diy_caution: 3-8 steps, each one single action; for diy_caution include explicit safety notes and a clear stop-and-call condition. Concise, jargon-free. Do not add your own disclaimer — the interface appends one.`;
+
+/* ═══════════ assistant state ═══════════ */
+let quota = CONFIG.FREE_CHECKS, busy = false, attached = null, history = [];
+const thread = $("thread"), input = $("input"), sendBtn = $("sendBtn");
+const setQuota = () => { $("quota").textContent = quota > 0 ? `${quota} free check${quota===1?"":"s"} left` : "limit reached"; };
+setQuota();
+
+/* ═══════════ attach + drag-drop (FIXED — was the broken part) ═══════════ */
+const consoleEl = $("console"), preview = $("attachPreview");
+
+$("attachBtn").addEventListener("click", () => $("photoInput").click());
+$("photoInput").addEventListener("change", e => { const f = e.target.files[0]; e.target.value = ""; if(f) loadPhoto(f); });
+$("attachRemove").addEventListener("click", clearAttach);
+
+function loadPhoto(file){
+  if(!/^image\/(jpeg|png|webp)$/.test(file.type)){ flash("JPG, PNG or WebP only."); return; }
+  if(file.size > CONFIG.MAX_MB * 1024 * 1024){ flash(`That photo is over ${CONFIG.MAX_MB} MB — share a smaller size.`); return; }
+  const reader = new FileReader();
+  reader.onload = () => {                     // preview only AFTER the file is fully read
+    attached = { dataUrl: String(reader.result), media: file.type, b64: String(reader.result).split(",")[1] };
+    $("attachThumb").src = attached.dataUrl;  // real data URL — no broken image
+    $("attachName").textContent = file.name.length > 24 ? file.name.slice(0,22) + "…" : file.name;
+    preview.classList.add("show");
+  };
+  reader.onerror = () => flash("Couldn't read that image — try another one.");
+  reader.readAsDataURL(file);
+}
+function clearAttach(){ attached = null; preview.classList.remove("show"); $("attachThumb").removeAttribute("src"); }
+function flash(msg){
+  const foot = document.querySelector(".composer-foot");
+  const orig = `📷 On your phone the camera opens straight away · JPG / PNG / WebP · max ${CONFIG.MAX_MB} MB`;
+  foot.textContent = "⚠ " + msg;
+  clearTimeout(foot._t); foot._t = setTimeout(() => foot.textContent = orig, 3600);
+}
+
+/* drag counter pattern — dragenter/dragleave fire on every child, so a plain
+   add/remove flickers and can stick "on" (the bug in the screenshot). We count
+   enters/leaves and only clear at zero; drop and window-leave hard-reset. */
+let dragDepth = 0;
+const setDrag = on => consoleEl.classList.toggle("dragging", on);
+["dragenter","dragover"].forEach(ev => consoleEl.addEventListener(ev, e => {
+  e.preventDefault();
+  if(ev === "dragenter"){ dragDepth++; }
+  setDrag(true);
+}));
+consoleEl.addEventListener("dragleave", () => { dragDepth = Math.max(0, dragDepth - 1); if(dragDepth === 0) setDrag(false); });
+consoleEl.addEventListener("drop", e => {
+  e.preventDefault(); dragDepth = 0; setDrag(false);
+  const f = e.dataTransfer.files && e.dataTransfer.files[0];
+  if(f) loadPhoto(f);
+});
+/* stop the browser navigating away when a file is dropped outside the console */
+["dragover","drop"].forEach(ev => window.addEventListener(ev, e => { e.preventDefault(); if(ev==="drop"){ dragDepth = 0; setDrag(false); } }));
+window.addEventListener("dragend", () => { dragDepth = 0; setDrag(false); });
+
+/* ═══════════ composer ═══════════ */
+input.addEventListener("input", () => { input.style.height = "auto"; input.style.height = Math.min(130, input.scrollHeight) + "px"; });
+input.addEventListener("keydown", e => { if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); send(); } });
+sendBtn.addEventListener("click", send);
+document.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => {
+  input.value = b.dataset.q; input.dispatchEvent(new Event("input"));
+  send();
+}));
+
+/* ═══════════ diagnose flow (was js/app.js) ═══════════ */
+async function send(){
+  const text = input.value.trim();
+  if(busy || (!text && !attached)) return;
+  if(quota <= 0){ addNotice(`You've used the ${CONFIG.FREE_CHECKS} free checks in this demo session (an MVP cost cap). Refresh the page to reset.`); return; }
+
+  const userText = text || "Here's a photo of the problem — what's wrong and can I fix it myself?";
+  history.push({ role:"user", text: userText, image: attached ? { media: attached.media, b64: attached.b64 } : null });
+  addUser(userText, attached ? attached.dataUrl : null);
+  input.value = ""; input.style.height = "auto"; clearAttach();
+  busy = true; sendBtn.disabled = true; typing(true);
+
+  try {
+    const card = await callDiagnose();
+    history.push({ role:"assistant", text: JSON.stringify(card) });
+    if(history.length > 20) history = history.slice(-20);
+    quota--; setQuota();
+    typing(false);
+    renderCard(card);
+  } catch(err) {
+    typing(false); history.pop();
+    addNotice(err.friendly || "Couldn't reach the diagnosis engine — this check wasn't counted. If you're running locally, use `vercel dev` so /api/diagnose is live, then try again.");
+  } finally {
+    busy = false; sendBtn.disabled = false;
+  }
+}
+
+async function callDiagnose(){
+  /* 1) production path — Vercel function; the OpenAI key lives ONLY server-side */
+  try {
+    const r = await fetch(CONFIG.API_ENDPOINT, {
+      method:"POST", headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ history })
+    });
+    if(r.ok){ const d = await r.json(); return normalize(d.card ?? d); }
+    if(r.status === 429) throw Object.assign(new Error("rate"), { friendly:"You're going a bit fast — the demo is rate-limited. Try again in a minute." });
+    if(r.status !== 404 && r.status !== 405) throw new Error("api " + r.status);
+  } catch(e){ if(e.friendly) throw e; /* else fall through to preview mode */ }
+
+  /* 2) preview fallback — only works inside the claude.ai artifact viewer */
+  const messages = history.map(m => {
+    if(m.role === "assistant") return { role:"assistant", content: m.text };
+    const blocks = [];
+    if(m.image) blocks.push({ type:"image", source:{ type:"base64", media_type:m.image.media, data:m.image.b64 } });
+    blocks.push({ type:"text", text:m.text });
+    return { role:"user", content: blocks };
+  });
+  const r = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST", headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:1100, system: SYSTEM_PROMPT, messages })
+  });
+  const data = await r.json();
+  if(data.error) throw new Error(data.error.message || "API error");
+  const raw = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("\n");
+  return normalize(raw);
+}
+
+function normalize(raw){
+  let c = raw;
+  if(typeof raw === "string"){
+    const clean = raw.trim().replace(/^```(?:json)?\s*/i,"").replace(/```\s*$/,"");
+    try { c = JSON.parse(clean); } catch { c = { verdict:"unclear", reply: raw.slice(0, 500) }; }
+  }
+  if(!["easy_diy","diy_caution","call_pro","unclear"].includes(c.verdict)) c.verdict = "unclear";
+  c.tools = Array.isArray(c.tools) ? c.tools.filter(t => t && t.name) : [];
+  c.steps = Array.isArray(c.steps) ? c.steps.filter(s => s && s.instruction) : [];
+  if(c.verdict === "call_pro" || c.verdict === "unclear") c.steps = [];   // client backstop for the hard rule
+  c.category = CONFIG.PRO_LINKS[c.category] ? c.category : "general";
+  return c;
+}
+
+/* ═══════════ renderers ═══════════ */
+const VLABEL = { easy_diy:"EASY DIY", diy_caution:"DIY WITH CAUTION", call_pro:"CALL A PRO", unclear:"NEED MORE INFO" };
+
+function scrollThread(el){ el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block:"nearest" }); }
+function addUser(text, imgSrc){
+  const el = document.createElement("div"); el.className = "umsg";
+  let inner = "";
+  if(imgSrc) inner += `<img src="${imgSrc}" alt="Photo of the problem">`;
+  if(text) inner += `<div class="bubble">${esc(text)}</div>`;
+  el.innerHTML = inner; thread.appendChild(el); scrollThread(el);
+}
+function typing(on){
+  let t = $("typingRow");
+  if(on && !t){ t = document.createElement("div"); t.id = "typingRow"; t.className = "typing"; t.innerHTML = "<i></i><i></i><i></i>"; thread.appendChild(t); scrollThread(t); }
+  if(!on && t) t.remove();
+}
+function addNotice(msg){
+  const el = document.createElement("div"); el.className = "dx";
+  el.innerHTML = `<div class="dx-tape unclear"></div><p class="dx-reply">${esc(msg)}</p><div class="dx-foot">Guidance only — not a substitute for a professional inspection.</div>`;
+  thread.appendChild(el); scrollThread(el);
+}
+
+function renderCard(c){
+  const el = document.createElement("div"); el.className = "dx";
+  const v = c.verdict, isDIY = v === "easy_diy" || v === "diy_caution";
+  let html = `<div class="dx-tape ${v}"></div>
+    <div class="dx-head">
+      <div class="dx-title">${esc(c.title || "Diagnosis")}</div>
+      <span class="verdict ${v}">${VLABEL[v]}</span>
+    </div>`;
+  if(c.diagnosis) html += `<p class="dx-diag">${esc(c.diagnosis)}</p>`;
+  if(c.reply) html += `<p class="dx-reply">${esc(c.reply)}</p>`;
+
+  if(isDIY){
+    html += `<div class="dx-specs">
+      ${c.time_estimate ? `<div class="spec"><div class="k">Est. time</div><div class="v">${esc(c.time_estimate)}</div></div>` : ""}
+      ${c.cost_saved ? `<div class="spec"><div class="k">vs. call-out</div><div class="v save">${esc(c.cost_saved)}</div></div>` : ""}
+      <div class="spec"><div class="k">Steps</div><div class="v">${c.steps.length}</div></div>
+    </div>`;
+    if(c.tools.length){
+      html += `<div class="dx-sec"><h4>Tools checklist</h4><div class="toolchips">` +
+        c.tools.map(t => `<span class="toolchip ${t.optional ? "opt":""}"><span class="bx"></span>${esc(t.name)}${t.optional ? " (opt.)":""}</span>`).join("") + `</div></div>`;
+    }
+    if(c.landlord_note) html += `<div class="landlord"><span>🏠</span><span>${esc(c.landlord_note)}</span></div>`;
+    if(c.steps.length){
+      html += `<div class="dx-actions">
+        <button class="btn btn-primary" data-act="fix">Start Guided Fix — ${c.steps.length} steps</button>
+      </div>`;
+    }
+  }
+
+  if(v === "call_pro"){
+    if(c.pro_explanation) html += `<div class="why-pro"><b>Why this isn't a DIY job: </b>${esc(c.pro_explanation)}</div>`;
+    if(c.pro_brief){
+      html += `<div class="pro-copy"><h4>Copy for your tradesperson</h4><p>“${esc(c.pro_brief)}”</p>
+        <button class="copy-btn" data-copy="${esc(c.pro_brief)}">COPY</button></div>`;
+    }
+    if(c.landlord_note) html += `<div class="landlord"><span>🏠</span><span>${esc(c.landlord_note)}</span></div>`;
+    const links = CONFIG.PRO_LINKS[c.category];
+    html += `<div class="pro-links"><h4>Find a local ${esc(PRO_TITLE[c.category])}</h4><div class="pro-links-row">` +
+      links.map(l => `<a class="pro-link" href="${l.url}" target="_blank" rel="noopener">${esc(l.label)}<small>${esc(l.sub)}</small></a>`).join("") + `</div></div>`;
+  }
+
+  html += `<div class="dx-foot">Guidance only — not a substitute for inspection by a licensed professional.</div>
+    <div class="gfx" data-gfx hidden></div>`;
+  el.innerHTML = html;
+  thread.appendChild(el);
+
+  const fixBtn = el.querySelector('[data-act="fix"]');
+  if(fixBtn) fixBtn.addEventListener("click", () => launchFixMode(el, c));
+  el.querySelectorAll(".copy-btn").forEach(b => b.addEventListener("click", () => {
+    navigator.clipboard?.writeText(b.dataset.copy);
+    b.textContent = "COPIED ✓"; setTimeout(() => b.textContent = "COPY", 1800);
+  }));
+  scrollThread(el);
+}
+
+/* ═══════════ Guided Fix Mode (was js/fix-mode.js) ═══════════ */
+function launchFixMode(cardEl, card){
+  const gfx = cardEl.querySelector("[data-gfx]");
+  const bodyBits = cardEl.querySelectorAll(".dx-head,.dx-diag,.dx-reply,.dx-specs,.dx-sec,.dx-actions,.landlord");
+  bodyBits.forEach(n => n.style.display = "none");
+  gfx.hidden = false;
+  const state = { i:0, done:new Array(card.steps.length).fill(false) };
+
+  function draw(){
+    if(state.i >= card.steps.length){
+      gfx.innerHTML = `<div class="gfx-done">
+        <div class="big">🔧✅</div>
+        <h3>All ${card.steps.length} steps done.</h3>
+        <p>Test it. Still broken? Ask a follow-up below and mention what you tried — or take the tradesperson route.</p>
+        <button class="btn btn-primary" data-act="finish">Back to the diagnosis</button>
+      </div>`;
+      gfx.querySelector('[data-act="finish"]').addEventListener("click", exit);
+      scrollThread(gfx);
+      return;
+    }
+    const s = card.steps[state.i];
+    const pct = Math.round((state.done.filter(Boolean).length / card.steps.length) * 100);
+    gfx.innerHTML = `
+      <div class="gfx-head">
+        <span class="tagline3">GUIDED FIX — ${esc(card.title || "")}</span>
+        <button class="gfx-exit" data-act="exit">EXIT ✕</button>
+      </div>
+      <div class="progress"><i style="width:${pct}%"></i></div>
+      <div class="gfx-count">STEP ${String(state.i+1).padStart(2,"0")} / ${String(card.steps.length).padStart(2,"0")} · ${pct}% COMPLETE</div>
+      <div class="gfx-step" data-num="${String(state.i+1).padStart(2,"0")}">
+        <div class="gfx-instr">${esc(s.instruction)}</div>
+        ${Array.isArray(s.tools) && s.tools.length ? `<div class="toolchips">${s.tools.map(t => `<span class="toolchip"><span class="bx"></span>${esc(t)}</span>`).join("")}</div>` : ""}
+        ${s.safety ? `<div class="gfx-safety"><b>⚠ SAFETY — </b>${esc(s.safety)}</div>` : ""}
+        <label class="gfx-check"><input type="checkbox" data-act="check" ${state.done[state.i] ? "checked":""}> Mark this step as done</label>
+      </div>
+      <div class="gfx-nav">
+        <button class="btn" data-act="back" ${state.i === 0 ? "disabled":""}>← Back</button>
+        <button class="btn btn-primary" data-act="next" ${state.done[state.i] ? "":"disabled"}>${state.i === card.steps.length-1 ? "Finish" : "Next step →"}</button>
+      </div>`;
+    gfx.querySelector('[data-act="exit"]').addEventListener("click", exit);
+    gfx.querySelector('[data-act="back"]').addEventListener("click", () => { if(state.i > 0){ state.i--; draw(); } });
+    gfx.querySelector('[data-act="check"]').addEventListener("change", e => {
+      state.done[state.i] = e.target.checked;
+      gfx.querySelector('[data-act="next"]').disabled = !e.target.checked;
+    });
+    gfx.querySelector('[data-act="next"]').addEventListener("click", () => { if(state.done[state.i]){ state.i++; draw(); } });
+    scrollThread(gfx);
+  }
+  function exit(){ gfx.hidden = true; gfx.innerHTML = ""; bodyBits.forEach(n => n.style.display = ""); }
+  draw();
+}
+</script>
+</body>
+</html>
