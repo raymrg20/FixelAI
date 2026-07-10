@@ -301,6 +301,17 @@ footer{border-top:1px solid var(--line-soft);padding:26px clamp(14px,4.5vw,44px)
   display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-size:11.5px;color:var(--faint);line-height:1.6}
 footer strong{color:var(--muted)}
 
+/* ── example dock (separate from the live thread) ── */
+.example-dock{position:relative;border:1px dashed var(--line);border-radius:20px;padding:clamp(14px,2.5vw,22px);margin-bottom:clamp(26px,4vw,40px);background:rgba(255,255,255,.012)}
+.dock-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.dock-head .eyebrow{font-size:10px}
+.dock-head p{font-size:12px;color:var(--faint);width:100%;line-height:1.55}
+.example-dock .dx{animation:none}
+.try-divider{display:flex;align-items:center;gap:16px;margin:0 0 18px;color:var(--off)}
+.try-divider::before,.try-divider::after{content:"";flex:1;height:1px;background:repeating-linear-gradient(90deg,var(--line) 0 7px,transparent 7px 13px)}
+.try-divider span{font-family:var(--font-head);font-weight:700;font-size:clamp(16px,2.4vw,20px);letter-spacing:-.01em;display:flex;align-items:center;gap:9px;text-align:center}
+.try-divider .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);box-shadow:0 0 10px var(--orange-glow);flex:none}
+
 /* ── tools & parts list with store links (shop-the-checklist) ── */
 .tool-list{display:flex;flex-direction:column;gap:7px}
 .tool-row{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:9px 11px;font-size:12.5px;flex-wrap:wrap}
@@ -460,8 +471,18 @@ footer strong{color:var(--muted)}
   <div class="section-head">
     <span class="eyebrow center"><span class="dot"></span> Live · this is the real product, not a mockup</span>
     <h2>Show it what's broken.</h2>
-    <p class="section-sub">Below is a real result so you can see what you'll get. Then tap a common problem — or describe your own, with a photo if you have one.</p>
+    <p class="section-sub">First, here's a real result so you know exactly what you'll get — then run your own problem through the assistant below.</p>
   </div>
+
+  <div class="example-dock rv">
+    <div class="dock-head">
+      <span class="eyebrow"><span class="dot"></span> Example — what a diagnosis looks like</span>
+      <p>A real output for one of the most common rental problems. Every card gives you the verdict first, then the numbers, the shopping list, and the fix. This one doesn't touch your free checks.</p>
+    </div>
+    <div id="exampleDock"></div>
+  </div>
+
+  <div class="try-divider"><span><span class="dot"></span>Now try it with your real problem</span></div>
 
   <div class="console" id="console">
     <div class="drop-hint" aria-hidden="true">Drop your photo to attach it</div>
@@ -922,7 +943,7 @@ function renderCard(c, opts = {}){
     <div class="dx-foot">Guidance only — not a substitute for inspection by a licensed professional.</div>
     <div class="gfx" data-gfx hidden></div>`;
   el.innerHTML = html;
-  thread.appendChild(el);
+  (opts.target || thread).appendChild(el);
 
   const fixBtn = el.querySelector('[data-act="fix"]');
   if(fixBtn) fixBtn.addEventListener("click", () => launchFixMode(el, c));
@@ -1053,7 +1074,7 @@ renderCard({
   ],
   landlord_note: "Renting? A persistent drip is usually the landlord's responsibility — report it in writing and keep a copy.",
   reply: "",
-}, { ribbon:"EXAMPLE" });
+}, { ribbon:"EXAMPLE", target: document.getElementById("exampleDock") });
 
 /* ═══════════ hydrate a shared diagnosis from ?s= (KV) or #d= (encoded) ═══════════ */
 (async function hydrateShared(){
