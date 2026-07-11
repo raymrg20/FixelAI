@@ -145,19 +145,23 @@ h1 .accent{color:var(--orange)}
 .f-s::after,.f-n::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.16),rgba(0,0,0,.32));border-radius:inherit}
 .f-e::after,.f-w::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.32),rgba(0,0,0,.46));border-radius:inherit}
 .rd .face{border-radius:7px}
-/* exploded mixer tap: washer, cartridge and handle breathe apart, then reseat */
-@keyframes riseWasher{0%,14%{transform:translateZ(80px)}42%,66%{transform:translateZ(114px)}94%,100%{transform:translateZ(80px)}}
-@keyframes riseCart{0%,14%{transform:translateZ(94px)}42%,66%{transform:translateZ(176px)}94%,100%{transform:translateZ(94px)}}
-@keyframes riseHandle{0%,14%{transform:translateZ(114px)}42%,66%{transform:translateZ(250px)}94%,100%{transform:translateZ(114px)}}
-@keyframes dropScrews{0%,14%{transform:translateZ(4px)}42%,66%{transform:translateZ(-24px)}94%,100%{transform:translateZ(4px)}}
-.p-screw{animation:dropScrews 9s cubic-bezier(.45,0,.2,1) infinite}
-.p-washer{animation:riseWasher 9s cubic-bezier(.45,0,.2,1) infinite}
-.p-cart{animation:riseCart 9s cubic-bezier(.45,0,.2,1) infinite}
-.p-handle{animation:riseHandle 9s cubic-bezier(.45,0,.2,1) infinite}
-/* the drip that started it all — a leaf node, so its opacity animation is 3D-safe */
-.drip{position:absolute;left:0;top:0;width:9px;height:9px;border-radius:3px;background:#6FA8CC;
-  box-shadow:0 0 8px rgba(111,168,204,.7);animation:dripFall 2.6s cubic-bezier(.5,0,.8,.4) infinite}
-@keyframes dripFall{0%{transform:translateZ(46px);opacity:0}12%{opacity:1}70%{transform:translateZ(4px);opacity:1}92%,100%{transform:translateZ(0);opacity:0}}
+/* home assembly loop — parts fly in staggered, hold cosy, unbuild, repeat.
+   RULES: wrappers animate transform ONLY (translateZ + scale); opacity animates
+   on LEAF nodes only (glow, smoke) or the whole 3D subtree flattens. */
+@keyframes buildWalls{0%,9%{transform:translateZ(170px) scale(0)}19%{transform:translateZ(10px) scale(1)}86%{transform:translateZ(10px) scale(1)}94%,100%{transform:translateZ(170px) scale(0)}}
+@keyframes buildRoof{0%,17%{transform:translateZ(220px) scale(0)}29%{transform:translateZ(54px) scale(1)}84%{transform:translateZ(54px) scale(1)}92%,100%{transform:translateZ(220px) scale(0)}}
+@keyframes buildChim{0%,25%{transform:translateZ(240px) scale(0)}37%{transform:translateZ(70px) scale(1)}82%{transform:translateZ(70px) scale(1)}90%,100%{transform:translateZ(240px) scale(0)}}
+@keyframes buildTree{0%,33%{transform:translateZ(160px) scale(0)}45%{transform:translateZ(0) scale(1)}88%{transform:translateZ(0) scale(1)}96%,100%{transform:translateZ(160px) scale(0)}}
+/* slight overshoot on landing = parts "settle" into place */
+.p-walls{animation:buildWalls 14s cubic-bezier(.34,1.35,.45,1) infinite}
+.p-roof{animation:buildRoof 14s cubic-bezier(.34,1.35,.45,1) infinite}
+.p-chim{animation:buildChim 14s cubic-bezier(.34,1.35,.45,1) infinite}
+.p-tree{animation:buildTree 14s cubic-bezier(.34,1.35,.45,1) infinite}
+/* warm window light + chimney smoke — LEAF nodes, opacity-safe */
+.glow{position:absolute;width:26px;height:26px;border-radius:8px;background:radial-gradient(closest-side,rgba(255,196,110,.95),rgba(255,170,60,.25) 70%,transparent);box-shadow:0 0 22px 6px rgba(255,180,80,.5);animation:glowIn 14s ease infinite}
+@keyframes glowIn{0%,46%{opacity:0}56%,80%{opacity:1}88%,100%{opacity:0}}
+.smoke{position:absolute;width:10px;height:10px;border-radius:50%;background:rgba(214,206,194,.85);filter:blur(1px);animation:smokeUp 14s ease infinite}
+@keyframes smokeUp{0%,50%{transform:translateZ(0);opacity:0}58%{opacity:.9}72%{transform:translateZ(44px);opacity:.55}80%,100%{transform:translateZ(64px);opacity:0}}
 .scan{position:absolute;left:-26px;top:-42px;width:272px;height:224px;border-radius:16px;pointer-events:none;
   background:linear-gradient(180deg,rgba(245,99,30,.16),rgba(245,99,30,.05));
   border:1px solid rgba(245,99,30,.55);box-shadow:0 0 26px rgba(245,99,30,.25);
@@ -352,6 +356,19 @@ footer strong{color:var(--muted)}
 .shop-links a:hover{color:var(--orange);border-color:var(--orange)}
 .shop-note{margin-top:9px;font-size:9.5px;color:var(--faint);font-style:italic;line-height:1.5}
 
+/* ── UX polish: collapsible example (mobile), chips collapse, new-problem btn ── */
+.dock-toggle{display:none;width:100%;margin-top:4px}
+@media(max-width:760px){
+  .dock-toggle{display:inline-flex}
+  .example-dock.collapsed #exampleDock{display:none}
+  .example-dock.collapsed .dock-head p{display:none}
+}
+.chips.collapsed .chip:not(.chips-toggle){display:none}
+.chips-toggle{border-style:dashed;color:var(--muted)}
+.head-btn{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:5px 11px;background:var(--bg);white-space:nowrap;transition:border-color .15s,color .15s}
+.head-btn:hover{border-color:var(--orange);color:var(--orange)}
+.btn:active,.chip:active{transform:translateY(0) scale(.97)}
+
 /* ── feedback + live status ── */
 .fb-row{display:flex;align-items:center;gap:9px;padding:0 16px 15px;font-size:11.5px;color:var(--faint)}
 .fb-row button{border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:6px 11px;font-size:13px;transition:border-color .15s, transform .15s}
@@ -424,7 +441,7 @@ footer strong{color:var(--muted)}
 
   <div class="hero-stage" aria-hidden="true">
     <div class="stage-frame">
-      <div class="stage-label mono">FIG.01 — MIXER TAP TEARDOWN</div>
+      <div class="stage-label mono">FIG.01 — HOME ASSEMBLY · ON LOOP</div>
       <div class="scene3d">
         <div class="iso">
           <div class="spin360">
@@ -432,66 +449,100 @@ footer strong{color:var(--muted)}
             <div class="bring"></div>
             <div class="shadow3d"></div>
 
-            <!-- mounting screws ×4 (drop below the base on explode) -->
-            <div class="part p-screw" style="left:74px;top:34px"><div class="box rd" style="--w:10px;--d:10px;--h:8px;--c:#6E675C"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
-            <div class="part p-screw" style="left:138px;top:34px"><div class="box rd" style="--w:10px;--d:10px;--h:8px;--c:#6E675C"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
-            <div class="part p-screw" style="left:74px;top:98px"><div class="box rd" style="--w:10px;--d:10px;--h:8px;--c:#6E675C"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
-            <div class="part p-screw" style="left:138px;top:98px"><div class="box rd" style="--w:10px;--d:10px;--h:8px;--c:#6E675C"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
+            <!-- slab + garden path: always grounded -->
+            <div class="part" style="left:50px;top:26px">
+              <div class="box rd" style="--w:120px;--d:96px;--h:10px;--c:#8D8578">
+                <div class="face f-top" style="background:linear-gradient(135deg,#B0A899,#8D8578)"></div>
+                <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+              </div>
+            </div>
+            <div class="part" style="left:102px;top:118px">
+              <div class="box rd" style="--w:18px;--d:26px;--h:3px;--c:#9C948A">
+                <div class="face f-top" style="background:repeating-linear-gradient(90deg,#ABA398 0 5px,#9C948A 5px 9px)"></div>
+                <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+              </div>
+            </div>
 
-            <!-- base escutcheon -->
-            <div class="part" style="left:68px;top:28px">
-              <div class="box rd" style="--w:84px;--d:84px;--h:12px;--c:#9AA3AA">
-                <div class="face f-top" style="background:linear-gradient(135deg,#CBD2D8,#9AA3AA)"></div>
-                <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+            <!-- doormat + garden tufts (grounded) -->
+            <div class="part" style="left:101px;top:112px">
+              <div class="box rd" style="--w:20px;--d:8px;--h:2px;--c:#B5713A">
+                <div class="face f-top" style="background:repeating-linear-gradient(90deg,#C98244 0 4px,#B5713A 4px 8px)"></div>
+                <div class="face f-s"></div><div class="face f-e"></div><div class="face f-w"></div>
               </div>
             </div>
-            <!-- tap body column (sits ON the base via .lift) -->
-            <div class="part" style="left:86px;top:46px">
-              <div class="lift" style="left:0;top:0;transform:translateZ(12px)">
-                <div class="box rd" style="--w:48px;--d:48px;--h:64px;--c:#8F98A0">
-                  <div class="face f-top" style="background:linear-gradient(135deg,#C4CCD2,#8F98A0)"></div>
+            <div class="part" style="left:152px;top:106px"><div class="box rd" style="--w:7px;--d:7px;--h:6px;--c:#5E8B4F"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
+            <div class="part" style="left:44px;top:58px"><div class="box rd" style="--w:6px;--d:6px;--h:5px;--c:#6B9A58"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
+
+            <!-- walls (door + windows ride along) -->
+            <div class="part p-walls" style="left:62px;top:38px">
+              <div class="box rd" style="--w:96px;--d:72px;--h:44px;--c:#E8DCC8">
+                <div class="face f-top" style="background:linear-gradient(135deg,#F4EBDB,#E8DCC8)"></div>
+                <div class="face f-s" style="background:#DccbAe"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+              </div>
+              <div class="lift" style="left:40px;top:68px;transform:translateZ(0)">
+                <div class="box rd" style="--w:18px;--d:6px;--h:27px;--c:#7A5B3A">
+                  <div class="face f-top"></div><div class="face f-s" style="background:linear-gradient(180deg,#8A6844,#6E5133)"></div><div class="face f-e"></div><div class="face f-w"></div>
+                </div>
+              </div>
+              <div class="lift" style="left:12px;top:68px;transform:translateZ(16px)">
+                <div class="box rd" style="--w:15px;--d:5px;--h:14px;--c:#BFD8E4">
+                  <div class="face f-top"></div><div class="face f-s" style="background:linear-gradient(180deg,#D7EAF2,#A8C6D4)"></div><div class="face f-e"></div><div class="face f-w"></div>
+                </div>
+              </div>
+              <div class="lift" style="left:70px;top:68px;transform:translateZ(16px)">
+                <div class="box rd" style="--w:15px;--d:5px;--h:14px;--c:#BFD8E4">
+                  <div class="face f-top"></div><div class="face f-s" style="background:linear-gradient(180deg,#D7EAF2,#A8C6D4)"></div><div class="face f-e"></div><div class="face f-w"></div>
+                </div>
+              </div>
+              <div class="lift" style="left:8px;top:70px;transform:translateZ(14px)"><div class="glow" style="left:0;top:0"></div></div>
+              <div class="lift" style="left:66px;top:70px;transform:translateZ(14px)"><div class="glow" style="left:0;top:0;animation-delay:-.7s"></div></div>
+            </div>
+
+            <!-- roof: stepped voxel gable — four tiers narrowing to a ridge cap -->
+            <div class="part p-roof" style="left:56px;top:32px">
+              <div class="lift" style="left:0;top:0;transform:translateZ(0)">
+                <div class="box rd" style="--w:108px;--d:84px;--h:7px;--c:#6F4335">
+                  <div class="face f-top" style="background:linear-gradient(135deg,#8A5646,#6F4335)"></div>
+                  <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+                </div>
+              </div>
+              <div class="lift" style="left:0;top:12px;transform:translateZ(7px)">
+                <div class="box rd" style="--w:108px;--d:60px;--h:9px;--c:#7E4C3C">
+                  <div class="face f-top" style="background:linear-gradient(135deg,#9A5F4B,#7E4C3C)"></div>
+                  <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+                </div>
+              </div>
+              <div class="lift" style="left:0;top:24px;transform:translateZ(16px)">
+                <div class="box rd" style="--w:108px;--d:36px;--h:10px;--c:#8F5645">
+                  <div class="face f-top" style="background:linear-gradient(135deg,#AA6A55,#8F5645)"></div>
+                  <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+                </div>
+              </div>
+              <div class="lift" style="left:0;top:38px;transform:translateZ(26px)">
+                <div class="box rd" style="--w:108px;--d:8px;--h:4px;--c:#5E3A2E">
+                  <div class="face f-top" style="background:#6E453A"></div>
                   <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
                 </div>
               </div>
             </div>
-            <!-- spout: arm out from the body top + down-turned tip + drip -->
-            <div class="part" style="left:108px;top:56px">
-              <div class="lift" style="left:0;top:0;transform:translateZ(64px)">
-                <div class="box rd" style="--w:92px;--d:28px;--h:16px;--c:#8F98A0">
-                  <div class="face f-top" style="background:linear-gradient(135deg,#C4CCD2,#8F98A0)"></div>
-                  <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
-                </div>
-              </div>
-              <div class="lift" style="left:74px;top:1px;transform:translateZ(38px)">
-                <div class="box rd" style="--w:18px;--d:26px;--h:28px;--c:#7F8890">
-                  <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
-                </div>
-              </div>
-              <div class="drip" style="left:79px;top:10px"></div>
-            </div>
-            <!-- WASHER — the $5 culprit -->
-            <div class="part p-washer" style="left:93px;top:53px">
-              <div class="box rd" style="--w:34px;--d:34px;--h:9px;--c:#8E3B34">
-                <div class="face f-top" style="background:linear-gradient(135deg,#AC4B41,#8E3B34)"></div>
+
+            <!-- chimney + smoke -->
+            <div class="part p-chim" style="left:132px;top:50px">
+              <div class="box rd" style="--w:14px;--d:14px;--h:24px;--c:#A05A44">
+                <div class="face f-top" style="background:#5C5148"></div>
                 <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
               </div>
+              <div class="lift" style="left:2px;top:2px;transform:translateZ(26px)"><div class="smoke" style="left:0;top:0"></div><div class="smoke" style="left:6px;top:-4px;animation-delay:-1.8s"></div></div>
             </div>
-            <!-- brass cartridge -->
-            <div class="part p-cart" style="left:97px;top:57px">
-              <div class="box rd" style="--w:26px;--d:26px;--h:36px;--c:#B08D2A">
-                <div class="face f-top" style="background:linear-gradient(135deg,#DDB646,#B08D2A)"></div>
-                <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
+
+            <!-- garden tree -->
+            <div class="part p-tree" style="left:34px;top:96px">
+              <div class="box rd" style="--w:8px;--d:8px;--h:16px;--c:#6B4A32">
+                <div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
               </div>
-            </div>
-            <!-- handle: disc + lever -->
-            <div class="part p-handle" style="left:90px;top:50px">
-              <div class="box rd" style="--w:40px;--d:40px;--h:12px;--c:#2A2620">
-                <div class="face f-top" style="background:linear-gradient(135deg,#453E33,#2A2620)"></div>
-                <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
-              </div>
-              <div class="lift" style="left:-42px;top:10px;transform:translateZ(12px)">
-                <div class="box rd" style="--w:56px;--d:20px;--h:10px;--c:#2A2620">
-                  <div class="face f-top" style="background:linear-gradient(135deg,#453E33,#2A2620)"></div>
+              <div class="lift" style="left:-9px;top:-9px;transform:translateZ(14px)">
+                <div class="box rd" style="--w:26px;--d:26px;--h:20px;--c:#5E8B4F">
+                  <div class="face f-top" style="background:linear-gradient(135deg,#74A661,#5E8B4F)"></div>
                   <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
                 </div>
               </div>
@@ -502,19 +553,22 @@ footer strong{color:var(--muted)}
         </div>
       </div>
       <svg class="stage-fallback" viewBox="0 0 220 260" aria-hidden="true">
-        <g fill="none" stroke="#E7E2D6" stroke-width="2" opacity=".9" stroke-linejoin="round">
-          <rect x="76" y="10" width="68" height="16" rx="7"/>
-          <rect x="94" y="52" width="32" height="30" rx="5"/>
-          <ellipse cx="110" cy="112" rx="24" ry="9"/>
-          <path d="M88 150v60h44v-60"/><path d="M132 158h34v22h-12"/>
-          <rect x="66" y="210" width="88" height="14" rx="6"/>
+        <g fill="none" stroke="#E7E2D6" stroke-width="2" stroke-linejoin="round" opacity=".9">
+          <path d="M40 130 L110 70 L180 130"/>
+          <rect x="56" y="130" width="108" height="76" rx="4"/>
+          <rect x="98" y="160" width="26" height="46" rx="3"/>
+          <rect x="68" y="146" width="20" height="18" rx="2"/>
+          <rect x="132" y="146" width="20" height="18" rx="2"/>
+          <rect x="142" y="84" width="14" height="26" rx="2"/>
         </g>
-        <g stroke="#F5631E" stroke-width="2" stroke-dasharray="3 5" opacity=".8">
-          <line x1="110" y1="36" x2="110" y2="66"/><line x1="110" y1="90" x2="110" y2="122"/><line x1="110" y1="140" x2="110" y2="172"/>
+        <g stroke="#F5631E" stroke-width="2" opacity=".85">
+          <path d="M78 152 h0 M78 158 h0" stroke-linecap="round"/>
+          <circle cx="78" cy="155" r="4" fill="rgba(245,99,30,.35)"/>
+          <path d="M40 220 h140" stroke-dasharray="3 5"/>
         </g>
       </svg>
       <div class="stage-readout mono"><span class="rd-dot"></span><span id="readoutText">analysing components…</span></div>
-      <div class="legend3d"><span><b>01</b> HANDLE</span><span><b>02</b> CARTRIDGE</span><span><b>03</b> WASHER</span><span><b>04</b> BODY</span></div>
+      <div class="legend3d"><span><b>01</b> ROOF</span><span><b>02</b> WALLS</span><span><b>03</b> CHIMNEY</span><span><b>04</b> SLAB</span></div>
     </div>
   </div>
 </section>
@@ -533,6 +587,7 @@ footer strong{color:var(--muted)}
       <p>A real output for one of the most common rental problems. Every card gives you the verdict first, then the numbers, the shopping list, and the fix. This one doesn't touch your free checks.</p>
     </div>
     <div id="exampleDock"></div>
+    <button class="btn dock-toggle" id="dockToggle">Show the example result ▾</button>
   </div>
 
   <div class="try-divider"><span><span class="dot"></span>Now try it with your real problem</span></div>
@@ -544,6 +599,7 @@ footer strong{color:var(--muted)}
       <b>Repair Assistant</b>
       <span class="console-sub">Describe it, photograph it, or both — follow-ups welcome.</span>
       <span class="quota mono" id="quota" aria-live="polite"></span>
+      <button class="head-btn mono" id="clearBtn" hidden title="Clear this conversation and start a new problem">✚ NEW PROBLEM</button>
       <select class="region-sel mono" id="regionSel" aria-label="Your region — sets store and tradesperson links">
         <option value="AU">🇦🇺 AU</option>
         <option value="US">🇺🇸 US</option>
@@ -560,9 +616,10 @@ footer strong{color:var(--muted)}
       <button class="chip" data-q="My bathroom sink drains really slowly and gurgles. It's been getting worse for two weeks.">🪠 Slow, gurgling drain</button>
       <button class="chip" data-q="There's a light switch in my hallway that sparks and buzzes when I flip it. Can I fix that myself?">⚡ Sparking light switch</button>
       <button class="chip" data-q="There's a crack in my wall near the ceiling that seems to be getting longer.">🧱 Growing wall crack</button>
+      <button class="chip chips-toggle" id="chipsToggle" hidden>💡 Examples</button>
     </div>
 
-    <div class="thread" id="thread"></div>
+    <div class="thread" id="thread" role="log" aria-live="polite"></div>
 
     <div class="composer">
       <div class="attach-preview" id="attachPreview">
@@ -790,7 +847,7 @@ document.querySelectorAll(".rv").forEach(el => io.observe(el));
 /* hero readout ticker */
 (() => {
   const el = $("readoutText"); if(!el || reduced) return;
-  const lines = ["analysing components…","drip detected at spout — tracing…","isolating fault: worn washer, seat OK","verdict: EASY DIY · 5 steps · ~25 min","reseating cartridge…"];
+  const lines = ["pouring the slab…","raising the walls…","fitting the roof…","lighting the windows…","home sweet (fixable) home","scanning for the next little job…"];
   let i = 0; setInterval(() => { i = (i + 1) % lines.length; el.textContent = lines[i]; }, 2600);
 })();
 
@@ -905,7 +962,10 @@ Do not add your own disclaimer — the interface appends one.`;
 /* ═══════════ state ═══════════ */
 let quota = CONFIG.FREE_CHECKS, busy = false, attached = null, history = [];
 const thread = $("thread"), input = $("input"), sendBtn = $("sendBtn");
-const setQuota = () => { $("quota").textContent = quota > 0 ? `${quota} free check${quota===1?"":"s"} left` : "limit reached"; };
+const setQuota = () => {
+  $("quota").textContent = quota > 0 ? `${quota} free check${quota===1?"":"s"} left` : "limit reached";
+  if(quota <= 0){ input.placeholder = "Out of free checks for this session — refresh the page to reset."; }
+};
 setQuota();
 
 /* region selector */
@@ -966,9 +1026,36 @@ window.addEventListener("dragend", () => { dragDepth = 0; setDrag(false); });
 input.addEventListener("input", () => { input.style.height = "auto"; input.style.height = Math.min(130, input.scrollHeight) + "px"; });
 input.addEventListener("keydown", e => { if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); send(); } });
 sendBtn.addEventListener("click", send);
-document.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => {
+document.querySelectorAll(".chip:not(.chips-toggle)").forEach(b => b.addEventListener("click", () => {
   input.value = b.dataset.q; input.dispatchEvent(new Event("input")); send();
 }));
+$("chipsToggle").addEventListener("click", () => {
+  const collapsed = $("chips").classList.toggle("collapsed");
+  $("chipsToggle").textContent = collapsed ? "💡 Examples" : "✕ Hide examples";
+});
+$("clearBtn").addEventListener("click", () => {
+  if(busy) return;
+  history = []; thread.innerHTML = ""; clearAttach();
+  input.value = ""; input.dispatchEvent(new Event("input"));
+  $("chips").classList.remove("collapsed"); $("chipsToggle").hidden = true; $("clearBtn").hidden = true;
+  input.focus();
+});
+/* rotating placeholder — shows the range of what you can ask (pauses while typing/focused) */
+(() => {
+  if(reduced) return;
+  const hints = [
+    "Describe the problem — or add a photo",
+    "e.g. “my washing machine shakes violently on spin”",
+    "e.g. “there's a water stain growing on the ceiling”",
+    "e.g. “the aircon smells musty when it starts”",
+  ];
+  let i = 0;
+  setInterval(() => {
+    if(document.activeElement === input || input.value || quota <= 0) return;
+    i = (i + 1) % hints.length;
+    input.placeholder = hints[i];
+  }, 3600);
+})();
 
 /* ═══════════ diagnose flow ═══════════ */
 async function send(){
@@ -977,6 +1064,11 @@ async function send(){
   if(quota <= 0){ addNotice(`You've used the ${CONFIG.FREE_CHECKS} free checks this session (it's a personal project — the cap keeps my API bill sane). Refresh the page to reset.`); return; }
 
   const userText = text || "Here's a photo of the problem — what's wrong and can I fix it myself?";
+  if(history.length === 0){
+    $("chips").classList.add("collapsed");
+    $("chipsToggle").hidden = false;
+    $("clearBtn").hidden = false;
+  }
   history.push({ role:"user", text:userText, image: attached ? { media: attached.media, b64: attached.b64 } : null });
   addUser(userText, attached ? attached.dataUrl : null);
   input.value = ""; input.style.height = "auto"; clearAttach();
@@ -1306,6 +1398,17 @@ function renderExample(){
   renderCard(normalize(EXAMPLE_CARD), { ribbon:"EXAMPLE", target: dock });  // normalize fills questions/branches defaults
 }
 renderExample();
+
+/* example dock: collapsed by default on phones so the real tool is one thumb-scroll away */
+(() => {
+  const dock = document.querySelector(".example-dock"), btn = $("dockToggle");
+  if(!dock || !btn) return;
+  if(matchMedia("(max-width:760px)").matches) dock.classList.add("collapsed");
+  btn.addEventListener("click", () => {
+    const collapsed = dock.classList.toggle("collapsed");
+    btn.textContent = collapsed ? "Show the example result ▾" : "Hide the example ▴";
+  });
+})();
 
 /* ═══════════ hydrate a shared diagnosis from ?s= (KV) or #d= (encoded) ═══════════ */
 (async function hydrateShared(){
