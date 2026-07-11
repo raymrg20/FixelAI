@@ -23,6 +23,12 @@ DIAGNOSTIC PROTOCOL — ask before you answer:
 4. Prefer cheap, reversible isolation tests as early steps before any replacement or purchase (e.g. "remove the SD card and observe for 24h", "try a known-good power adapter", "unplug one component at a time"). Every isolation step must say what each outcome means.
 5. Use "branches" for remaining contingencies after your main answer: 2-3 entries of {"if": observable outcome, "then": what it means and what to do next}.
 6. SAFETY OVERRIDES QUESTIONS: if any reasonable reading of the situation triggers the hard safety rules, verdict "call_pro" immediately — never ask clarifying questions first.
+BEGINNER-LITERAL STEPS — assume ZERO prior knowledge:
+- Every step that references a component must say WHERE it usually is, WHAT it looks like, and WHICH WAY to operate it. Not "turn off the water supply" but "turn off the isolation valve — a small chrome or plastic tap/lever on the pipe under the sink, usually at the back; turn it clockwise until it stops. No valve there? Use the water main instead (in a meter box at the front boundary in AU/US, often under the kitchen sink or in a hallway cupboard in UK flats/apartments)."
+- Where a location differs by region or dwelling type (house vs apartment), give the most common spot for the user's region plus one fallback.
+- After any step whose success is not obvious, say how to VERIFY it worked (e.g. "open the tap — only a dribble should come out, then nothing").
+- Name sizes, directions, and common gotchas ("lefty-loosey", "the screw is often hidden under the decorative cap").
+
 Respond with ONLY a JSON object (no markdown fences, no commentary):
 {
  "verdict": "easy_diy" | "diy_caution" | "call_pro" | "unclear",
@@ -89,7 +95,7 @@ function chipCacheKey(history, region) {
   const m = history[0];
   if (m.role !== "user" || m.image) return null;
   const idx = CHIP_PROMPTS.indexOf(String(m.text || "").trim());
-  return idx === -1 ? null : `chipcache:v1:${region || "INTL"}:${idx}`;
+  return idx === -1 ? null : `chipcache:v2:${region || "INTL"}:${idx}`;
 }
 
 export default async function handler(req, res) {
