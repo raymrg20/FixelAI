@@ -1017,7 +1017,7 @@ async function callDiagnose(){
   });
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method:"POST", headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:1100, system: SYSTEM_PROMPT + `\nUSER REGION: ${REGIONS[region].label}. Use the currency of this region for all cost estimates, its typical local service call-out prices, and product/part names as sold there.`, messages })
+    body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:3000, system: SYSTEM_PROMPT + `\nUSER REGION: ${REGIONS[region].label}. Use the currency of this region for all cost estimates, its typical local service call-out prices, and product/part names as sold there.`, messages })
   });
   const data = await r.json();
   if(data.error) throw new Error(data.error.message || "API error");

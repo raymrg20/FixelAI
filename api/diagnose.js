@@ -103,7 +103,7 @@ function chipCacheKey(history, region) {
   const m = history[0];
   if (m.role !== "user" || m.image) return null;
   const idx = CHIP_PROMPTS.indexOf(String(m.text || "").trim());
-  return idx === -1 ? null : `chipcache:v5:${region || "INTL"}:${idx}`;
+  return idx === -1 ? null : `chipcache:v6:${region || "INTL"}:${idx}`;
 }
 
 export default async function handler(req, res) {
@@ -149,7 +149,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: process.env.OPENAI_MODEL || "gpt-5.5",
         messages,
-        max_completion_tokens: 1100,
+        max_completion_tokens: 3000,  // beginner-literal steps + branches are long; 1100 caused mid-JSON truncation → fallback "unclear" cards
         response_format: { type: "json_object" },
       }),
     });
@@ -158,13 +158,13 @@ export default async function handler(req, res) {
 
     let card;
     try { card = JSON.parse(data?.choices?.[0]?.message?.content || "{}"); }
-    catch { card = { verdict: "unclear", reply: "I couldn't produce a clean diagnosis — please try again with a bit more detail." }; }
+    catch { card = { verdict: "unclear", questions: ["Could you describe the problem again with a little more detail (what, where, and when it happens)?"], reply: "I couldn't produce a clean diagnosis that time — one more detail should sort it." }; }
 
     // server-side backstop: the safety rule is never left to the model alone
     if (!["easy_diy", "diy_caution", "call_pro", "unclear"].includes(card.verdict)) card.verdict = "unclear";
     if (card.verdict === "call_pro" || card.verdict === "unclear") { card.steps = []; card.time_estimate = ""; card.cost_saved = ""; }
 
-    if (cacheKey) kv(["SET", cacheKey, JSON.stringify(card), "EX", String(7 * 24 * 3600)]);
+    if (cacheKey && card.verdict !== "unclear") kv(["SET", cacheKey, JSON.stringify(card), "EX", String(7 * 24 * 3600)]);
     res.status(200).json({ card });
   } catch {
     res.status(502).json({ error: "failed to reach OpenAI" });
