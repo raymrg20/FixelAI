@@ -46,7 +46,7 @@ Respond with ONLY a JSON object (no markdown fences, no commentary):
  "branches": [{"if":"observable outcome","then":"what it means and what to do"}],
  "reply": "for unclear: a one-line reason why you need more information; for follow-ups: the direct answer; otherwise ''"
 }
-For easy_diy/diy_caution: 3-8 steps, each one single action; for diy_caution include explicit safety notes and a clear stop-and-call condition. Concise, jargon-free. Asking good questions first is better than a broad guess — but never pad with questions that would not change your answer. Do not add your own disclaimer — the interface appends one.`;
+For easy_diy/diy_caution: 3-8 steps, each one single action; for diy_caution include explicit safety notes and a clear stop-and-call condition. For call_pro verdicts: include in "pro_explanation" one sentence on what to expect cost-wise — the typical call-out/diagnostic fee range for the user's region in local currency, and that it's worth asking up front whether the fee is credited toward the repair — and advise comparing 2-3 quotes before booking. Concise, jargon-free. Asking good questions first is better than a broad guess — but never pad with questions that would not change your answer. Do not add your own disclaimer — the interface appends one.`;
 
 // ── optional KV (same store the share links use) — used for durable rate
 //    limiting and caching the six example-chip answers ──
@@ -95,7 +95,7 @@ function chipCacheKey(history, region) {
   const m = history[0];
   if (m.role !== "user" || m.image) return null;
   const idx = CHIP_PROMPTS.indexOf(String(m.text || "").trim());
-  return idx === -1 ? null : `chipcache:v2:${region || "INTL"}:${idx}`;
+  return idx === -1 ? null : `chipcache:v3:${region || "INTL"}:${idx}`;
 }
 
 export default async function handler(req, res) {

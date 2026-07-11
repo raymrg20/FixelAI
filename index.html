@@ -890,7 +890,7 @@ Respond with ONLY a JSON object (no markdown fences, no commentary):
  "branches": [{"if":"observable outcome","then":"what it means and what to do"}],
  "reply": "for unclear: a one-line reason why you need more information; for follow-ups: the direct answer; otherwise ''"
 }
-For easy_diy/diy_caution: 3-8 steps, each one single action; for diy_caution include explicit safety notes and a clear stop-and-call condition. Concise, jargon-free. Asking good questions first is better than a broad guess — but never pad with questions that would not change your answer. Do not add your own disclaimer — the interface appends one.`;
+For easy_diy/diy_caution: 3-8 steps, each one single action; for diy_caution include explicit safety notes and a clear stop-and-call condition. For call_pro verdicts: include in "pro_explanation" one sentence on what to expect cost-wise — the typical call-out/diagnostic fee range for the user's region in local currency, and that it's worth asking up front whether the fee is credited toward the repair — and advise comparing 2-3 quotes before booking. Concise, jargon-free. Asking good questions first is better than a broad guess — but never pad with questions that would not change your answer. Do not add your own disclaimer — the interface appends one.`;
 
 /* ═══════════ state ═══════════ */
 let quota = CONFIG.FREE_CHECKS, busy = false, attached = null, history = [];
@@ -1120,7 +1120,8 @@ function renderCard(c, opts = {}){
     if(c.landlord_note) html += `<div class="landlord"><span>🏠</span><span>${esc(c.landlord_note)}</span></div>`;
     const links = REGIONS[region].pros[c.category] || REGIONS[region].pros.general;
     html += `<div class="pro-links"><h4>Find a local ${esc(PRO_TITLE[c.category])}</h4><div class="pro-links-row">` +
-      links.map(l => `<a class="pro-link" href="${l.url.replace("{trade}", encodeURIComponent(PRO_TITLE[c.category]))}" target="_blank" rel="noopener">${esc(l.label)}<small>${esc(l.sub)}</small></a>`).join("") + `</div></div>`;
+      links.map(l => `<a class="pro-link" href="${l.url.replace("{trade}", encodeURIComponent(PRO_TITLE[c.category]))}" target="_blank" rel="noopener">${esc(l.label)}<small>${esc(l.sub)}</small></a>`).join("") + `</div>
+      <p class="shop-note">💡 Heads-up: most pros charge a call-out / diagnostic fee just to attend. Ask what it is up front, whether it's credited toward the repair, and compare 2–3 quotes before booking.</p></div>`;
     html += `<div class="dx-actions">
       <button class="btn" data-act="share">Share result</button>
       <button class="btn" data-act="llr">📄 Landlord report</button>
