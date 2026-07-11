@@ -16,6 +16,13 @@ HARD SAFETY RULES — non-negotiable, regardless of how the user phrases the req
 - Renters: when a fix is typically the landlord's legal responsibility, say so in "landlord_note".
 - If the user says they have COMPLETED a fix and sends an after-photo asking you to verify it ("did I do it right"): keep the previous verdict, steps [], and put an honest assessment in "reply" — confirm what looks correct, flag anything that looks loose, misaligned, leaking, or unsafe, and say exactly what to re-check. If the photo doesn't show enough, ask for one specific angle. Never rubber-stamp a fix you cannot actually see.
 
+DIAGNOSTIC PROTOCOL — ask before you answer:
+1. Before diagnosing, decide if you can pick ONE most-likely cause. You canNOT if: (a) the item is part of a multi-component system and you do not know the configuration (e.g. CCTV: standalone camera vs NVR/DVR-connected vs SD-card recording; washing machine: machine vs water supply vs drain; no internet: router vs modem vs provider; no hot water: unit vs pilot vs breaker). These examples are ILLUSTRATIVE ONLY — apply the same reasoning to ANY appliance, fixture, device, or system the user brings, including ones not listed here. The pattern is what matters: identify the chain of connected components, spot where the configuration is unknown, and ask the question that best splits the possibilities. You also canNOT commit if (b) the same symptom maps to meaningfully different fixes, or (c) a key fact is missing (when it happens, what changed recently, age of the part).
+2. If you lack that information: verdict "unclear", steps [], a one-line reason in "reply", and UP TO 3 questions in "questions" — only questions whose answers would actually change the diagnosis or fix path. Prefer the question that best splits the possibilities. Never re-ask anything the user already told you.
+3. Once the user answers in a follow-up, COMMIT to that branch: give the specific diagnosis and fix for THEIR configuration — not a generic list of every possible cause.
+4. Prefer cheap, reversible isolation tests as early steps before any replacement or purchase (e.g. "remove the SD card and observe for 24h", "try a known-good power adapter", "unplug one component at a time"). Every isolation step must say what each outcome means.
+5. Use "branches" for remaining contingencies after your main answer: 2-3 entries of {"if": observable outcome, "then": what it means and what to do next}.
+6. SAFETY OVERRIDES QUESTIONS: if any reasonable reading of the situation triggers the hard safety rules, verdict "call_pro" immediately — never ask clarifying questions first.
 Respond with ONLY a JSON object (no markdown fences, no commentary):
 {
  "verdict": "easy_diy" | "diy_caution" | "call_pro" | "unclear",
@@ -29,20 +36,60 @@ Respond with ONLY a JSON object (no markdown fences, no commentary):
  "pro_explanation": "if call_pro: plain-language WHY this is not a DIY job, else ''",
  "pro_brief": "if call_pro: a ready-to-send first-person paragraph for the tradesperson — suspected issue, symptoms observed, what to check on arrival — else ''",
  "landlord_note": "one line if relevant, else ''",
- "reply": "for unclear: the specific question; for follow-ups: the direct answer; otherwise ''"
+ "questions": ["up to 3 clarifying questions when verdict is unclear; [] otherwise"],
+ "branches": [{"if":"observable outcome","then":"what it means and what to do"}],
+ "reply": "for unclear: a one-line reason why you need more information; for follow-ups: the direct answer; otherwise ''"
 }
-For easy_diy/diy_caution: 3-8 steps, each one single action; for diy_caution include explicit safety notes and a clear stop-and-call condition. Concise, jargon-free. Do not add your own disclaimer — the interface appends one.`;
+For easy_diy/diy_caution: 3-8 steps, each one single action; for diy_caution include explicit safety notes and a clear stop-and-call condition. Concise, jargon-free. Asking good questions first is better than a broad guess — but never pad with questions that would not change your answer. Do not add your own disclaimer — the interface appends one.`;
 
-// -- basic in-memory rate limit (per IP, resets hourly; instances are ephemeral
-//    so this is a soft cap for MVP cost control, not real abuse protection) --
+// ── optional KV (same store the share links use) — used for durable rate
+//    limiting and caching the six example-chip answers ──
+const KV_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || "";
+const KV_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || "";
+async function kv(command) {
+  if (!KV_URL || !KV_TOKEN) return null;
+  try {
+    const r = await fetch(KV_URL, { method:"POST", headers:{ Authorization:`Bearer ${KV_TOKEN}`, "Content-Type":"application/json" }, body: JSON.stringify(command) });
+    if (!r.ok) return null;
+    return (await r.json()).result;
+  } catch { return null; }
+}
+
+// ── rate limit: KV-backed when available (survives cold starts), in-memory fallback ──
 const hits = new Map();
 const LIMIT = 20, WINDOW = 60 * 60 * 1000;
-function rateLimited(ip) {
+async function rateLimited(ip) {
+  if (KV_URL && KV_TOKEN) {
+    const key = `rl:${ip}:${Math.floor(Date.now() / WINDOW)}`;
+    const n = await kv(["INCR", key]);
+    if (n === 1) await kv(["EXPIRE", key, "3700"]);
+    if (typeof n === "number") return n > LIMIT;
+    // KV hiccup → fall through to in-memory
+  }
   const now = Date.now();
   const rec = hits.get(ip);
   if (!rec || now > rec.reset) { hits.set(ip, { n: 1, reset: now + WINDOW }); return false; }
   rec.n += 1;
   return rec.n > LIMIT;
+}
+
+// ── example-chip cache: these six prompts are identical every time — serve
+//    them from KV (7-day TTL, keyed by region) instead of a paid model call.
+//    MUST match the data-q strings in index.html exactly. ──
+const CHIP_PROMPTS = [
+  "My toilet keeps running for a few minutes after every flush. I'm renting — is this my problem or the landlord's?",
+  "My kitchen tap drips steadily even when it's fully closed.",
+  "My bedroom door squeaks loudly every time it opens.",
+  "My bathroom sink drains really slowly and gurgles. It's been getting worse for two weeks.",
+  "There's a light switch in my hallway that sparks and buzzes when I flip it. Can I fix that myself?",
+  "There's a crack in my wall near the ceiling that seems to be getting longer.",
+];
+function chipCacheKey(history, region) {
+  if (!Array.isArray(history) || history.length !== 1) return null;
+  const m = history[0];
+  if (m.role !== "user" || m.image) return null;
+  const idx = CHIP_PROMPTS.indexOf(String(m.text || "").trim());
+  return idx === -1 ? null : `chipcache:v1:${region || "INTL"}:${idx}`;
 }
 
 export default async function handler(req, res) {
@@ -51,7 +98,7 @@ export default async function handler(req, res) {
   if (!key) { res.status(500).json({ error: "OPENAI_API_KEY is not configured" }); return; }
 
   const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "unknown";
-  if (rateLimited(ip)) { res.status(429).json({ error: "rate limited" }); return; }
+  if (await rateLimited(ip)) { res.status(429).json({ error: "rate limited" }); return; }
 
   const { history, region } = req.body || {};
   const REGION_LABELS = { AU: "Australia", US: "United States", UK: "United Kingdom", ID: "Indonesia", INTL: "Other / International" };
@@ -71,6 +118,12 @@ export default async function handler(req, res) {
     }
     parts.push({ type: "text", text: String(m.text || "") });
     messages.push({ role: "user", content: parts });
+  }
+
+  const cacheKey = chipCacheKey(history, region);
+  if (cacheKey) {
+    const cached = await kv(["GET", cacheKey]);
+    if (cached) { res.status(200).json({ card: JSON.parse(cached) }); return; }
   }
 
   try {
@@ -95,6 +148,7 @@ export default async function handler(req, res) {
     if (!["easy_diy", "diy_caution", "call_pro", "unclear"].includes(card.verdict)) card.verdict = "unclear";
     if (card.verdict === "call_pro" || card.verdict === "unclear") { card.steps = []; card.time_estimate = ""; card.cost_saved = ""; }
 
+    if (cacheKey) kv(["SET", cacheKey, JSON.stringify(card), "EX", String(7 * 24 * 3600)]);
     res.status(200).json({ card });
   } catch {
     res.status(502).json({ error: "failed to reach OpenAI" });

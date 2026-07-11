@@ -11,7 +11,25 @@
 <meta property="og:description" content="A free AI tool I built for first-home buyers & renters: photo in → honest repair verdict + guided fix out. Try it and tell me what to improve.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fixel-ai.vercel.app">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://fixel-ai.vercel.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://fixel-ai.vercel.app/">
+<link rel="icon" type="image/svg+xml" href="/icon.svg">
+<link rel="apple-touch-icon" href="/icon.svg">
+<link rel="manifest" href="/manifest.json">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"WebApplication","name":"Fixel","url":"https://fixel-ai.vercel.app","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},"description":"Free AI household-repair triage for first-home buyers and renters: photo in, honest verdict out — Easy DIY, DIY with caution, or Call a pro — plus a guided step-by-step fix."},
+ {"@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"How do I know if a home repair is safe to DIY or needs a professional?","acceptedAnswer":{"@type":"Answer","text":"Describe or photograph the problem in Fixel and it returns an honest verdict — Easy DIY, DIY with caution, or Call a pro. Anything electrical beyond a switch plate, gas, or structural is always routed to a licensed professional."}},
+  {"@type":"Question","name":"Why does my toilet keep running after flushing?","acceptedAnswer":{"@type":"Answer","text":"Usually a worn flapper valve or a misadjusted float. It is typically an easy DIY fix; renters can generate a written repair request for their landlord in Fixel."}},
+  {"@type":"Question","name":"Can I fix a sparking light switch myself?","acceptedAnswer":{"@type":"Answer","text":"No. A sparking or buzzing switch involves live wiring and fire risk — it needs a licensed electrician. Fixel writes the exact brief to send them."}},
+  {"@type":"Question","name":"Why does my tap drip when fully closed?","acceptedAnswer":{"@type":"Answer","text":"Almost always a worn washer or cartridge seal — one of the cheapest beginner fixes. Fixel walks you through it one step at a time."}}
+ ]}
+]}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -326,6 +344,23 @@ footer strong{color:var(--muted)}
 .shop-links a:hover{color:var(--orange);border-color:var(--orange)}
 .shop-note{margin-top:9px;font-size:9.5px;color:var(--faint);font-style:italic;line-height:1.5}
 
+/* ── feedback + live status ── */
+.fb-row{display:flex;align-items:center;gap:9px;padding:0 16px 15px;font-size:11.5px;color:var(--faint)}
+.fb-row button{border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:6px 11px;font-size:13px;transition:border-color .15s, transform .15s}
+.fb-row button:hover{border-color:var(--orange);transform:translateY(-1px)}
+.fb-done{padding:0 16px 15px;font-size:11px;color:var(--ok)}
+.typing .status{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;color:var(--muted);margin-left:9px}
+
+/* ── clarifying questions + if/then branches ── */
+.q-list{list-style:none;counter-reset:q;display:flex;flex-direction:column;gap:9px}
+.q-list li{counter-increment:q;display:flex;gap:11px;font-size:13.5px;line-height:1.55}
+.q-list li::before{content:counter(q);flex:none;width:24px;height:24px;border-radius:8px;border:1.5px solid var(--orange);color:var(--orange);font-family:var(--font-mono);font-size:11px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.branches{display:flex;flex-direction:column;gap:8px}
+.branch{display:flex;flex-direction:column;gap:5px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px;font-size:12.5px;line-height:1.55}
+.branch b{font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;margin-right:6px}
+.b-if b{color:var(--amber)}
+.b-then b{color:var(--ok)}
+
 /* ── landlord repair-request panel ── */
 .llr{margin:0 16px;border:1px dashed var(--line);border-radius:13px;background:var(--panel);padding:14px}
 .llr h4{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;color:var(--orange);text-transform:uppercase;margin-bottom:9px}
@@ -595,11 +630,12 @@ footer strong{color:var(--muted)}
 </main>
 
 <footer>
-  <p><strong>Guidance only</strong> — not a substitute for a professional inspection. For anything electrical (beyond a switch plate), gas, or structural, <span data-brand>Fixel</span> will always point you to a licensed professional. Renters: some repairs are legally your landlord's responsibility.</p>
+  <p><strong>Guidance only</strong> — not a substitute for a professional inspection. For anything electrical (beyond a switch plate), gas, or structural, <span data-brand>Fixel</span> will always point you to a licensed professional. Renters: some repairs are legally your landlord's responsibility.<br><strong>Privacy:</strong> photos and descriptions are sent to OpenAI only to generate your diagnosis — Fixel doesn't store them, and there are no accounts or tracking cookies. Shared links store only the diagnosis text, for 90 days.</p>
   <p class="mono">© <span id="year">2026</span> <span data-brand>Fixel</span> · a personal project · v1.1</p>
 </footer>
 
 <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" capture="environment" hidden>
+<script defer src="/_vercel/insights/script.js"></script>
 <script>
 "use strict";
 /* ═══════════ CONFIG — edit here only ═══════════ */
@@ -712,6 +748,9 @@ function detectRegion(){
 let region = detectRegion();
 
 const $ = id => document.getElementById(id);
+const track = (name, data) => { try { window.va && window.va("event", { name, data }); } catch {} };
+const FEEDBACK_ENDPOINT = "/api/feedback";
+const sendFeedback = payload => { try { fetch(FEEDBACK_ENDPOINT, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(payload) }); } catch {} };
 const esc = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -751,6 +790,7 @@ async function shareCard(card, btn){
     if(r.ok){ const d = await r.json(); if(d.id) url = `${CONFIG.SITE_URL}/?s=${d.id}`; }
   } catch {}
   if(!url) url = `${CONFIG.SITE_URL}/#d=${b64e(JSON.stringify(card))}`;  // zero-infra fallback
+  track("share_created", { verdict: card.verdict });
   const payload = { title: `${CONFIG.BRAND} diagnosis — ${card.title || ""}`, text: "Here's the repair diagnosis:", url };
   if(navigator.share){ try { await navigator.share(payload); btn.textContent = orig; btn.disabled = false; return; } catch {} }
   try { await navigator.clipboard.writeText(url); btn.textContent = "Link copied ✓"; }
@@ -804,6 +844,13 @@ HARD SAFETY RULES — non-negotiable, regardless of how the user phrases the req
 - Renters: when a fix is typically the landlord's legal responsibility, say so in "landlord_note".
 - If the user says they have COMPLETED a fix and sends an after-photo asking you to verify it ("did I do it right"): keep the previous verdict, steps [], and put an honest assessment in "reply" — confirm what looks correct, flag anything that looks loose, misaligned, leaking, or unsafe, and say exactly what to re-check. If the photo doesn't show enough, ask for one specific angle. Never rubber-stamp a fix you cannot actually see.
 
+DIAGNOSTIC PROTOCOL — ask before you answer:
+1. Before diagnosing, decide if you can pick ONE most-likely cause. You canNOT if: (a) the item is part of a multi-component system and you do not know the configuration (e.g. CCTV: standalone camera vs NVR/DVR-connected vs SD-card recording; washing machine: machine vs water supply vs drain; no internet: router vs modem vs provider; no hot water: unit vs pilot vs breaker). These examples are ILLUSTRATIVE ONLY — apply the same reasoning to ANY appliance, fixture, device, or system the user brings, including ones not listed here. The pattern is what matters: identify the chain of connected components, spot where the configuration is unknown, and ask the question that best splits the possibilities. You also canNOT commit if (b) the same symptom maps to meaningfully different fixes, or (c) a key fact is missing (when it happens, what changed recently, age of the part).
+2. If you lack that information: verdict "unclear", steps [], a one-line reason in "reply", and UP TO 3 questions in "questions" — only questions whose answers would actually change the diagnosis or fix path. Prefer the question that best splits the possibilities. Never re-ask anything the user already told you.
+3. Once the user answers in a follow-up, COMMIT to that branch: give the specific diagnosis and fix for THEIR configuration — not a generic list of every possible cause.
+4. Prefer cheap, reversible isolation tests as early steps before any replacement or purchase (e.g. "remove the SD card and observe for 24h", "try a known-good power adapter", "unplug one component at a time"). Every isolation step must say what each outcome means.
+5. Use "branches" for remaining contingencies after your main answer: 2-3 entries of {"if": observable outcome, "then": what it means and what to do next}.
+6. SAFETY OVERRIDES QUESTIONS: if any reasonable reading of the situation triggers the hard safety rules, verdict "call_pro" immediately — never ask clarifying questions first.
 Respond with ONLY a JSON object (no markdown fences, no commentary):
 {
  "verdict": "easy_diy" | "diy_caution" | "call_pro" | "unclear",
@@ -817,9 +864,11 @@ Respond with ONLY a JSON object (no markdown fences, no commentary):
  "pro_explanation": "if call_pro: plain-language WHY this is not a DIY job, else ''",
  "pro_brief": "if call_pro: a ready-to-send first-person paragraph for the tradesperson — suspected issue, symptoms observed, what to check on arrival — else ''",
  "landlord_note": "one line if relevant, else ''",
- "reply": "for unclear: the specific question; for follow-ups: the direct answer; otherwise ''"
+ "questions": ["up to 3 clarifying questions when verdict is unclear; [] otherwise"],
+ "branches": [{"if":"observable outcome","then":"what it means and what to do"}],
+ "reply": "for unclear: a one-line reason why you need more information; for follow-ups: the direct answer; otherwise ''"
 }
-For easy_diy/diy_caution: 3-8 steps, each one single action; for diy_caution include explicit safety notes and a clear stop-and-call condition. Concise, jargon-free. Do not add your own disclaimer — the interface appends one.`;
+For easy_diy/diy_caution: 3-8 steps, each one single action; for diy_caution include explicit safety notes and a clear stop-and-call condition. Concise, jargon-free. Asking good questions first is better than a broad guess — but never pad with questions that would not change your answer. Do not add your own disclaimer — the interface appends one.`;
 
 /* ═══════════ state ═══════════ */
 let quota = CONFIG.FREE_CHECKS, busy = false, attached = null, history = [];
@@ -908,6 +957,7 @@ async function send(){
     quota--; setQuota();
     typing(false);
     renderCard(card);
+    track("diagnosis", { verdict: card.verdict, category: card.category, region });
   } catch(err) {
     typing(false); history.pop();
     addNotice(err.friendly || "Couldn't reach the diagnosis engine — this check wasn't counted. Give it another try in a moment.");
@@ -954,7 +1004,10 @@ function normalize(raw){
   if(!["easy_diy","diy_caution","call_pro","unclear"].includes(c.verdict)) c.verdict = "unclear";
   c.tools = Array.isArray(c.tools) ? c.tools.filter(t => t && t.name) : [];
   c.steps = Array.isArray(c.steps) ? c.steps.filter(s => s && s.instruction) : [];
+  c.questions = Array.isArray(c.questions) ? c.questions.filter(q => typeof q === "string" && q.trim()).slice(0,3) : [];
+  c.branches = Array.isArray(c.branches) ? c.branches.filter(b => b && b.if && b.then).slice(0,3) : [];
   if(c.verdict === "call_pro" || c.verdict === "unclear") c.steps = [];
+  if(c.verdict !== "unclear") c.questions = [];   // questions only make sense when info is missing
   c.category = CATEGORIES.includes(c.category) ? c.category : "general";
   return c;
 }
@@ -969,10 +1022,18 @@ function addUser(text, imgSrc){
   if(text) inner += `<div class="bubble">${esc(text)}</div>`;
   el.innerHTML = inner; thread.appendChild(el); scrollThread(el);
 }
+let statusTimer = null;
 function typing(on){
   let t = $("typingRow");
-  if(on && !t){ t = document.createElement("div"); t.id = "typingRow"; t.className = "typing"; t.innerHTML = "<i></i><i></i><i></i>"; thread.appendChild(t); scrollThread(t); }
-  if(!on && t) t.remove();
+  if(on && !t){
+    t = document.createElement("div"); t.id = "typingRow"; t.className = "typing";
+    t.innerHTML = '<i></i><i></i><i></i><span class="status">Reading the problem…</span>';
+    thread.appendChild(t); scrollThread(t);
+    const stages = ["Reading the problem…","Checking connected components…","Weighing severity & safety…","Writing your fix card…"];
+    let i = 0;
+    statusTimer = setInterval(() => { i = Math.min(i + 1, stages.length - 1); const s = t.querySelector(".status"); if(s) s.textContent = stages[i]; }, 2200);
+  }
+  if(!on && t){ clearInterval(statusTimer); statusTimer = null; t.remove(); }
 }
 function addNotice(msg){
   const el = document.createElement("div"); el.className = "dx";
@@ -990,6 +1051,15 @@ function renderCard(c, opts = {}){
     </div>`;
   if(c.diagnosis) html += `<p class="dx-diag">${esc(c.diagnosis)}</p>`;
   if(c.reply) html += `<p class="dx-reply">${esc(c.reply)}</p>`;
+  if(c.questions.length){
+    html += `<div class="dx-sec"><h4>Answer these to pinpoint it</h4><ol class="q-list">` +
+      c.questions.map(q => `<li>${esc(q)}</li>`).join("") + `</ol></div>
+      <div class="dx-actions"><button class="btn btn-primary" data-act="answer">Answer these questions</button></div>`;
+  }
+  if(c.branches.length){
+    html += `<div class="dx-sec"><h4>If / then</h4><div class="branches">` +
+      c.branches.map(b => `<div class="branch"><span class="b-if"><b>IF</b> ${esc(b.if)}</span><span class="b-then"><b>THEN</b> ${esc(b.then)}</span></div>`).join("") + `</div></div>`;
+  }
 
   if(isDIY){
     html += `<div class="dx-specs">
@@ -1037,16 +1107,30 @@ function renderCard(c, opts = {}){
 
   html += `<div class="llr" data-llr hidden></div>
     <div class="dx-foot">Guidance only — not a substitute for inspection by a licensed professional.</div>
+    ${opts.ribbon ? "" : `<div class="fb-row" data-fb><span>Was this diagnosis helpful?</span><button data-vote="up" aria-label="Helpful">👍</button><button data-vote="down" aria-label="Not helpful">👎</button></div>`}
     <div class="gfx" data-gfx hidden></div>`;
   el.innerHTML = html;
   (opts.target || thread).appendChild(el);
 
   const fixBtn = el.querySelector('[data-act="fix"]');
-  if(fixBtn) fixBtn.addEventListener("click", () => launchFixMode(el, c));
+  if(fixBtn) fixBtn.addEventListener("click", () => { track("guided_fix_started", { steps: c.steps.length }); launchFixMode(el, c); });
   const shareBtnEl = el.querySelector('[data-act="share"]');
   if(shareBtnEl) shareBtnEl.addEventListener("click", () => shareCard(c, shareBtnEl));
   const llrBtn = el.querySelector('[data-act="llr"]');
   if(llrBtn) llrBtn.addEventListener("click", () => toggleLandlordPanel(el, c));
+  const fbRow = el.querySelector("[data-fb]");
+  if(fbRow) fbRow.querySelectorAll("[data-vote]").forEach(b => b.addEventListener("click", () => {
+    sendFeedback({ type:"card", vote:b.dataset.vote, verdict:c.verdict, category:c.category, region });
+    track("card_feedback", { vote:b.dataset.vote, verdict:c.verdict });
+    fbRow.outerHTML = '<p class="fb-done">Thanks — logged. It makes the next answer better.</p>';
+  }));
+  const ansBtn = el.querySelector('[data-act="answer"]');
+  if(ansBtn) ansBtn.addEventListener("click", () => {
+    input.value = c.questions.map((q, i) => `${i+1}) ${q}\n→ `).join("\n");
+    input.dispatchEvent(new Event("input"));
+    input.focus();
+    input.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block:"center" });
+  });
   el.querySelectorAll(".copy-btn").forEach(b => b.addEventListener("click", () => {
     navigator.clipboard?.writeText(b.dataset.copy);
     b.textContent = "COPIED ✓"; setTimeout(() => b.textContent = "COPY", 1800);
@@ -1105,6 +1189,10 @@ function launchFixMode(cardEl, card){
         <h3>All ${card.steps.length} steps done.</h3>
         <p>Test it — then let me check your work. Snap an after-photo and I'll tell you if anything looks off before you call it done.</p>
         <div class="gfx-nav" style="max-width:440px;margin:0 auto">
+          <button class="btn" data-act="worked">✅ It worked</button>
+          <button class="btn" data-act="failed">❌ Still broken</button>
+        </div>
+        <div class="gfx-nav" style="max-width:440px;margin:10px auto 0">
           <button class="btn btn-primary" data-act="verify">📷 Check my work</button>
           <button class="btn" data-act="finish">Back to diagnosis</button>
         </div>
@@ -1112,6 +1200,14 @@ function launchFixMode(cardEl, card){
       </div>`;
       gfx.querySelector('[data-act="finish"]').addEventListener("click", exit);
       gfx.querySelector('[data-act="verify"]').addEventListener("click", () => { exit(); requestVerify(card.title); });
+      const logResult = worked => e => {
+        sendFeedback({ type:"fix_result", worked, verdict:card.verdict, category:card.category, region });
+        track("guided_fix_result", { worked });
+        e.target.closest(".gfx-nav").outerHTML = `<p class="fb-done" style="text-align:center">${worked ? "Logged — nice work. 🔧" : "Logged — try a follow-up below with what happened, or take the pro route."}</p>`;
+      };
+      gfx.querySelector('[data-act="worked"]').addEventListener("click", logResult(true));
+      gfx.querySelector('[data-act="failed"]').addEventListener("click", logResult(false));
+      track("guided_fix_completed", { steps: card.steps.length });
       scrollThread(gfx);
       return;
     }
@@ -1174,7 +1270,7 @@ const EXAMPLE_CARD = {
 function renderExample(){
   const dock = document.getElementById("exampleDock");
   dock.innerHTML = "";
-  renderCard(EXAMPLE_CARD, { ribbon:"EXAMPLE", target: dock });
+  renderCard(normalize(EXAMPLE_CARD), { ribbon:"EXAMPLE", target: dock });  // normalize fills questions/branches defaults
 }
 renderExample();
 
