@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#121110">
-<title>Fixel — free AI repair help for first-home buyers & renters</title>
-<meta name="description" content="Photograph or describe a household problem. Fixel gives an honest verdict — safe to DIY, DIY with caution, or call a pro — plus a guided step-by-step fix. Free, in your browser, no signup.">
+<title>Fixel — free AI household-repair diagnosis (DIY or call a pro)</title>
+<meta name="description" content="Fixel is a free AI tool that diagnoses everyday household repair problems from a photo or a description, then tells you whether it is safe to DIY or you should call a professional — with a guided step-by-step fix. In your browser, no signup.">
 <!-- LinkedIn / social share preview -->
 <meta property="og:title" content="Fixel — Snap it. Fix it. Skip the 40-minute tutorial.">
-<meta property="og:description" content="A free AI tool I built for first-home buyers & renters: photo in → honest repair verdict + guided fix out. Try it and tell me what to improve.">
+<meta property="og:description" content="Fixel is a free AI tool that diagnoses household repairs from a photo or description and tells you whether to DIY or call a professional. Built for first-home buyers and renters.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fixel-ai.vercel.app">
 <meta property="og:image" content="https://fixel-ai.vercel.app/og.png">
@@ -21,9 +21,9 @@
 <link rel="manifest" href="/manifest.json">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
- {"@type":"WebApplication","name":"Fixel","url":"https://fixel-ai.vercel.app","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},"description":"Free AI household-repair triage for first-home buyers and renters: photo in, honest verdict out — Easy DIY, DIY with caution, or Call a pro — plus a guided step-by-step fix."},
+ {"@type":"WebApplication","name":"Fixel","url":"https://fixel-ai.vercel.app","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},"description":"Fixel is a free AI tool that diagnoses everyday household repair problems from a photo or a text description, then tells you whether the job is safe to do yourself (Easy DIY or DIY with caution) or needs a licensed professional, and walks you through the fix one step at a time. It is built for first-home buyers and renters, runs in the browser with no signup, and always routes electrical, gas, and structural work to a professional.","featureList":["Photo and text repair diagnosis","Safety verdict: Easy DIY, DIY with caution, or Call a pro","Guided step-by-step fix mode","Ready-to-send brief for a tradesperson","Written landlord repair-request letter","Regional store and tradesperson links (AU, US, UK, Indonesia)"]},
  {"@type":"FAQPage","mainEntity":[
-  {"@type":"Question","name":"How do I know if a home repair is safe to DIY or needs a professional?","acceptedAnswer":{"@type":"Answer","text":"Describe or photograph the problem in Fixel and it returns an honest verdict — Easy DIY, DIY with caution, or Call a pro. Anything electrical beyond a switch plate, gas, or structural is always routed to a licensed professional."}},
+  {"@type":"Question","name":"What is Fixel?","acceptedAnswer":{"@type":"Answer","text":"Fixel is a free AI tool that diagnoses everyday household repair problems from a photo or a description. It gives an honest verdict — Easy DIY, DIY with caution, or Call a pro — and walks you through safe fixes one step at a time. It is built for first-home buyers and renters, needs no signup, and always routes electrical, gas, and structural work to a licensed professional. It is a personal project by Ray Gunawan, not affiliated with Vercel."}},{"@type":"Question","name":"How do I know if a home repair is safe to DIY or needs a professional?","acceptedAnswer":{"@type":"Answer","text":"Describe or photograph the problem in Fixel and it returns an honest verdict — Easy DIY, DIY with caution, or Call a pro. Anything electrical beyond a switch plate, gas, or structural is always routed to a licensed professional."}},
   {"@type":"Question","name":"Why does my toilet keep running after flushing?","acceptedAnswer":{"@type":"Answer","text":"Usually a worn flapper valve or a misadjusted float. It is typically an easy DIY fix; renters can generate a written repair request for their landlord in Fixel."}},
   {"@type":"Question","name":"Can I fix a sparking light switch myself?","acceptedAnswer":{"@type":"Answer","text":"No. A sparking or buzzing switch involves live wiring and fire risk — it needs a licensed electrician. Fixel writes the exact brief to send them."}},
   {"@type":"Question","name":"Why does my tap drip when fully closed?","acceptedAnswer":{"@type":"Answer","text":"Almost always a worn washer or cartridge seal — one of the cheapest beginner fixes. Fixel walks you through it one step at a time."}}
@@ -319,6 +319,7 @@ h1 .accent{color:var(--orange)}
 .about-card{background:linear-gradient(165deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:20px;padding:clamp(22px,4vw,36px);position:relative;z-index:1}
 .about-card p{font-size:14.5px;line-height:1.75;color:var(--muted);max-width:64ch}
 .about-card p+p{margin-top:12px}
+.about-card .whatis{font-size:15.5px;color:var(--off);border-left:3px solid var(--orange);padding-left:15px}
 .about-card strong{color:var(--off)}
 .feedback-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
 .feedback-row .btn{flex:1;min-width:200px}
@@ -627,6 +628,7 @@ footer strong{color:var(--muted)}
     <h2>Built by one person. Made better by you.</h2>
   </div>
   <div class="about-card rv">
+    <p class="whatis"><strong><span data-brand>Fixel</span> is a free AI tool that diagnoses everyday household repair problems from a photo or a description, then tells you whether the job is safe to do yourself or you should call a professional.</strong> Describe what's wrong — a dripping tap, a running toilet, a sparking switch — or snap a photo, and it returns an honest verdict (Easy DIY, DIY with caution, or Call a pro), a guided step-by-step fix for the safe ones, and the exact words to send a tradesperson for the ones that aren't. It's built for first-home buyers and renters, runs in your browser with no signup, and always routes electrical, gas, and structural work to a licensed professional. It's a personal project by Ray Gunawan — not affiliated with Vercel, where it happens to be hosted.</p>
     <p>I built <strong><span data-brand>Fixel</span></strong> because buying or renting your first home comes with a hundred small breakages nobody teaches you about — and the choice is usually <strong>an hour of YouTube roulette</strong> or <strong>paying a call-out fee to learn it was a $5 washer</strong>. This tool gives you the honest answer first: what it probably is, whether it's safe to touch, and exactly what to do or say next.</p>
     <p>It's <strong>free, with no signup and no catch</strong> — a personal project, not a startup. What I need most right now is real feedback: try it on something actually broken in your place, then tell me where it nailed it and where it fell flat.</p>
     <div class="feedback-row">
