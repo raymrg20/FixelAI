@@ -116,7 +116,7 @@ h1 .accent{color:var(--orange)}
 .stage-readout span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rd-dot{width:7px;height:7px;border-radius:50%;background:var(--orange);display:inline-block;animation:pulse 1.6s ease infinite;flex:none}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-.legend3d{position:absolute;right:15px;top:13px;z-index:5;font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--faint);display:flex;gap:10px}
+.legend3d{position:absolute;left:15px;top:32px;z-index:5;font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--faint);display:flex;gap:10px;flex-wrap:wrap;max-width:60%}
 @media(max-width:980px){.legend3d{display:none}}
 .legend3d b{color:var(--orange)}
 .scene3d{perspective:1500px;perspective-origin:50% 30%}
@@ -130,6 +130,11 @@ h1 .accent{color:var(--orange)}
 .bring{position:absolute;left:14px;top:-22px;width:192px;height:184px;border:1px dashed rgba(245,99,30,.4);border-radius:50%;transform:translateZ(-38px)}
 .box{position:absolute;transform-style:preserve-3d}
 .part{position:absolute;transform-style:preserve-3d}
+/* CRITICAL: .lift wrappers stack sub-parts in Z. Without position:absolute +
+   preserve-3d here, children flatten into 2D slabs (the "floating blobs" bug). */
+.lift{position:absolute;transform-style:preserve-3d}
+.shadow3d{position:absolute;left:38px;top:4px;width:154px;height:132px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(0,0,0,.6),transparent 72%);transform:translateZ(-35px)}
 .face{position:absolute}
 .f-top{left:0;top:0;width:var(--w);height:var(--d);transform:translateZ(var(--h));background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
 .f-top::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(0,0,0,.12));border-radius:inherit}
@@ -141,9 +146,11 @@ h1 .accent{color:var(--orange)}
 .f-e::after,.f-w::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.32),rgba(0,0,0,.46));border-radius:inherit}
 .rd .face{border-radius:7px}
 /* exploded mixer tap: washer, cartridge and handle breathe apart, then reseat */
-@keyframes riseWasher{0%,14%{transform:translateZ(64px)}42%,66%{transform:translateZ(102px)}94%,100%{transform:translateZ(64px)}}
-@keyframes riseCart{0%,14%{transform:translateZ(76px)}42%,66%{transform:translateZ(154px)}94%,100%{transform:translateZ(76px)}}
-@keyframes riseHandle{0%,14%{transform:translateZ(94px)}42%,66%{transform:translateZ(216px)}94%,100%{transform:translateZ(94px)}}
+@keyframes riseWasher{0%,14%{transform:translateZ(80px)}42%,66%{transform:translateZ(114px)}94%,100%{transform:translateZ(80px)}}
+@keyframes riseCart{0%,14%{transform:translateZ(94px)}42%,66%{transform:translateZ(176px)}94%,100%{transform:translateZ(94px)}}
+@keyframes riseHandle{0%,14%{transform:translateZ(114px)}42%,66%{transform:translateZ(250px)}94%,100%{transform:translateZ(114px)}}
+@keyframes dropScrews{0%,14%{transform:translateZ(4px)}42%,66%{transform:translateZ(-24px)}94%,100%{transform:translateZ(4px)}}
+.p-screw{animation:dropScrews 9s cubic-bezier(.45,0,.2,1) infinite}
 .p-washer{animation:riseWasher 9s cubic-bezier(.45,0,.2,1) infinite}
 .p-cart{animation:riseCart 9s cubic-bezier(.45,0,.2,1) infinite}
 .p-handle{animation:riseHandle 9s cubic-bezier(.45,0,.2,1) infinite}
@@ -416,67 +423,74 @@ footer strong{color:var(--muted)}
 
   <div class="hero-stage" aria-hidden="true">
     <div class="stage-frame">
-      <div class="stage-label mono">FIG.01 — MIXER TAP · EXPLODED VIEW</div>
+      <div class="stage-label mono">FIG.01 — MIXER TAP TEARDOWN</div>
       <div class="scene3d">
         <div class="iso">
           <div class="spin360">
             <div class="bplate"></div>
             <div class="bring"></div>
+            <div class="shadow3d"></div>
 
-            <!-- base plate (escutcheon) -->
-            <div class="part" style="left:72px;top:36px">
-              <div class="box rd" style="--w:72px;--d:72px;--h:10px;--c:#9AA3AA">
-                <div class="face f-top" style="background:linear-gradient(135deg,#C6CDD3,#9AA3AA)"></div>
+            <!-- mounting screws ×4 (drop below the base on explode) -->
+            <div class="part p-screw" style="left:74px;top:34px"><div class="box rd" style="--w:10px;--d:10px;--h:8px;--c:#6E675C"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
+            <div class="part p-screw" style="left:138px;top:34px"><div class="box rd" style="--w:10px;--d:10px;--h:8px;--c:#6E675C"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
+            <div class="part p-screw" style="left:74px;top:98px"><div class="box rd" style="--w:10px;--d:10px;--h:8px;--c:#6E675C"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
+            <div class="part p-screw" style="left:138px;top:98px"><div class="box rd" style="--w:10px;--d:10px;--h:8px;--c:#6E675C"><div class="face f-top"></div><div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div></div></div>
+
+            <!-- base escutcheon -->
+            <div class="part" style="left:68px;top:28px">
+              <div class="box rd" style="--w:84px;--d:84px;--h:12px;--c:#9AA3AA">
+                <div class="face f-top" style="background:linear-gradient(135deg,#CBD2D8,#9AA3AA)"></div>
                 <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
               </div>
             </div>
-            <!-- tap body -->
-            <div class="part" style="left:86px;top:50px">
-              <div class="lift" style="left:0;top:0;transform:translateZ(10px)">
-                <div class="box rd" style="--w:44px;--d:44px;--h:58px;--c:#8F98A0">
-                  <div class="face f-top" style="background:linear-gradient(135deg,#BFC7CD,#8F98A0)"></div>
+            <!-- tap body column (sits ON the base via .lift) -->
+            <div class="part" style="left:86px;top:46px">
+              <div class="lift" style="left:0;top:0;transform:translateZ(12px)">
+                <div class="box rd" style="--w:48px;--d:48px;--h:64px;--c:#8F98A0">
+                  <div class="face f-top" style="background:linear-gradient(135deg,#C4CCD2,#8F98A0)"></div>
                   <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
                 </div>
               </div>
             </div>
-            <!-- spout arm + tip + drip -->
-            <div class="part" style="left:124px;top:59px">
-              <div class="lift" style="left:0;top:0;transform:translateZ(52px)">
-                <div class="box rd" style="--w:78px;--d:26px;--h:16px;--c:#8F98A0">
-                  <div class="face f-top" style="background:linear-gradient(135deg,#BFC7CD,#8F98A0)"></div>
+            <!-- spout: arm out from the body top + down-turned tip + drip -->
+            <div class="part" style="left:108px;top:56px">
+              <div class="lift" style="left:0;top:0;transform:translateZ(64px)">
+                <div class="box rd" style="--w:92px;--d:28px;--h:16px;--c:#8F98A0">
+                  <div class="face f-top" style="background:linear-gradient(135deg,#C4CCD2,#8F98A0)"></div>
                   <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
                 </div>
               </div>
-              <div class="lift" style="left:62px;top:1px;transform:translateZ(30px)">
-                <div class="box rd" style="--w:16px;--d:24px;--h:22px;--c:#7F8890">
+              <div class="lift" style="left:74px;top:1px;transform:translateZ(38px)">
+                <div class="box rd" style="--w:18px;--d:26px;--h:28px;--c:#7F8890">
                   <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
                 </div>
               </div>
-              <div class="drip" style="left:66px;top:9px"></div>
+              <div class="drip" style="left:79px;top:10px"></div>
             </div>
             <!-- WASHER — the $5 culprit -->
-            <div class="part p-washer" style="left:93px;top:57px">
-              <div class="box rd" style="--w:30px;--d:30px;--h:8px;--c:#8E3B34">
-                <div class="face f-top" style="background:linear-gradient(135deg,#A8483F,#8E3B34)"></div>
+            <div class="part p-washer" style="left:93px;top:53px">
+              <div class="box rd" style="--w:34px;--d:34px;--h:9px;--c:#8E3B34">
+                <div class="face f-top" style="background:linear-gradient(135deg,#AC4B41,#8E3B34)"></div>
                 <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
               </div>
             </div>
-            <!-- cartridge — brass -->
-            <div class="part p-cart" style="left:96px;top:60px">
-              <div class="box rd" style="--w:24px;--d:24px;--h:32px;--c:#B08D2A">
-                <div class="face f-top" style="background:linear-gradient(135deg,#D9B23F,#B08D2A)"></div>
+            <!-- brass cartridge -->
+            <div class="part p-cart" style="left:97px;top:57px">
+              <div class="box rd" style="--w:26px;--d:26px;--h:36px;--c:#B08D2A">
+                <div class="face f-top" style="background:linear-gradient(135deg,#DDB646,#B08D2A)"></div>
                 <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
               </div>
             </div>
             <!-- handle: disc + lever -->
-            <div class="part p-handle" style="left:91px;top:55px">
-              <div class="box rd" style="--w:34px;--d:34px;--h:10px;--c:#2A2620">
-                <div class="face f-top" style="background:#39332B"></div>
+            <div class="part p-handle" style="left:90px;top:50px">
+              <div class="box rd" style="--w:40px;--d:40px;--h:12px;--c:#2A2620">
+                <div class="face f-top" style="background:linear-gradient(135deg,#453E33,#2A2620)"></div>
                 <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
               </div>
-              <div class="lift" style="left:-40px;top:8px;transform:translateZ(10px)">
-                <div class="box rd" style="--w:52px;--d:18px;--h:9px;--c:#2A2620">
-                  <div class="face f-top" style="background:#39332B"></div>
+              <div class="lift" style="left:-42px;top:10px;transform:translateZ(12px)">
+                <div class="box rd" style="--w:56px;--d:20px;--h:10px;--c:#2A2620">
+                  <div class="face f-top" style="background:linear-gradient(135deg,#453E33,#2A2620)"></div>
                   <div class="face f-s"></div><div class="face f-n"></div><div class="face f-e"></div><div class="face f-w"></div>
                 </div>
               </div>
@@ -643,7 +657,7 @@ const CONFIG = {
   BRAND: "Fixel",
   SITE_URL: "https://fixel-ai.vercel.app",
   // ↓ paste your LinkedIn post/profile URL so the feedback button goes somewhere real
-  LINKEDIN_URL: "https://www.linkedin.com/",
+  LINKEDIN_URL: "https://www.linkedin.com/in/ray-gunawan/",
   FREE_CHECKS: 3,
   MAX_MB: 8,
   API_ENDPOINT: "/api/diagnose",
