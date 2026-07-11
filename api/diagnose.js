@@ -104,7 +104,9 @@ export default async function handler(req, res) {
   if (!key) { res.status(500).json({ error: "OPENAI_API_KEY is not configured" }); return; }
 
   const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "unknown";
-  if (await rateLimited(ip)) { res.status(429).json({ error: "rate limited" }); return; }
+  // eval/test bypass: set EVAL_BYPASS_TOKEN in Vercel and send it as x-eval-token to skip the limiter
+  const bypass = process.env.EVAL_BYPASS_TOKEN && req.headers["x-eval-token"] === process.env.EVAL_BYPASS_TOKEN;
+  if (!bypass && await rateLimited(ip)) { res.status(429).json({ error: "rate limited" }); return; }
 
   const { history, region } = req.body || {};
   const REGION_LABELS = { AU: "Australia", US: "United States", UK: "United Kingdom", ID: "Indonesia", INTL: "Other / International" };
